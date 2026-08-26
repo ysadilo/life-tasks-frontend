@@ -1,0 +1,20 @@
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.local
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# pwa generated
+dev-dist
