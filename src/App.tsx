@@ -1,24 +1,27 @@
-import { NavLink, Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { AppShell } from './components/layout';
 import Backlog from './pages/Backlog';
 import Today from './pages/Today';
-import Calendar from './pages/Calendar';
+import CalendarPage from './pages/Calendar';
 
 export default function App() {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    document.title = t('app.title');
+  }, [t]);
+
   return (
-    <div className="app-shell">
-      <nav className="app-nav">
-        <NavLink to="/today">Today</NavLink>
-        <NavLink to="/backlog">Backlog</NavLink>
-        <NavLink to="/calendar">Week / Month</NavLink>
-      </nav>
-      <main>
-        <Routes>
-          <Route path="/" element={<Navigate to="/today" replace />} />
-          <Route path="/today" element={<Today />} />
-          <Route path="/backlog" element={<Backlog />} />
-          <Route path="/calendar" element={<Calendar />} />
-        </Routes>
-      </main>
-    </div>
+    <Routes>
+      <Route element={<AppShell />}>
+        <Route path="/" element={<Navigate to="/today" replace />} />
+        <Route path="/today" element={<Today />} />
+        <Route path="/backlog" element={<Backlog />} />
+        <Route path="/calendar" element={<Navigate to="/calendar/week" replace />} />
+        <Route path="/calendar/:view" element={<CalendarPage />} />
+      </Route>
+    </Routes>
   );
 }

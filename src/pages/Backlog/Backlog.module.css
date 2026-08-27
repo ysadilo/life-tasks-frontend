@@ -1,0 +1,44 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.groups {
+  flex: 1;
+  padding: 22px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.groupDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.groupLabel {
+  font: 600 15px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.groupCount {
+  font: 400 13px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
