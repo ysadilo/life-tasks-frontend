@@ -66,3 +66,24 @@
   font: 500 11px/1 var(--font-sans);
   color: var(--color-text-muted);
 }
+
+@media (max-width: 768px) {
+  .wrap {
+    padding: 0 16px 16px;
+  }
+
+  .grid {
+    gap: 4px;
+  }
+
+  .cell {
+    min-height: 76px;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    gap: 4px;
+  }
+
+  .chips {
+    gap: 3px;
+  }
+}

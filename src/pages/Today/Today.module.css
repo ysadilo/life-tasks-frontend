@@ -15,6 +15,12 @@
   overflow-y: auto;
 }
 
+@media (max-width: 768px) {
+  .list {
+    padding: 16px;
+  }
+}
+
 .empty {
   margin: 0;
   padding: 20px 4px;
