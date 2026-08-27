@@ -1,0 +1,17 @@
+.input {
+  padding: 11px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font: 400 13px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.input:focus {
+  outline: 2px solid var(--color-accent-border);
+  outline-offset: 1px;
+}

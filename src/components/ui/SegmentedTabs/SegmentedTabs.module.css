@@ -1,0 +1,24 @@
+.track {
+  display: inline-flex;
+  background: var(--color-sidebar-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  padding: 3px;
+}
+
+.tab {
+  border: none;
+  background: transparent;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font: 500 14px/1 var(--font-sans);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.active {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-weight: 600;
+}

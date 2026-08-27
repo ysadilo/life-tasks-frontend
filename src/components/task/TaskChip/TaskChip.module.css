@@ -1,0 +1,38 @@
+.chip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  font: 600 12px/1.25 var(--font-sans);
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overdue {
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+}
+
+.overdueLabel {
+  font: 600 9px/1 var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-danger-text);
+}
+
+.overdue .title {
+  color: var(--color-danger-text);
+}
+
+.done .title {
+  color: var(--color-text-faint);
+  text-decoration: line-through;
+}

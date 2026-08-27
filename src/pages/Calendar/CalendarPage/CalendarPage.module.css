@@ -1,0 +1,12 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.navControls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

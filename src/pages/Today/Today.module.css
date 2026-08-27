@@ -1,0 +1,59 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.list {
+  flex: 1;
+  padding: 20px 30px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.empty {
+  margin: 0;
+  padding: 20px 4px;
+  font: 400 14px/1.5 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.doneDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px 2px;
+}
+
+.doneDividerLabel {
+  font: 600 11px/1 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.doneDividerRule {
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-subtle);
+}
+
+.doneDividerCount {
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.pullPlaceholder {
+  margin-top: 6px;
+  padding: 14px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-card);
+  text-align: center;
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text-faint);
+}

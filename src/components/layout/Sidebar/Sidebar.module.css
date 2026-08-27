@@ -1,0 +1,144 @@
+.sidebar {
+  width: 236px;
+  flex: none;
+  border-right: 1px solid var(--color-border-subtle);
+  background: var(--color-sidebar-bg);
+  padding: 22px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 6px;
+}
+
+.logoMark {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+}
+
+.logoText {
+  font: 600 16px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.newTaskButton {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: var(--radius-nav-item);
+  border: 1px solid transparent;
+  font: 500 14px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.navItemActive {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.count {
+  font: 600 12px/1 var(--font-sans);
+  color: var(--color-neutral-chip-text);
+  background: var(--color-neutral-chip-bg);
+  border-radius: var(--radius-pill);
+  padding: 4px 8px;
+}
+
+.navItemActive .count {
+  color: var(--color-accent-count-text);
+  background: var(--color-accent-count-bg);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 0 6px;
+}
+
+.sectionLabel {
+  font: 600 11px/1 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.areaRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.areaDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-area-social);
+  flex: none;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.profileName {
+  font: 600 13px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.profileSubtitle {
+  font: 400 11px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}

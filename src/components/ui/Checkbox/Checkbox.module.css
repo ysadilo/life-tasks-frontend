@@ -1,0 +1,15 @@
+.checkbox {
+  width: 19px;
+  height: 19px;
+  flex: none;
+  border-radius: var(--radius-checkbox);
+  border: 1.5px solid var(--color-checkbox-border);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.checked {
+  background: var(--color-success-solid);
+  border-color: var(--color-success-solid-border);
+}
