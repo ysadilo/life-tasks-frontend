@@ -199,6 +199,16 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
             <Button type="submit" variant="primary" disabled={pending || !trimmedTitle}>
               {t('taskForm.save')}
             </Button>
+            {task.status !== 'backlog' && (
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={pending || !trimmedTitle}
+                onClick={() => save('backlog')}
+              >
+                {t('taskForm.moveToBacklog')}
+              </Button>
+            )}
             <button
               type="button"
               className={styles.delete}
