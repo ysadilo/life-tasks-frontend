@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
 import { Button, Input, EmptyState } from '../../components/ui';
-import { TaskRow } from '../../components/task';
+import { TaskRow, taskForm } from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { LIFE_AREAS, lifeAreaColorVar } from '../../lib/lifeAreas';
 import type { LifeAreaId, Task } from '../../models';
@@ -85,6 +85,7 @@ export default function Backlog() {
               <TaskRow
                 key={task.id}
                 task={task}
+                onEdit={() => taskForm.openEdit(task)}
                 trailing={
                   <Button variant="ghost" onClick={() => updateStatus.mutate({ id: task.id, status: 'today' })}>
                     {t('task.addToToday')}

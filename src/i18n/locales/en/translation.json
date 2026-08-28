@@ -57,7 +57,23 @@
     "markDone": "Mark \"{{title}}\" done",
     "markNotDone": "Mark \"{{title}}\" not done",
     "toDo": "To do",
-    "addToToday": "Add to today"
+    "addToToday": "Add to today",
+    "edit": "Edit \"{{title}}\""
+  },
+  "taskForm": {
+    "newTitle": "New task",
+    "editTitle": "Edit task",
+    "titlePlaceholder": "What needs doing?",
+    "descriptionPlaceholder": "Notes — links, phone numbers, what \"done\" looks like…",
+    "dueDate": "Due date",
+    "area": "Life area",
+    "areaNone": "No area",
+    "addToToday": "Add to today",
+    "parkInBacklog": "Park in backlog",
+    "save": "Save",
+    "delete": "Delete",
+    "error": "Something went wrong. Try again.",
+    "close": "Close"
   },
   "today": {
     "title": "Today",

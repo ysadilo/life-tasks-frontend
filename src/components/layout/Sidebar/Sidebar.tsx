@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button, ThemeToggle } from '../../ui';
+import { taskForm } from '../../task';
 import { LIFE_AREAS, lifeAreaColorVar } from '../../../lib/lifeAreas';
 import { useTasksByStatus } from '../../../hooks/useTasks';
 import styles from './Sidebar.module.css';
@@ -25,7 +26,7 @@ export function Sidebar() {
         <span className={styles.logoText}>{t('app.name')}</span>
       </div>
 
-      <Button variant="primary" className={styles.newTaskButton}>
+      <Button variant="primary" className={styles.newTaskButton} onClick={taskForm.openNew}>
         {t('sidebar.newTask')}
       </Button>
 

@@ -1,6 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
-import type { Task, TaskStatus } from '../models';
+import type { LifeAreaId, Task, TaskStatus } from '../models';
+
+export interface TaskInput {
+  title: string;
+  description?: string | null;
+  dueDate?: string | null;
+  status?: TaskStatus;
+  todayDate?: string | null;
+  area?: LifeAreaId | null;
+}
 
 export function useTasksByStatus(status: TaskStatus) {
   return useQuery({
@@ -21,6 +30,33 @@ export function useUpdateTaskStatus() {
 
   return useMutation({
     mutationFn: ({ id, status }: { id: string; status: TaskStatus }) => api.patch<Task>(`/tasks/${id}`, { status }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+  });
+}
+
+export function useCreateTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: TaskInput) => api.post<Task>('/tasks', input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+  });
+}
+
+export function useUpdateTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, ...input }: TaskInput & { id: string }) => api.patch<Task>(`/tasks/${id}`, input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+  });
+}
+
+export function useDeleteTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => api.delete<void>(`/tasks/${id}`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
   });
 }
