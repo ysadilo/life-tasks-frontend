@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTasksByStatus } from '../../../hooks/useTasks';
+import { taskForm } from '../../task';
 import styles from './BottomNav.module.css';
 
 function navClassName({ isActive }: { isActive: boolean }) {
@@ -25,7 +26,7 @@ export function BottomNav() {
       <NavLink to="/calendar" className={navClassName}>
         <span>{t('nav.calendar')}</span>
       </NavLink>
-      <button type="button" className={styles.add} aria-label={t('sidebar.newTask')}>
+      <button type="button" className={styles.add} aria-label={t('sidebar.newTask')} onClick={taskForm.openNew}>
         +
       </button>
     </nav>

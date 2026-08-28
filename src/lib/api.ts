@@ -17,7 +17,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     throw new Error(`${init?.method ?? 'GET'} ${path} failed: ${res.status}`);
   }
 
-  return res.status === 204 ? (undefined as T) : res.json();
+  const text = await res.text();
+  return text ? (JSON.parse(text) as T) : (undefined as T);
 }
 
 export const api = {

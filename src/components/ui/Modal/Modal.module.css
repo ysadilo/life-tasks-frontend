@@ -1,0 +1,46 @@
+.dialog {
+  width: min(560px, calc(100vw - 32px));
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-shell);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-shell);
+}
+
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+  margin: 0;
+  font: 700 22px/1.1 var(--font-sans);
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.close {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font: 500 16px/1 var(--font-sans);
+  cursor: pointer;
+}
