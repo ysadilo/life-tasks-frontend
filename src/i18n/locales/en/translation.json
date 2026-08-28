@@ -30,6 +30,29 @@
   "user": {
     "defaultName": "Yana"
   },
+  "auth": {
+    "loading": "Signing you in…",
+    "signOut": "Sign out",
+    "headline": "Your life, in a board you can actually finish.",
+    "blurb": "Backlog for someday. Today for now. Triage for everything yesterday left behind.",
+    "pill": {
+      "pwa": "Installable PWA",
+      "offline": "Works offline",
+      "family": "Family boards soon"
+    },
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Continue to your board with Auth0 — Google, email, or a passkey.",
+      "cta": "Continue",
+      "alt": "New here? Create an account"
+    },
+    "signup": {
+      "title": "Create your account",
+      "subtitle": "Set up your board in a few seconds with Auth0.",
+      "cta": "Sign up",
+      "alt": "Already have an account? Sign in"
+    }
+  },
   "task": {
     "markDone": "Mark \"{{title}}\" done",
     "markNotDone": "Mark \"{{title}}\" not done",
