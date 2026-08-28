@@ -1,0 +1,42 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.title {
+  margin: 0;
+  font: 700 28px/1.1 var(--font-sans);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.subtitle {
+  margin: 0;
+  font: 400 15px/1.5 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.cta {
+  margin-top: 4px;
+  padding: 15px 26px;
+  font-size: 15px;
+}
+
+.alt {
+  align-self: flex-start;
+  padding: 0;
+  background: none;
+  border: none;
+  font: 500 14px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.alt:hover {
+  color: var(--color-text);
+}

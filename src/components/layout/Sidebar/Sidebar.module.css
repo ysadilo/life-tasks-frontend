@@ -120,9 +120,17 @@
   align-items: center;
   gap: 10px;
   padding: 9px;
+  width: 100%;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-input);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile:hover {
+  border-color: var(--color-accent-border);
 }
 
 .avatar {
@@ -130,6 +138,7 @@
   height: 28px;
   border-radius: 50%;
   background: var(--color-area-social);
+  object-fit: cover;
   flex: none;
 }
 

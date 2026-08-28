@@ -1,9 +1,16 @@
+import { getAuthToken } from '../auth/authToken';
+
 const API_BASE = '/api';
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = await getAuthToken();
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
     ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...init?.headers,
+    },
   });
 
   if (!res.ok) {
