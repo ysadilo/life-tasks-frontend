@@ -45,3 +45,8 @@ Because the FE and BE live in **separate repositories**, shared code cannot live
 2. **Abstract:** Determine if the requested logic or component can be generalized and moved to the Component Library or Shared Utilities.
 3. **Implement:** Write the code adhering to the architectural layers defined above.
 4. **Refactor:** Before finalizing the response, review the code for duplicated logic and extract it immediately.
+
+## 6. Version Control
+
+- **Branch naming:** Create a branch off `main` for every change. New features use `feature/<short-kebab-summary>`; bug fixes use `bugfix/<short-kebab-summary>`. Example: `feature/task-life-area`, `bugfix/delete-empty-response`.
+- Never commit directly to `main`.
