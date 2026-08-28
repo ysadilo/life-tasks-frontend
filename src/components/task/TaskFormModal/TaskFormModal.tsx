@@ -199,24 +199,26 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
             <Button type="submit" variant="primary" disabled={pending || !trimmedTitle}>
               {t('taskForm.save')}
             </Button>
-            {task.status !== 'backlog' && (
-              <Button
+            <div className={styles.footerRight}>
+              <button
                 type="button"
-                variant="secondary"
-                disabled={pending || !trimmedTitle}
-                onClick={() => save('backlog')}
+                className={styles.delete}
+                disabled={pending}
+                onClick={() => deleteTask.mutate(task.id, { onSuccess: onClose })}
               >
-                {t('taskForm.moveToBacklog')}
-              </Button>
-            )}
-            <button
-              type="button"
-              className={styles.delete}
-              disabled={pending}
-              onClick={() => deleteTask.mutate(task.id, { onSuccess: onClose })}
-            >
-              {t('taskForm.delete')}
-            </button>
+                {t('taskForm.delete')}
+              </button>
+              {task.status !== 'backlog' && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={pending || !trimmedTitle}
+                  onClick={() => save('backlog')}
+                >
+                  {t('taskForm.moveToBacklog')}
+                </Button>
+              )}
+            </div>
           </>
         ) : (
           <>
