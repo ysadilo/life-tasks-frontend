@@ -56,7 +56,6 @@
   "task": {
     "markDone": "Mark \"{{title}}\" done",
     "markNotDone": "Mark \"{{title}}\" not done",
-    "toDo": "To do",
     "addToToday": "Add to today",
     "edit": "Edit \"{{title}}\""
   },
