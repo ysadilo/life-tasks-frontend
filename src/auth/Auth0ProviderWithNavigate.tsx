@@ -19,6 +19,7 @@ export function Auth0ProviderWithNavigate({ children }: { children: ReactNode })
       domain={domain}
       clientId={clientId}
       useRefreshTokens
+      cacheLocation="localstorage"
       authorizationParams={{ redirect_uri: window.location.origin, audience }}
       onRedirectCallback={(appState?: AppState) => navigate(appState?.returnTo ?? '/', { replace: true })}
     >
