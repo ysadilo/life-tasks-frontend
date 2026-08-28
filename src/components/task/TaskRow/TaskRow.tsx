@@ -26,7 +26,7 @@ export function TaskRow({ task, onToggle, onEdit, trailing, showChips = true }: 
 
   return (
     <div className={styles.row}>
-      <Checkbox checked={false} onChange={onToggle} label={t('task.markDone', { title: task.title })} />
+      {onToggle && <Checkbox checked={false} onChange={onToggle} label={t('task.markDone', { title: task.title })} />}
       <div className={styles.body}>
         <span className={styles.title}>{task.title}</span>
         {task.description && <span className={styles.description}>{task.description}</span>}
