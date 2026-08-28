@@ -6,20 +6,17 @@ import { Input } from '../../ui/Input';
 import { useCreateTask, useUpdateTask, useDeleteTask, type TaskInput } from '../../../hooks/useTasks';
 import { taskForm, useTaskFormState } from '../taskFormStore';
 import { LIFE_AREAS } from '../../../lib/lifeAreas';
-import { PRIORITIES, priorityVariant } from '../../../lib/priority';
+import { PRIORITIES } from '../../../lib/priority';
+import { ENERGIES, EFFORT_MINUTES, energyRampKey, effortRampKey, priorityRampKey } from '../../../lib/taskMeta';
 import type { Energy, LifeAreaId, Priority, Task, TaskStatus } from '../../../models';
+import ramp from '../chipRamp.module.css';
 import styles from './TaskFormModal.module.css';
-
-const ENERGIES: Energy[] = ['low', 'medium', 'high'];
-const EFFORT_MINUTES = [15, 60, 240];
-
-type OptionTone = 'neutral' | 'danger' | 'accent' | 'success';
 
 interface Option {
   value: string;
   label: string;
-  /** Applied only when the option is selected. */
-  tone?: OptionTone;
+  /** chipRamp.module.css class key; applied only when the option is selected. */
+  rampKey?: string;
 }
 
 /** Row of single-select buttons; click the active one to clear. Matches the mockup's chip selectors. */
@@ -51,7 +48,7 @@ function OptionGroup({
                 styles.option,
                 stretch ? styles.optionStretch : '',
                 selected ? styles.optionSelected : '',
-                selected && option.tone ? styles[option.tone] : '',
+                selected && option.rampKey ? ramp[option.rampKey] : '',
               ]
                 .filter(Boolean)
                 .join(' ')}
@@ -151,7 +148,7 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
         label={t('taskForm.priority')}
         value={priority}
         onChange={(v) => setPriority(v as Priority | '')}
-        options={PRIORITIES.map((p) => ({ value: p, label: p, tone: priorityVariant(p) }))}
+        options={PRIORITIES.map((p) => ({ value: p, label: p, rampKey: priorityRampKey(p) }))}
       />
 
       <div className={styles.grid2}>
@@ -162,14 +159,18 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
           options={EFFORT_MINUTES.map((m) => ({
             value: String(m),
             label: t(`taskForm.effortOption.${m}`),
-            tone: 'accent',
+            rampKey: effortRampKey(m),
           }))}
         />
         <OptionGroup
           label={t('taskForm.energy')}
           value={energy}
           onChange={(v) => setEnergy(v as Energy | '')}
-          options={ENERGIES.map((e) => ({ value: e, label: t(`taskForm.energyOption.${e}`), tone: 'success' }))}
+          options={ENERGIES.map((e) => ({
+            value: e,
+            label: t(`taskForm.energyOption.${e}`),
+            rampKey: energyRampKey(e),
+          }))}
         />
       </div>
 

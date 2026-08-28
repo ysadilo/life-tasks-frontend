@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from '../../ui/Checkbox';
 import { Chip } from '../../ui/Chip';
-import { priorityVariant } from '../../../lib/priority';
+import { MetaChip } from '../MetaChip';
 import type { Task } from '../../../models';
 import styles from './TaskRow.module.css';
 
@@ -14,15 +14,9 @@ interface TaskRowProps {
   showChips?: boolean;
 }
 
-function formatMinutes(minutes: number): string {
-  if (minutes < 60) return `${minutes}m`;
-  const hours = minutes / 60;
-  return Number.isInteger(hours) ? `${hours}h` : `${Math.floor(hours)}h ${minutes % 60}m`;
-}
-
 export function TaskRow({ task, onToggle, onEdit, trailing, showChips = true }: TaskRowProps) {
   const { t } = useTranslation();
-  const hasChips = showChips && (task.priority || task.estimatedMinutes != null || task.area);
+  const hasChips = showChips && (task.priority || task.energy || task.estimatedMinutes != null || task.area);
 
   return (
     <div className={styles.row}>
@@ -52,8 +46,9 @@ export function TaskRow({ task, onToggle, onEdit, trailing, showChips = true }: 
       {trailing}
       {hasChips && (
         <div className={styles.chips}>
-          {task.priority && <Chip variant={priorityVariant(task.priority)}>{task.priority}</Chip>}
-          {task.estimatedMinutes != null && <Chip>{formatMinutes(task.estimatedMinutes)}</Chip>}
+          {task.priority && <MetaChip axis="priority" value={task.priority} />}
+          {task.energy && <MetaChip axis="energy" value={task.energy} />}
+          {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
           {task.area && <Chip>{t(`lifeArea.${task.area}`)}</Chip>}
         </div>
       )}

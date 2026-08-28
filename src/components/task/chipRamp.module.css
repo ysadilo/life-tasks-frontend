@@ -1,0 +1,65 @@
+/*
+ * Colour-only classes for the priority / energy / effort ramps.
+ * The consuming element supplies its own layout and a `border: 1px solid` rule.
+ * Shared by MetaChip and the task form's option selectors.
+ */
+
+.priorityP1 {
+  background: var(--chip-priority-p1-bg);
+  border-color: var(--chip-priority-p1-border);
+  color: var(--chip-priority-p1-text);
+}
+
+.priorityP2 {
+  background: var(--chip-priority-p2-bg);
+  border-color: var(--chip-priority-p2-border);
+  color: var(--chip-priority-p2-text);
+}
+
+.priorityP3 {
+  background: var(--chip-priority-p3-bg);
+  border-color: var(--chip-priority-p3-border);
+  color: var(--chip-priority-p3-text);
+}
+
+.priorityP4 {
+  background: var(--chip-priority-p4-bg);
+  border-color: var(--chip-priority-p4-border);
+  color: var(--chip-priority-p4-text);
+}
+
+.energyLow {
+  background: var(--chip-energy-low-bg);
+  border-color: var(--chip-energy-low-border);
+  color: var(--chip-energy-low-text);
+}
+
+.energyMed {
+  background: var(--chip-energy-med-bg);
+  border-color: var(--chip-energy-med-border);
+  color: var(--chip-energy-med-text);
+}
+
+.energyHigh {
+  background: var(--chip-energy-high-bg);
+  border-color: var(--chip-energy-high-border);
+  color: var(--chip-energy-high-text);
+}
+
+.effortXs {
+  background: var(--chip-effort-xs-bg);
+  border-color: var(--chip-effort-xs-border);
+  color: var(--chip-effort-xs-text);
+}
+
+.effortSm {
+  background: var(--chip-effort-sm-bg);
+  border-color: var(--chip-effort-sm-border);
+  color: var(--chip-effort-sm-text);
+}
+
+.effortMd {
+  background: var(--chip-effort-md-bg);
+  border-color: var(--chip-effort-md-border);
+  color: var(--chip-effort-md-text);
+}

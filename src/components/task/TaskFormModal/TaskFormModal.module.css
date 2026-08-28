@@ -56,15 +56,20 @@
 .option {
   flex: 0 0 auto;
   padding: 10px 13px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   font: 500 13px/1 var(--font-sans);
-  color: var(--color-text-secondary);
   cursor: pointer;
 }
 
-.option:hover {
+/* Unselected look; a selected option is coloured by its chipRamp class. */
+.option:not(.optionSelected) {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.option:not(.optionSelected):hover {
   border-color: var(--color-checkbox-border);
 }
 
@@ -82,31 +87,6 @@
 
 .optionSelected {
   font-weight: 600;
-  color: var(--color-text);
-}
-
-.optionSelected.neutral {
-  background: var(--color-neutral-chip-bg);
-  border-color: var(--color-border);
-  color: var(--color-neutral-chip-text);
-}
-
-.optionSelected.danger {
-  background: var(--color-danger-bg);
-  border-color: var(--color-danger-border);
-  color: var(--color-danger-text);
-}
-
-.optionSelected.accent {
-  background: var(--color-accent);
-  border-color: var(--color-accent-border);
-  color: var(--color-accent-text);
-}
-
-.optionSelected.success {
-  background: var(--color-success-bg);
-  border-color: var(--color-success-border);
-  color: var(--color-success-text);
 }
 
 .select {
