@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
-import type { LifeAreaId, Task, TaskStatus } from '../models';
+import type { Energy, LifeAreaId, Priority, Task, TaskStatus } from '../models';
 
 export interface TaskInput {
   title: string;
@@ -9,6 +9,9 @@ export interface TaskInput {
   status?: TaskStatus;
   todayDate?: string | null;
   area?: LifeAreaId | null;
+  priority?: Priority | null;
+  energy?: Energy | null;
+  estimatedMinutes?: number | null;
 }
 
 export function useTasksByStatus(status: TaskStatus) {

@@ -1,5 +1,6 @@
 .track {
   display: inline-flex;
+  flex-wrap: wrap;
   background: var(--color-sidebar-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-input);
