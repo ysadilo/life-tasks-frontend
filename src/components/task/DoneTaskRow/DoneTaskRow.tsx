@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from '../../ui/Checkbox';
+import { EditButton } from '../EditButton';
 import type { Task } from '../../../models';
 import styles from './DoneTaskRow.module.css';
 
 interface DoneTaskRowProps {
   task: Task;
   onToggle?: () => void;
+  onEdit?: () => void;
 }
 
 function formatTime(iso: string | null | undefined): string | null {
@@ -15,7 +17,7 @@ function formatTime(iso: string | null | undefined): string | null {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export function DoneTaskRow({ task, onToggle }: DoneTaskRowProps) {
+export function DoneTaskRow({ task, onToggle, onEdit }: DoneTaskRowProps) {
   const { t } = useTranslation();
   const time = formatTime(task.completedAt);
 
@@ -24,6 +26,7 @@ export function DoneTaskRow({ task, onToggle }: DoneTaskRowProps) {
       <Checkbox checked onChange={onToggle} label={t('task.markNotDone', { title: task.title })} />
       <span className={styles.title}>{task.title}</span>
       {time && <span className={styles.time}>{time}</span>}
+      {onEdit && <EditButton title={task.title} onClick={onEdit} />}
     </div>
   );
 }

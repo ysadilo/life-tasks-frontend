@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from '../../ui/Checkbox';
 import { Chip } from '../../ui/Chip';
+import { EditButton } from '../EditButton';
 import { MetaChip } from '../MetaChip';
 import type { Task } from '../../../models';
 import styles from './TaskRow.module.css';
@@ -25,24 +26,7 @@ export function TaskRow({ task, onToggle, onEdit, trailing, showChips = true }: 
         <span className={styles.title}>{task.title}</span>
         {task.description && <span className={styles.description}>{task.description}</span>}
       </div>
-      {onEdit && (
-        <button
-          type="button"
-          className={styles.edit}
-          onClick={onEdit}
-          aria-label={t('task.edit', { title: task.title })}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path
-              d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-      )}
+      {onEdit && <EditButton title={task.title} onClick={onEdit} />}
       {trailing}
       {hasChips && (
         <div className={styles.chips}>

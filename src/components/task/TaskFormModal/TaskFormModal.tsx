@@ -209,15 +209,26 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
               >
                 {t('taskForm.delete')}
               </button>
-              {task.status !== 'backlog' && (
+              {task.status === 'done' ? (
                 <Button
                   type="button"
                   variant="secondary"
                   disabled={pending || !trimmedTitle}
-                  onClick={() => save('backlog')}
+                  onClick={() => save('today')}
                 >
-                  {t('taskForm.moveToBacklog')}
+                  {t('taskForm.markNotDone')}
                 </Button>
+              ) : (
+                task.status !== 'backlog' && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={pending || !trimmedTitle}
+                    onClick={() => save('backlog')}
+                  >
+                    {t('taskForm.moveToBacklog')}
+                  </Button>
+                )
               )}
             </div>
           </>

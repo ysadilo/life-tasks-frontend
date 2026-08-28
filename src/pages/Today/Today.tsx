@@ -80,6 +80,7 @@ export default function Today() {
                 key={task.id}
                 task={task}
                 onToggle={() => updateStatus.mutate({ id: task.id, status: 'today' })}
+                onEdit={() => taskForm.openEdit(task)}
               />
             ))}
           </>

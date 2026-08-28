@@ -75,6 +75,7 @@
     "addToToday": "Add to today",
     "parkInBacklog": "Park in backlog",
     "moveToBacklog": "Move to backlog",
+    "markNotDone": "Mark not done",
     "save": "Save",
     "delete": "Delete",
     "error": "Something went wrong. Try again.",
