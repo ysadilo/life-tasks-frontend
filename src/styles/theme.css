@@ -61,6 +61,40 @@
   --color-area-admin: #cfc7ba;
 
   --shadow-shell: 0 4px 18px rgba(43, 42, 40, 0.07);
+
+  /* Task meta chips — three independent ramps (see mockup "Colour scheme"). */
+  --chip-priority-p1-bg: #efd8d2;
+  --chip-priority-p1-border: #e0c6bf;
+  --chip-priority-p1-text: #8a5c50;
+  --chip-priority-p2-bg: #f2e6c2;
+  --chip-priority-p2-border: #e6d5a6;
+  --chip-priority-p2-text: #7c6a3a;
+  --chip-priority-p3-bg: #d3deec;
+  --chip-priority-p3-border: #c1cedf;
+  --chip-priority-p3-text: #5a6b7a;
+  --chip-priority-p4-bg: #eeebe3;
+  --chip-priority-p4-border: #ddd8cf;
+  --chip-priority-p4-text: #6e6a63;
+
+  --chip-energy-low-bg: #cfddd2;
+  --chip-energy-low-border: #bdcdc1;
+  --chip-energy-low-text: #3f6650;
+  --chip-energy-med-bg: #f2e6c2;
+  --chip-energy-med-border: #e6d5a6;
+  --chip-energy-med-text: #7c6a3a;
+  --chip-energy-high-bg: #efd9e6;
+  --chip-energy-high-border: #e0c2d3;
+  --chip-energy-high-text: #8a5c74;
+
+  --chip-effort-xs-bg: #e6e2f0;
+  --chip-effort-xs-border: #d5cee6;
+  --chip-effort-xs-text: #615a7a;
+  --chip-effort-sm-bg: #ddd6ee;
+  --chip-effort-sm-border: #c9bfe2;
+  --chip-effort-sm-text: #5c5378;
+  --chip-effort-md-bg: #d3caea;
+  --chip-effort-md-border: #bdb0dd;
+  --chip-effort-md-text: #544887;
 }
 
 :root[data-theme='glamour'] {
@@ -114,4 +148,38 @@
   --color-area-admin: #7a6e88;
 
   --shadow-shell: 0 4px 18px rgba(0, 0, 0, 0.55);
+
+  /* Task meta chips — three independent ramps (see mockup "Colour scheme"). */
+  --chip-priority-p1-bg: #5a2c29;
+  --chip-priority-p1-border: #7e4238;
+  --chip-priority-p1-text: #f0b6aa;
+  --chip-priority-p2-bg: #4e3a1b;
+  --chip-priority-p2-border: #7a5c27;
+  --chip-priority-p2-text: #ebc894;
+  --chip-priority-p3-bg: #243444;
+  --chip-priority-p3-border: #3b546b;
+  --chip-priority-p3-text: #b7cfe2;
+  --chip-priority-p4-bg: #2c2438;
+  --chip-priority-p4-border: #463a55;
+  --chip-priority-p4-text: #c9bbd6;
+
+  --chip-energy-low-bg: #22392b;
+  --chip-energy-low-border: #3c6249;
+  --chip-energy-low-text: #a8d2b6;
+  --chip-energy-med-bg: #4a3c1a;
+  --chip-energy-med-border: #786126;
+  --chip-energy-med-text: #e3c98e;
+  --chip-energy-high-bg: #3e2338;
+  --chip-energy-high-border: #6a3c5c;
+  --chip-energy-high-text: #dda9cd;
+
+  --chip-effort-xs-bg: #282239;
+  --chip-effort-xs-border: #3e3557;
+  --chip-effort-xs-text: #bdb3d6;
+  --chip-effort-sm-bg: #2c2544;
+  --chip-effort-sm-border: #463c68;
+  --chip-effort-sm-text: #c3b8e0;
+  --chip-effort-md-bg: #332b52;
+  --chip-effort-md-border: #544887;
+  --chip-effort-md-text: #cbc0ea;
 }

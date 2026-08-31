@@ -1,3 +1,4 @@
+import type { Energy } from './Energy';
 import type { LifeAreaId } from './LifeAreaId';
 import type { Priority } from './Priority';
 import type { TaskStatus } from './TaskStatus';
@@ -9,6 +10,7 @@ export interface Task {
   dueDate: string | null;
   status: TaskStatus;
   priority?: Priority;
+  energy?: Energy;
   estimatedMinutes?: number;
   area?: LifeAreaId;
   completedAt?: string | null;

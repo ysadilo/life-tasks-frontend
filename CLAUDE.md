@@ -12,6 +12,7 @@ Before generating or modifying any code, you must evaluate the request against t
 - **Strict Typing:** (If using TypeScript) Enforce strict typing. Do not use `any`. Define clear, strict interfaces for all data contracts, component props, and API responses.
 - **Single Responsibility Principle (SRP):** Ensure every function, component, and module has one clear responsibility.
 - **Testability:** Write predictable, pure functions wherever possible to ensure the codebase remains highly testable.
+- **Branch on a discriminant with `switch`:** When selecting behaviour from a fixed set of values (a discriminated-union tag, an enum, a status string), use a `switch` statement rather than an `if`/`else if` chain, so the cases read as a table and the compiler can check exhaustiveness.
 
 ## 2. Shared Tooling Across Two Repositories
 

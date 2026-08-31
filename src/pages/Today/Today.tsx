@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
-import { Button, Chip } from '../../components/ui';
+import { Button } from '../../components/ui';
 import { TaskRow, DoneTaskRow, taskForm } from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { PRIORITY_RANK } from '../../lib/priority';
@@ -65,11 +65,6 @@ export default function Today() {
             task={task}
             onToggle={() => updateStatus.mutate({ id: task.id, status: 'done' })}
             onEdit={() => taskForm.openEdit(task)}
-            trailing={
-              <Chip variant="info" pill>
-                {t('task.toDo')}
-              </Chip>
-            }
           />
         ))}
 
@@ -85,6 +80,7 @@ export default function Today() {
                 key={task.id}
                 task={task}
                 onToggle={() => updateStatus.mutate({ id: task.id, status: 'today' })}
+                onEdit={() => taskForm.openEdit(task)}
               />
             ))}
           </>
