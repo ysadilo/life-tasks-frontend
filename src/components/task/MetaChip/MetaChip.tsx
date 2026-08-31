@@ -13,15 +13,19 @@ export function MetaChip(props: MetaChipProps) {
 
   let rampKey: string;
   let label: string;
-  if (props.axis === 'priority') {
-    rampKey = priorityRampKey(props.value);
-    label = props.value;
-  } else if (props.axis === 'energy') {
-    rampKey = energyRampKey(props.value);
-    label = t(`taskForm.energyOption.${props.value}`);
-  } else {
-    rampKey = effortRampKey(props.minutes);
-    label = formatMinutes(props.minutes);
+  switch (props.axis) {
+    case 'priority':
+      rampKey = priorityRampKey(props.value);
+      label = props.value;
+      break;
+    case 'energy':
+      rampKey = energyRampKey(props.value);
+      label = t(`taskForm.energyOption.${props.value}`);
+      break;
+    case 'effort':
+      rampKey = effortRampKey(props.minutes);
+      label = formatMinutes(props.minutes);
+      break;
   }
 
   return <span className={[styles.chip, ramp[rampKey]].join(' ')}>{label}</span>;
