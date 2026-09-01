@@ -30,7 +30,7 @@ export function Sidebar() {
         <span className={styles.logoText}>{t('app.name')}</span>
       </div>
 
-      <Button variant="primary" className={styles.newTaskButton} onClick={taskForm.openNew}>
+      <Button variant="primary" className={styles.newTaskButton} onClick={() => taskForm.openNew()}>
         {t('sidebar.newTask')}
       </Button>
 

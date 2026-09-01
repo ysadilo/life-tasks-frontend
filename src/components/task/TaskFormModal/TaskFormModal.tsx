@@ -68,7 +68,7 @@ function OptionGroup({
 
 /** Mount once (see AppShell); opened from anywhere via `taskForm.openNew()` / `taskForm.openEdit()`. */
 export function TaskFormModal() {
-  const { open, task } = useTaskFormState();
+  const { open, task, presetDate } = useTaskFormState();
   const { t } = useTranslation();
   const onClose = taskForm.close;
 
@@ -79,18 +79,26 @@ export function TaskFormModal() {
       closeLabel={t('taskForm.close')}
       title={task ? t('taskForm.editTitle') : t('taskForm.newTitle')}
     >
-      <TaskForm key={task?.id ?? 'new'} task={task} onClose={onClose} />
+      <TaskForm key={task?.id ?? presetDate ?? 'new'} task={task} presetDate={presetDate} onClose={onClose} />
     </Modal>
   );
 }
 
-function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void }) {
+function TaskForm({
+  task,
+  presetDate,
+  onClose,
+}: {
+  task: Task | null;
+  presetDate: string | null;
+  onClose: () => void;
+}) {
   const { t } = useTranslation();
   const isEdit = task != null;
 
   const [title, setTitle] = useState(task?.title ?? '');
   const [description, setDescription] = useState(task?.description ?? '');
-  const [dueDate, setDueDate] = useState(task?.dueDate ? task.dueDate.slice(0, 10) : '');
+  const [dueDate, setDueDate] = useState(task?.dueDate ? task.dueDate.slice(0, 10) : (presetDate ?? ''));
   const [area, setArea] = useState<LifeAreaId | ''>(task?.area ?? '');
   const [priority, setPriority] = useState<Priority | ''>(task?.priority ?? '');
   const [energy, setEnergy] = useState<Energy | ''>(task?.energy ?? '');
