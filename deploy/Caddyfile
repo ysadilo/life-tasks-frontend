@@ -1,0 +1,15 @@
+# Plain HTTP on :80 — the Cloudflare Tunnel connector reaches this at
+# http://frontend:80 and Cloudflare terminates TLS for lifetasks.today at the edge.
+:80 {
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy backend:3000
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

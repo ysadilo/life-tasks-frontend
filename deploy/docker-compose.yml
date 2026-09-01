@@ -1,0 +1,21 @@
+# Raspberry Pi deployment: Caddy serving the built SPA + reverse-proxying /api
+# to the backend, exposed at https://lifetasks.today via a Cloudflare Tunnel
+# (outbound-only, no port forwarding, no public IP needed).
+#   docker network create life-tasks   # once (also created by the backend deploy)
+services:
+  frontend:
+    image: ghcr.io/yuliiasadilo/life-tasks-frontend:latest
+    restart: unless-stopped
+    networks: [life-tasks]
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?set TUNNEL_TOKEN in deploy/.env}
+    networks: [life-tasks]
+
+networks:
+  life-tasks:
+    external: true
