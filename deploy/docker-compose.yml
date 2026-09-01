@@ -1,0 +1,24 @@
+# Raspberry Pi deployment: Caddy serving the built SPA + reverse-proxying /api
+# to the backend container over the shared `life-tasks` network.
+#   docker network create life-tasks   # once (also created by the backend deploy)
+services:
+  frontend:
+    image: ghcr.io/yuliiasadilo/life-tasks-frontend:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
+    volumes:
+      - caddy_data:/data      # persisted certs — do not delete
+      - caddy_config:/config
+    networks: [life-tasks]
+
+volumes:
+  caddy_data: {}
+  caddy_config: {}
+
+networks:
+  life-tasks:
+    external: true

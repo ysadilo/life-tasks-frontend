@@ -1,0 +1,15 @@
+# DOMAIN is supplied at runtime via docker-compose env.
+# Caddy fetches and renews the Let's Encrypt cert automatically (ports 80 + 443).
+{$DOMAIN} {
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy backend:3000
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}
