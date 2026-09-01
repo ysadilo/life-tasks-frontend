@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { TaskChip } from '../../../components/task';
 import { buildMonthGrid, isSameDay, weekdayLabel } from '../../../lib/dateUtils';
-import type { Task } from '../../../models';
+import type { CalendarEntry } from '../../../lib/calendarEntries';
 import styles from './MonthView.module.css';
 
 interface MonthViewProps {
   anchor: Date;
-  tasks: Task[];
+  entries: CalendarEntry[];
 }
 
 const VISIBLE_CHIPS_PER_CELL = 3;
 
-export function MonthView({ anchor, tasks }: MonthViewProps) {
+export function MonthView({ anchor, entries }: MonthViewProps) {
   const { t, i18n } = useTranslation();
   const cells = buildMonthGrid(anchor);
   const weekdayLabels = cells.slice(0, 7).map((cell) => weekdayLabel(cell.date, i18n.language));
@@ -28,9 +28,9 @@ export function MonthView({ anchor, tasks }: MonthViewProps) {
       </div>
       <div className={styles.grid}>
         {cells.map((cell) => {
-          const dayTasks = tasks.filter((task) => task.dueDate && isSameDay(new Date(task.dueDate), cell.date));
-          const visible = dayTasks.slice(0, VISIBLE_CHIPS_PER_CELL);
-          const overflow = dayTasks.length - visible.length;
+          const dayEntries = entries.filter((entry) => isSameDay(entry.date, cell.date));
+          const visible = dayEntries.slice(0, VISIBLE_CHIPS_PER_CELL);
+          const overflow = dayEntries.length - visible.length;
           const isToday = isSameDay(cell.date, today);
 
           return (
@@ -45,8 +45,8 @@ export function MonthView({ anchor, tasks }: MonthViewProps) {
                 {isToday ? t('calendar.todaySuffix') : ''}
               </span>
               <div className={styles.chips}>
-                {visible.map((task) => (
-                  <TaskChip key={task.id} task={task} />
+                {visible.map((entry) => (
+                  <TaskChip key={entry.key} task={entry.task} done={entry.done} />
                 ))}
                 {overflow > 0 && <span className={styles.more}>{t('calendar.more', { count: overflow })}</span>}
               </div>

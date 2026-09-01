@@ -4,6 +4,7 @@ import { Checkbox } from '../../ui/Checkbox';
 import { Chip } from '../../ui/Chip';
 import { EditButton } from '../EditButton';
 import { MetaChip } from '../MetaChip';
+import { RecurrenceIcon } from '../RecurrenceIcon';
 import type { Task } from '../../../models';
 import styles from './TaskRow.module.css';
 
@@ -23,7 +24,10 @@ export function TaskRow({ task, onToggle, onEdit, trailing, showChips = true }: 
     <div className={styles.row}>
       {onToggle && <Checkbox checked={false} onChange={onToggle} label={t('task.markDone', { title: task.title })} />}
       <div className={styles.body}>
-        <span className={styles.title}>{task.title}</span>
+        <span className={styles.title}>
+          {task.title}
+          <RecurrenceIcon recurrence={task.recurrence} />
+        </span>
         {task.description && <span className={styles.description}>{task.description}</span>}
       </div>
       {onEdit && <EditButton title={task.title} onClick={onEdit} />}

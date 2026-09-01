@@ -3,34 +3,54 @@ import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
 import { Button } from '../../components/ui';
 import { TaskRow, DoneTaskRow, taskForm } from '../../components/task';
-import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
+import { useTasksByStatus, useUpdateTaskStatus, useRecurringTasks, useToggleOccurrence } from '../../hooks/useTasks';
 import { PRIORITY_RANK } from '../../lib/priority';
+import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recurrence';
 import { isSameDay } from '../../lib/dateUtils';
+import type { Task } from '../../models';
 import styles from './Today.module.css';
 
 export default function Today() {
   const { t, i18n } = useTranslation();
   const { data: openTasks, isLoading, error } = useTasksByStatus('today');
   const { data: doneTasks } = useTasksByStatus('done');
+  const { data: recurringTasks } = useRecurringTasks();
   const updateStatus = useUpdateTaskStatus();
+  const toggleOccurrence = useToggleOccurrence();
 
   const [hideDone, setHideDone] = useState(false);
   const [sortByPriority, setSortByPriority] = useState(true);
 
-  const doneToday = useMemo(() => {
-    const today = new Date();
-    return (doneTasks ?? []).filter((task) => task.completedAt && isSameDay(new Date(task.completedAt), today));
-  }, [doneTasks]);
+  const today = useMemo(() => new Date(), []);
+
+  const toggle = (task: Task, done: boolean) => {
+    if (task.recurrence) {
+      toggleOccurrence.mutate({ id: task.id, date: occurrenceISO(today), done });
+    } else {
+      updateStatus.mutate({ id: task.id, status: done ? 'done' : 'today' });
+    }
+  };
+
+  const recurringToday = useMemo(
+    () => (recurringTasks ?? []).filter((task) => hasOccurrenceOn(task, today)),
+    [recurringTasks, today]
+  );
 
   const sortedOpenTasks = useMemo(() => {
-    const tasks = [...(openTasks ?? [])];
+    const tasks = [...(openTasks ?? []), ...recurringToday.filter((task) => !isOccurrenceDone(task, today))];
     if (sortByPriority) {
       tasks.sort(
         (a, b) => (a.priority ? PRIORITY_RANK[a.priority] : 99) - (b.priority ? PRIORITY_RANK[b.priority] : 99)
       );
     }
     return tasks;
-  }, [openTasks, sortByPriority]);
+  }, [openTasks, recurringToday, today, sortByPriority]);
+
+  const doneToday = useMemo(() => {
+    const oneOff = (doneTasks ?? []).filter((task) => task.completedAt && isSameDay(new Date(task.completedAt), today));
+    const recurring = recurringToday.filter((task) => isOccurrenceDone(task, today));
+    return [...oneOff, ...recurring];
+  }, [doneTasks, recurringToday, today]);
 
   if (isLoading) return <PageState>{t('today.loading')}</PageState>;
   if (error) return <PageState>{t('today.error')}</PageState>;
@@ -63,7 +83,7 @@ export default function Today() {
           <TaskRow
             key={task.id}
             task={task}
-            onToggle={() => updateStatus.mutate({ id: task.id, status: 'done' })}
+            onToggle={() => toggle(task, true)}
             onEdit={() => taskForm.openEdit(task)}
           />
         ))}
@@ -79,7 +99,7 @@ export default function Today() {
               <DoneTaskRow
                 key={task.id}
                 task={task}
-                onToggle={() => updateStatus.mutate({ id: task.id, status: 'today' })}
+                onToggle={() => toggle(task, false)}
                 onEdit={() => taskForm.openEdit(task)}
               />
             ))}

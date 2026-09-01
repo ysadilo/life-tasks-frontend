@@ -1,0 +1,10 @@
+.icon {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  color: var(--color-text-muted);
+}
+
+.icon > svg {
+  display: block;
+}

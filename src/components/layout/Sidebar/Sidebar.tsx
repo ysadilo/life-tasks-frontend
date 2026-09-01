@@ -4,7 +4,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Button, ThemeToggle } from '../../ui';
 import { taskForm } from '../../task';
 import { LIFE_AREAS, lifeAreaColorVar } from '../../../lib/lifeAreas';
-import { useTasksByStatus } from '../../../hooks/useTasks';
+import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
+import { openRecurringOn } from '../../../lib/recurrence';
 import styles from './Sidebar.module.css';
 
 function navClassName({ isActive }: { isActive: boolean }) {
@@ -16,6 +17,9 @@ export function Sidebar() {
   const { user, logout } = useAuth0();
   const { data: todayTasks } = useTasksByStatus('today');
   const { data: backlogTasks } = useTasksByStatus('backlog');
+  const { data: recurringTasks } = useRecurringTasks();
+
+  const todayCount = (todayTasks?.length ?? 0) + openRecurringOn(recurringTasks, new Date()).length;
 
   const displayName = user?.given_name ?? user?.nickname ?? user?.name ?? user?.email ?? t('user.defaultName');
 
@@ -33,7 +37,7 @@ export function Sidebar() {
       <nav className={styles.nav}>
         <NavLink to="/today" className={navClassName}>
           <span>{t('nav.today')}</span>
-          {todayTasks && <span className={styles.count}>{todayTasks.length}</span>}
+          {todayTasks && <span className={styles.count}>{todayCount}</span>}
         </NavLink>
         <NavLink to="/backlog" className={navClassName}>
           <span>{t('nav.backlog')}</span>

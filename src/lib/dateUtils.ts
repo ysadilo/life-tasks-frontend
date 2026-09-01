@@ -24,6 +24,14 @@ export function toISODate(date: Date): string {
   return startOfDay(date).toISOString().slice(0, 10);
 }
 
+/** `YYYY-MM-DD` for a Date's local wall-clock day (matches an <input type="date"> value). */
+export function localISODate(date = new Date()): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 export function weekdayLabel(date: Date, locale: string): string {
   return new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(date);
 }

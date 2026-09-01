@@ -57,7 +57,8 @@
     "markDone": "Mark \"{{title}}\" done",
     "markNotDone": "Mark \"{{title}}\" not done",
     "addToToday": "Add to today",
-    "edit": "Edit \"{{title}}\""
+    "edit": "Edit \"{{title}}\"",
+    "recurs": "Repeats · {{schedule}}"
   },
   "taskForm": {
     "newTitle": "New task",
@@ -65,6 +66,8 @@
     "titlePlaceholder": "What needs doing?",
     "descriptionPlaceholder": "Notes — links, phone numbers, what \"done\" looks like…",
     "dueDate": "Due date",
+    "startsOn": "Starts on",
+    "startsOnRequired": "Pick a start date for the repeat.",
     "area": "Life area",
     "areaNone": "No area",
     "priority": "Priority",
@@ -72,11 +75,22 @@
     "energyOption": { "low": "Low", "medium": "Medium", "high": "High" },
     "effort": "Effort",
     "effortOption": { "15": "15m", "60": "1h", "240": "Half day" },
+    "recurrence": "Repeats",
+    "recurrenceOption": {
+      "daily": "Every day",
+      "weekdays": "Weekdays",
+      "weekly": "Every week",
+      "biweekly": "Every 2 weeks",
+      "monthly": "Every month"
+    },
+    "recurrenceEnd": "Repeat until",
     "addToToday": "Add to today",
     "parkInBacklog": "Park in backlog",
     "moveToBacklog": "Move to backlog",
     "markNotDone": "Mark not done",
     "save": "Save",
+    "schedule": "Schedule",
+    "scheduledToast": "Scheduled — this task now shows on its dates in the calendar.",
     "delete": "Delete",
     "error": "Something went wrong. Try again.",
     "close": "Close"
