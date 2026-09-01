@@ -3,12 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '../../ui/Modal';
 import { Button } from '../../ui/Button';
 import { Input } from '../../ui/Input';
+import { toast } from '../../ui/Toast';
 import { useCreateTask, useUpdateTask, useDeleteTask, type TaskInput } from '../../../hooks/useTasks';
 import { taskForm, useTaskFormState } from '../taskFormStore';
 import { LIFE_AREAS } from '../../../lib/lifeAreas';
 import { PRIORITIES } from '../../../lib/priority';
+import { RECURRENCES } from '../../../lib/recurrence';
+import { localISODate } from '../../../lib/dateUtils';
 import { ENERGIES, EFFORT_MINUTES, energyRampKey, effortRampKey, priorityRampKey } from '../../../lib/taskMeta';
-import type { Energy, LifeAreaId, Priority, Task, TaskStatus } from '../../../models';
+import type { Energy, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../../../models';
 import ramp from '../chipRamp.module.css';
 import styles from './TaskFormModal.module.css';
 
@@ -92,6 +95,10 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
   const [priority, setPriority] = useState<Priority | ''>(task?.priority ?? '');
   const [energy, setEnergy] = useState<Energy | ''>(task?.energy ?? '');
   const [effort, setEffort] = useState(task?.estimatedMinutes ? String(task.estimatedMinutes) : '');
+  const [recurrence, setRecurrence] = useState<Recurrence | ''>(task?.recurrence ?? '');
+  const [recurrenceEnd, setRecurrenceEnd] = useState(
+    task?.recurrenceEndDate ? task.recurrenceEndDate.slice(0, 10) : ''
+  );
 
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
@@ -100,6 +107,11 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
   const pending = createTask.isPending || updateTask.isPending || deleteTask.isPending;
   const failed = createTask.isError || updateTask.isError || deleteTask.isError;
   const trimmedTitle = title.trim();
+  // A recurring task needs a start date to anchor the cadence (enforced by the BE too).
+  const missingStart = !!recurrence && !dueDate;
+  const blocked = pending || !trimmedTitle || missingStart;
+  // A one-off task due today (or earlier) belongs on Today — the backlog option is off.
+  const dueToday = !recurrence && !!dueDate && dueDate <= localISODate();
 
   const buildInput = (status: TaskStatus): TaskInput => ({
     title: trimmedTitle,
@@ -109,22 +121,28 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
     priority: priority || null,
     energy: energy || null,
     estimatedMinutes: effort ? Number(effort) : null,
+    recurrence: recurrence || null,
+    recurrenceEndDate: recurrence && recurrenceEnd ? new Date(recurrenceEnd).toISOString() : null,
     status,
     todayDate: status === 'today' ? new Date().toISOString() : null,
   });
 
   const save = (status: TaskStatus) => {
-    if (!trimmedTitle) return;
+    if (blocked) return;
+    const done = () => {
+      if (recurrence) toast.show(t('taskForm.scheduledToast'));
+      onClose();
+    };
     if (isEdit) {
-      updateTask.mutate({ id: task.id, ...buildInput(status) }, { onSuccess: onClose });
+      updateTask.mutate({ id: task.id, ...buildInput(status) }, { onSuccess: done });
     } else {
-      createTask.mutate(buildInput(status), { onSuccess: onClose });
+      createTask.mutate(buildInput(status), { onSuccess: done });
     }
   };
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    save(isEdit ? task.status : 'today');
+    save(recurrence ? 'backlog' : isEdit ? task.status : 'today');
   };
 
   return (
@@ -187,17 +205,54 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
           </select>
         </label>
         <label className={styles.field}>
-          <span className={styles.label}>{t('taskForm.dueDate')}</span>
+          <span className={styles.label}>{recurrence ? t('taskForm.startsOn') : t('taskForm.dueDate')}</span>
           <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
         </label>
       </div>
 
+      <OptionGroup
+        label={t('taskForm.recurrence')}
+        value={recurrence}
+        onChange={(v) => setRecurrence(v as Recurrence | '')}
+        options={RECURRENCES.map((r) => ({ value: r, label: t(`taskForm.recurrenceOption.${r}`) }))}
+      />
+      {missingStart && <p className={styles.error}>{t('taskForm.startsOnRequired')}</p>}
+      {recurrence && (
+        <label className={styles.field}>
+          <span className={styles.label}>{t('taskForm.recurrenceEnd')}</span>
+          <Input
+            type="date"
+            value={recurrenceEnd}
+            min={dueDate || undefined}
+            onChange={(e) => setRecurrenceEnd(e.target.value)}
+          />
+        </label>
+      )}
+
       {failed && <p className={styles.error}>{t('taskForm.error')}</p>}
 
       <div className={styles.footer}>
-        {isEdit ? (
+        {recurrence ? (
           <>
-            <Button type="submit" variant="primary" disabled={pending || !trimmedTitle}>
+            <Button type="submit" variant="primary" disabled={blocked}>
+              {isEdit ? t('taskForm.save') : t('taskForm.schedule')}
+            </Button>
+            {isEdit && (
+              <div className={styles.footerRight}>
+                <button
+                  type="button"
+                  className={styles.delete}
+                  disabled={pending}
+                  onClick={() => deleteTask.mutate(task.id, { onSuccess: onClose })}
+                >
+                  {t('taskForm.delete')}
+                </button>
+              </div>
+            )}
+          </>
+        ) : isEdit ? (
+          <>
+            <Button type="submit" variant="primary" disabled={blocked}>
               {t('taskForm.save')}
             </Button>
             <div className={styles.footerRight}>
@@ -210,12 +265,7 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
                 {t('taskForm.delete')}
               </button>
               {task.status === 'done' ? (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  disabled={pending || !trimmedTitle}
-                  onClick={() => save('today')}
-                >
+                <Button type="button" variant="secondary" disabled={blocked} onClick={() => save('today')}>
                   {t('taskForm.markNotDone')}
                 </Button>
               ) : (
@@ -223,7 +273,7 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
                   <Button
                     type="button"
                     variant="secondary"
-                    disabled={pending || !trimmedTitle}
+                    disabled={blocked || dueToday}
                     onClick={() => save('backlog')}
                   >
                     {t('taskForm.moveToBacklog')}
@@ -234,15 +284,10 @@ function TaskForm({ task, onClose }: { task: Task | null; onClose: () => void })
           </>
         ) : (
           <>
-            <Button type="submit" variant="primary" disabled={pending || !trimmedTitle}>
+            <Button type="submit" variant="primary" disabled={blocked}>
               {t('taskForm.addToToday')}
             </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={pending || !trimmedTitle}
-              onClick={() => save('backlog')}
-            >
+            <Button type="button" variant="secondary" disabled={blocked || dueToday} onClick={() => save('backlog')}>
               {t('taskForm.parkInBacklog')}
             </Button>
           </>

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from '../../ui/Checkbox';
 import { EditButton } from '../EditButton';
+import { RecurrenceIcon } from '../RecurrenceIcon';
 import type { Task } from '../../../models';
 import styles from './DoneTaskRow.module.css';
 
@@ -24,7 +25,10 @@ export function DoneTaskRow({ task, onToggle, onEdit }: DoneTaskRowProps) {
   return (
     <div className={styles.row}>
       <Checkbox checked onChange={onToggle} label={t('task.markNotDone', { title: task.title })} />
-      <span className={styles.title}>{task.title}</span>
+      <span className={styles.titleWrap}>
+        <span className={styles.title}>{task.title}</span>
+        <RecurrenceIcon recurrence={task.recurrence} />
+      </span>
       {time && <span className={styles.time}>{time}</span>}
       {onEdit && <EditButton title={task.title} onClick={onEdit} />}
     </div>

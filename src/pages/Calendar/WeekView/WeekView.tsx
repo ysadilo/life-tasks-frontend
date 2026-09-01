@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { TaskChip } from '../../../components/task';
 import { addDays, isSameDay, startOfWeek, weekdayLabel } from '../../../lib/dateUtils';
-import type { Task } from '../../../models';
+import type { CalendarEntry } from '../../../lib/calendarEntries';
 import styles from './WeekView.module.css';
 
 interface WeekViewProps {
   anchor: Date;
-  tasks: Task[];
+  entries: CalendarEntry[];
 }
 
-export function WeekView({ anchor, tasks }: WeekViewProps) {
+export function WeekView({ anchor, entries }: WeekViewProps) {
   const { t, i18n } = useTranslation();
   const start = startOfWeek(anchor);
   const days = Array.from({ length: 7 }, (_, i) => addDays(start, i));
@@ -18,7 +18,7 @@ export function WeekView({ anchor, tasks }: WeekViewProps) {
   return (
     <div className={styles.grid}>
       {days.map((day) => {
-        const dayTasks = tasks.filter((task) => task.dueDate && isSameDay(new Date(task.dueDate), day));
+        const dayEntries = entries.filter((entry) => isSameDay(entry.date, day));
         const isToday = isSameDay(day, today);
         const isWeekend = day.getDay() === 0 || day.getDay() === 6;
 
@@ -32,10 +32,10 @@ export function WeekView({ anchor, tasks }: WeekViewProps) {
               <span className={styles.dateNumber}>{day.getDate()}</span>
             </div>
             <div className={styles.chips}>
-              {dayTasks.map((task) => (
-                <TaskChip key={task.id} task={task} />
+              {dayEntries.map((entry) => (
+                <TaskChip key={entry.key} task={entry.task} done={entry.done} />
               ))}
-              {dayTasks.length === 0 && <div className={styles.addPlaceholder}>{t('calendar.addPlaceholder')}</div>}
+              {dayEntries.length === 0 && <div className={styles.addPlaceholder}>{t('calendar.addPlaceholder')}</div>}
             </div>
           </div>
         );

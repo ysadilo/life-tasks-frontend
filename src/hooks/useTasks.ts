@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
-import type { Energy, LifeAreaId, Priority, Task, TaskStatus } from '../models';
+import type { Energy, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../models';
 
 export interface TaskInput {
   title: string;
@@ -12,6 +12,8 @@ export interface TaskInput {
   priority?: Priority | null;
   energy?: Energy | null;
   estimatedMinutes?: number | null;
+  recurrence?: Recurrence | null;
+  recurrenceEndDate?: string | null;
 }
 
 export function useTasksByStatus(status: TaskStatus) {
@@ -25,6 +27,24 @@ export function useTasksInRange(from: string, to: string) {
   return useQuery({
     queryKey: ['tasks', { from, to }],
     queryFn: () => api.get<Task[]>(`/tasks?from=${from}&to=${to}`),
+  });
+}
+
+/** Recurring series (the calendar/Today expand their virtual occurrences). */
+export function useRecurringTasks() {
+  return useQuery({
+    queryKey: ['tasks', { recurring: true }],
+    queryFn: () => api.get<Task[]>(`/tasks?recurring=true`),
+  });
+}
+
+export function useToggleOccurrence() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, date, done }: { id: string; date: string; done: boolean }) =>
+      api.patch<Task>(`/tasks/${id}`, { occurrenceDate: date, occurrenceDone: done }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
   });
 }
 

@@ -1,0 +1,1 @@
+export { RecurrenceIcon } from './RecurrenceIcon';

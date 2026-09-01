@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useTasksByStatus } from '../../../hooks/useTasks';
+import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
+import { openRecurringOn } from '../../../lib/recurrence';
 import { taskForm } from '../../task';
 import styles from './BottomNav.module.css';
 
@@ -12,12 +13,15 @@ export function BottomNav() {
   const { t } = useTranslation();
   const { data: todayTasks } = useTasksByStatus('today');
   const { data: backlogTasks } = useTasksByStatus('backlog');
+  const { data: recurringTasks } = useRecurringTasks();
+
+  const todayCount = (todayTasks?.length ?? 0) + openRecurringOn(recurringTasks, new Date()).length;
 
   return (
     <nav className={styles.nav}>
       <NavLink to="/today" className={navClassName}>
         <span>{t('nav.today')}</span>
-        {todayTasks && todayTasks.length > 0 && <span className={styles.count}>{todayTasks.length}</span>}
+        {todayCount > 0 && <span className={styles.count}>{todayCount}</span>}
       </NavLink>
       <NavLink to="/backlog" className={navClassName}>
         <span>{t('nav.backlog')}</span>
