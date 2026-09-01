@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { TaskChip } from '../../../components/task';
-import { addDays, isSameDay, startOfWeek, weekdayLabel } from '../../../lib/dateUtils';
+import { TaskChip, taskForm } from '../../../components/task';
+import { addDays, isSameDay, localISODate, startOfDay, startOfWeek, weekdayLabel } from '../../../lib/dateUtils';
 import type { CalendarEntry } from '../../../lib/calendarEntries';
+import { openCalendarEntry } from '../openCalendarEntry';
 import styles from './WeekView.module.css';
 
 interface WeekViewProps {
@@ -14,6 +15,7 @@ export function WeekView({ anchor, entries }: WeekViewProps) {
   const start = startOfWeek(anchor);
   const days = Array.from({ length: 7 }, (_, i) => addDays(start, i));
   const today = new Date();
+  const todayStart = startOfDay(today);
 
   return (
     <div className={styles.grid}>
@@ -33,9 +35,22 @@ export function WeekView({ anchor, entries }: WeekViewProps) {
             </div>
             <div className={styles.chips}>
               {dayEntries.map((entry) => (
-                <TaskChip key={entry.key} task={entry.task} done={entry.done} />
+                <TaskChip
+                  key={entry.key}
+                  task={entry.task}
+                  done={entry.done}
+                  onClick={() => openCalendarEntry(entry)}
+                />
               ))}
-              {dayEntries.length === 0 && <div className={styles.addPlaceholder}>{t('calendar.addPlaceholder')}</div>}
+              {day >= todayStart && (
+                <button
+                  type="button"
+                  className={styles.addPlaceholder}
+                  onClick={() => taskForm.openNew(localISODate(day))}
+                >
+                  {t('calendar.addPlaceholder')}
+                </button>
+              )}
             </div>
           </div>
         );

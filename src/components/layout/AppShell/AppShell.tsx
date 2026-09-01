@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from '../Sidebar';
 import { BottomNav } from '../BottomNav';
-import { TaskFormModal } from '../../task';
+import { TaskFormModal, TaskPreviewModal } from '../../task';
 import { Toaster } from '../../ui';
 import styles from './AppShell.module.css';
 
@@ -14,6 +14,7 @@ export function AppShell() {
       </main>
       <BottomNav />
       <TaskFormModal />
+      <TaskPreviewModal />
       <Toaster />
     </div>
   );

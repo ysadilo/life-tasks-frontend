@@ -30,7 +30,7 @@ export function BottomNav() {
       <NavLink to="/calendar" className={navClassName}>
         <span>{t('nav.calendar')}</span>
       </NavLink>
-      <button type="button" className={styles.add} aria-label={t('sidebar.newTask')} onClick={taskForm.openNew}>
+      <button type="button" className={styles.add} aria-label={t('sidebar.newTask')} onClick={() => taskForm.openNew()}>
         +
       </button>
     </nav>

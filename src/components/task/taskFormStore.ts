@@ -4,9 +4,11 @@ import type { Task } from '../../models';
 interface TaskFormState {
   open: boolean;
   task: Task | null;
+  /** Prefills the due date for a new task (e.g. clicking a calendar day). `YYYY-MM-DD`. */
+  presetDate: string | null;
 }
 
-let state: TaskFormState = { open: false, task: null };
+let state: TaskFormState = { open: false, task: null, presetDate: null };
 const listeners = new Set<() => void>();
 
 function set(next: TaskFormState) {
@@ -15,9 +17,9 @@ function set(next: TaskFormState) {
 }
 
 export const taskForm = {
-  openNew: () => set({ open: true, task: null }),
-  openEdit: (task: Task) => set({ open: true, task }),
-  close: () => set({ open: false, task: null }),
+  openNew: (presetDate: string | null = null) => set({ open: true, task: null, presetDate }),
+  openEdit: (task: Task) => set({ open: true, task, presetDate: null }),
+  close: () => set({ open: false, task: null, presetDate: null }),
 };
 
 export function useTaskFormState() {

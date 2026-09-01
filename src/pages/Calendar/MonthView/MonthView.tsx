@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { TaskChip } from '../../../components/task';
 import { buildMonthGrid, isSameDay, weekdayLabel } from '../../../lib/dateUtils';
 import type { CalendarEntry } from '../../../lib/calendarEntries';
+import { openCalendarEntry } from '../openCalendarEntry';
 import styles from './MonthView.module.css';
 
 interface MonthViewProps {
@@ -46,7 +47,12 @@ export function MonthView({ anchor, entries }: MonthViewProps) {
               </span>
               <div className={styles.chips}>
                 {visible.map((entry) => (
-                  <TaskChip key={entry.key} task={entry.task} done={entry.done} />
+                  <TaskChip
+                    key={entry.key}
+                    task={entry.task}
+                    done={entry.done}
+                    onClick={() => openCalendarEntry(entry)}
+                  />
                 ))}
                 {overflow > 0 && <span className={styles.more}>{t('calendar.more', { count: overflow })}</span>}
               </div>

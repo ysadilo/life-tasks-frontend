@@ -95,6 +95,11 @@
     "error": "Something went wrong. Try again.",
     "close": "Close"
   },
+  "taskPreview": {
+    "title": "Task",
+    "copyToBacklog": "Copy to backlog",
+    "copiedToast": "Copied to backlog."
+  },
   "today": {
     "title": "Today",
     "subtitle": "{{date}} · {{done}} of {{total}} done",
