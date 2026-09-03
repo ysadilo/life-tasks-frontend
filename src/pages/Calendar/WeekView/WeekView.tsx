@@ -27,10 +27,15 @@ export function WeekView({ anchor, entries }: WeekViewProps) {
         return (
           <div
             key={day.toISOString()}
-            className={[styles.column, isWeekend ? styles.weekend : ''].filter(Boolean).join(' ')}
+            className={[styles.column, isWeekend ? styles.weekend : '', isToday ? styles.today : '']
+              .filter(Boolean)
+              .join(' ')}
           >
-            <div className={[styles.dayHeader, isToday ? styles.today : ''].filter(Boolean).join(' ')}>
-              <span className={styles.weekday}>{weekdayLabel(day, i18n.language)}</span>
+            <div className={styles.dayHeader}>
+              <span className={styles.weekday}>
+                {weekdayLabel(day, i18n.language)}
+                {isToday ? t('calendar.todaySuffix') : ''}
+              </span>
               <span className={styles.dateNumber}>{day.getDate()}</span>
             </div>
             <div className={styles.chips}>

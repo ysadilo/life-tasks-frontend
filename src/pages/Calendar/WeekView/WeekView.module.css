@@ -33,6 +33,11 @@
   border-color: var(--color-border-subtle);
 }
 
+.today {
+  background: var(--color-accent-light-bg);
+  border-color: var(--color-accent-border);
+}
+
 .dayHeader {
   display: flex;
   flex-direction: column;
@@ -53,12 +58,11 @@
   color: var(--color-text);
 }
 
-.today {
+.today .dayHeader {
   border-bottom-color: var(--color-accent-border);
 }
 
-.today .weekday,
-.today .dateNumber {
+.today .weekday {
   color: var(--color-accent-light-text);
 }
 
