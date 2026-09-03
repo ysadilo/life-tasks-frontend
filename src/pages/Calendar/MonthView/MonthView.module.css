@@ -34,6 +34,16 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+
+.cell:focus-visible {
+  outline: 2px solid var(--color-accent-border);
+  outline-offset: 1px;
 }
 
 .faded {
@@ -46,6 +56,7 @@
 }
 
 .today {
+  background: var(--color-accent-light-bg);
   border-color: var(--color-accent-border);
 }
 
