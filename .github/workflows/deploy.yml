@@ -25,7 +25,9 @@ jobs:
           script: |
             set -e
             cd ~/life-tasks-frontend
-            git pull --ff-only
+            git fetch origin main
+            git reset --hard origin/main
             cd deploy
             docker compose up -d --build --remove-orphans
+            docker compose up -d --force-recreate --no-deps frontend
             docker image prune -f
