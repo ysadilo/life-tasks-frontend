@@ -140,6 +140,9 @@
     "addPlaceholder": "add",
     "more": "+{{count}} more",
     "overdue": "Overdue",
-    "todaySuffix": " · today"
+    "todaySuffix": " · today",
+    "daySummary_one": "{{count}} task · {{done}} done",
+    "daySummary_other": "{{count}} tasks · {{done}} done",
+    "addTask": "Add task"
   }
 }

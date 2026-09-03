@@ -10,9 +10,10 @@ export function addDays(date: Date, days: number): Date {
   return d;
 }
 
+/** Monday-based week start. */
 export function startOfWeek(date: Date): Date {
   const d = startOfDay(date);
-  d.setDate(d.getDate() - d.getDay());
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
   return d;
 }
 

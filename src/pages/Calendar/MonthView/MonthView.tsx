@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TaskChip } from '../../../components/task';
 import { buildMonthGrid, isSameDay, weekdayLabel } from '../../../lib/dateUtils';
 import type { CalendarEntry } from '../../../lib/calendarEntries';
-import { openCalendarEntry } from '../openCalendarEntry';
+import { DayTasksModal } from '../DayTasksModal';
 import styles from './MonthView.module.css';
 
 interface MonthViewProps {
@@ -10,13 +11,16 @@ interface MonthViewProps {
   entries: CalendarEntry[];
 }
 
-const VISIBLE_CHIPS_PER_CELL = 3;
+const VISIBLE_CHIPS_PER_CELL = 2;
 
 export function MonthView({ anchor, entries }: MonthViewProps) {
   const { t, i18n } = useTranslation();
   const cells = buildMonthGrid(anchor);
   const weekdayLabels = cells.slice(0, 7).map((cell) => weekdayLabel(cell.date, i18n.language));
   const today = new Date();
+  const [openDay, setOpenDay] = useState<Date | null>(null);
+
+  const openDayEntries = openDay ? entries.filter((entry) => isSameDay(entry.date, openDay)) : [];
 
   return (
     <div className={styles.wrap}>
@@ -35,11 +39,13 @@ export function MonthView({ anchor, entries }: MonthViewProps) {
           const isToday = isSameDay(cell.date, today);
 
           return (
-            <div
+            <button
               key={cell.date.toISOString()}
+              type="button"
               className={[styles.cell, !cell.isCurrentMonth ? styles.faded : '', isToday ? styles.today : '']
                 .filter(Boolean)
                 .join(' ')}
+              onClick={() => setOpenDay(cell.date)}
             >
               <span className={styles.dateNumber}>
                 {cell.date.getDate()}
@@ -47,19 +53,15 @@ export function MonthView({ anchor, entries }: MonthViewProps) {
               </span>
               <div className={styles.chips}>
                 {visible.map((entry) => (
-                  <TaskChip
-                    key={entry.key}
-                    task={entry.task}
-                    done={entry.done}
-                    onClick={() => openCalendarEntry(entry)}
-                  />
+                  <TaskChip key={entry.key} task={entry.task} done={entry.done} />
                 ))}
                 {overflow > 0 && <span className={styles.more}>{t('calendar.more', { count: overflow })}</span>}
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
+      <DayTasksModal day={openDay} entries={openDayEntries} onClose={() => setOpenDay(null)} />
     </div>
   );
 }

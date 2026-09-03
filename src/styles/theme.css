@@ -11,7 +11,9 @@
 }
 
 :root[data-theme='powder'] {
-  --color-bg: #edeae4;
+  /* Per the "nine screens" mockup: screen and cards share one fill,
+     separated only by --color-border. */
+  --color-bg: #fbfaf7;
   --color-sidebar-bg: #f4f1eb;
   --color-surface: #fbfaf7;
   --color-surface-muted: #f6f4ef;
@@ -98,7 +100,7 @@
 }
 
 :root[data-theme='glamour'] {
-  --color-bg: #14111a;
+  --color-bg: #211b29;
   --color-sidebar-bg: #1a1522;
   --color-surface: #211b29;
   --color-surface-muted: #1d1826;
