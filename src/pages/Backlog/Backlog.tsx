@@ -87,7 +87,7 @@ export default function Backlog() {
                 task={task}
                 onEdit={() => taskForm.openEdit(task)}
                 trailing={
-                  <Button variant="ghost" onClick={() => updateStatus.mutate({ id: task.id, status: 'today' })}>
+                  <Button variant="secondary" onClick={() => updateStatus.mutate({ id: task.id, status: 'today' })}>
                     {t('task.addToToday')}
                   </Button>
                 }
