@@ -7,8 +7,15 @@
 		reverse_proxy backend:3000
 	}
 
+	root * /srv
+
+	# Hashed build assets: serve if present, 404 if not — never fall back to
+	# index.html, or a stale client gets HTML in place of a missing .js/.css.
+	handle /assets/* {
+		file_server
+	}
+
 	handle {
-		root * /srv
 		try_files {path} /index.html
 		file_server
 	}
