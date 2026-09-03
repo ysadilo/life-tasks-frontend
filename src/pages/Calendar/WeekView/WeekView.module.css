@@ -72,6 +72,20 @@
   gap: 6px;
 }
 
+.more {
+  align-self: flex-start;
+  padding: 4px 2px;
+  border: none;
+  background: none;
+  font: 600 11px/1 var(--font-sans);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.more:hover {
+  color: var(--color-text);
+}
+
 .addPlaceholder {
   width: 100%;
   border: 1px dashed var(--color-border);
