@@ -2,6 +2,8 @@
 # to the backend, exposed at https://lifetasks.today via a Cloudflare Tunnel
 # (outbound-only, no port forwarding, no public IP needed). Image built on the Pi.
 #   docker network create life-tasks   # once (also created by the backend deploy)
+name: life-tasks-frontend
+
 services:
   frontend:
     build:
