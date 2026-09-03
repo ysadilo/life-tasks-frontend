@@ -31,15 +31,7 @@ export function DayTasksModal({ day, entries, onClose }: DayTasksModalProps) {
 
         <div className={styles.list}>
           {ordered.map((entry) => (
-            <button
-              key={entry.key}
-              type="button"
-              className={styles.row}
-              onClick={() => {
-                openCalendarEntry(entry);
-                onClose();
-              }}
-            >
+            <button key={entry.key} type="button" className={styles.row} onClick={() => openCalendarEntry(entry)}>
               <TaskRow task={entry.task} />
             </button>
           ))}
@@ -51,7 +43,6 @@ export function DayTasksModal({ day, entries, onClose }: DayTasksModalProps) {
             variant="secondary"
             onClick={() => {
               if (day) taskForm.openNew(localISODate(day));
-              onClose();
             }}
           >
             {t('calendar.addTask')}
