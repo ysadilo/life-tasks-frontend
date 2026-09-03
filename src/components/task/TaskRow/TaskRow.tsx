@@ -22,13 +22,15 @@ export function TaskRow({ task, onToggle, onEdit, trailing, showChips = true }: 
 
   return (
     <div className={styles.row}>
-      {onToggle && <Checkbox checked={false} onChange={onToggle} label={t('task.markDone', { title: task.title })} />}
-      <div className={styles.body}>
-        <span className={styles.title}>
-          {task.title}
-          <RecurrenceIcon recurrence={task.recurrence} />
-        </span>
-        {task.description && <span className={styles.description}>{task.description}</span>}
+      <div className={styles.main}>
+        {onToggle && <Checkbox checked={false} onChange={onToggle} label={t('task.markDone', { title: task.title })} />}
+        <div className={styles.body}>
+          <span className={styles.title}>
+            {task.title}
+            <RecurrenceIcon recurrence={task.recurrence} />
+          </span>
+          {task.description && <span className={styles.description}>{task.description}</span>}
+        </div>
       </div>
       {onEdit && <EditButton title={task.title} onClick={onEdit} />}
       {trailing}
