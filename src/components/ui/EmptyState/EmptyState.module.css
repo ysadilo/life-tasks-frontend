@@ -1,34 +1,47 @@
 .container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 18px;
-  padding: 22px;
-  border: 1px dashed var(--color-border);
-  border-radius: 14px;
-  background: var(--color-surface-muted);
+  gap: 14px;
+  padding: 60px 20px;
+  text-align: center;
 }
 
 .icon {
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   flex: none;
-  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-muted);
   border: 1px solid var(--color-border-subtle);
   border-radius: 16px;
+  color: var(--color-text-faint);
 }
 
 .copy {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  max-width: 360px;
 }
 
 .title {
-  font: 600 17px/1 var(--font-sans);
+  font: 700 19px/1.2 var(--font-sans);
   color: var(--color-text);
 }
 
 .description {
-  font: 400 14px/1.45 var(--font-sans);
-  color: var(--color-text-secondary);
+  font: 400 14px/1.5 var(--font-sans);
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.description::before {
+  content: '"';
+}
+
+.description::after {
+  content: '"';
 }

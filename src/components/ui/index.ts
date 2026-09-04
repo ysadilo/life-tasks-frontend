@@ -8,4 +8,5 @@ export { SegmentedTabs } from './SegmentedTabs';
 export type { SegmentedTabOption } from './SegmentedTabs';
 export { ThemeToggle } from './ThemeToggle';
 export { EmptyState } from './EmptyState';
+export { EmptyStateIcon } from './EmptyStateIcon';
 export { Toaster, toast } from './Toast';

@@ -21,13 +21,6 @@
   }
 }
 
-.empty {
-  margin: 0;
-  padding: 20px 4px;
-  font: 400 14px/1.5 var(--font-sans);
-  color: var(--color-text-muted);
-}
-
 .doneDivider {
   display: flex;
   align-items: center;
@@ -52,14 +45,4 @@
 .doneDividerCount {
   font: 500 12px/1 var(--font-sans);
   color: var(--color-text-muted);
-}
-
-.pullPlaceholder {
-  margin-top: 6px;
-  padding: 14px;
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-card);
-  text-align: center;
-  font: 500 13px/1 var(--font-sans);
-  color: var(--color-text-faint);
 }

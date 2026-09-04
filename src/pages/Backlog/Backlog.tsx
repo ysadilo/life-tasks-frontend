@@ -67,6 +67,13 @@ export default function Backlog() {
           <EmptyState
             title={t('backlog.emptyTitle')}
             description={search ? t('backlog.emptyNoResults') : t('backlog.emptyDefault')}
+            action={
+              !search && (
+                <Button variant="primary" onClick={() => taskForm.openNew()}>
+                  {t('sidebar.newTask')}
+                </Button>
+              )
+            }
           />
         )}
 

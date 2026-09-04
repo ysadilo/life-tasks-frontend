@@ -8,13 +8,15 @@
     "backlog": "Backlog",
     "calendar": "Calendar",
     "week": "Week",
-    "month": "Month"
+    "month": "Month",
+    "menu": "Menu"
   },
   "sidebar": {
     "newTask": "New task",
     "lifeAreas": "Life areas",
     "soloBoard": "Solo board",
-    "switchTheme": "Switch to {{theme}} theme"
+    "switchTheme": "Switch to {{theme}} theme",
+    "switchThemeShort": "Switch theme"
   },
   "theme": {
     "powder": "Powder",
@@ -110,9 +112,9 @@
     "showDone": "Show done",
     "loading": "Loading today's board…",
     "error": "Couldn't load today's board. Is the API running?",
-    "empty": "Nothing on today's board — pull something in from the backlog.",
-    "doneToday": "Done today",
-    "pullPlaceholder": "Pull something in from the backlog"
+    "emptyTitle": "Nothing on today's board",
+    "emptyDescription": "Pull something in from the backlog, or enjoy the rare calm.",
+    "doneToday": "Done today"
   },
   "backlog": {
     "title": "Backlog",
