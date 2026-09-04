@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
-import { Button } from '../../components/ui';
+import { Button, EmptyState } from '../../components/ui';
 import { TaskRow, DoneTaskRow, taskForm } from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus, useRecurringTasks, useToggleOccurrence } from '../../hooks/useTasks';
 import { PRIORITY_RANK } from '../../lib/priority';
@@ -77,7 +77,17 @@ export default function Today() {
       />
 
       <div className={styles.list}>
-        {sortedOpenTasks.length === 0 && doneToday.length === 0 && <p className={styles.empty}>{t('today.empty')}</p>}
+        {sortedOpenTasks.length === 0 && doneToday.length === 0 && (
+          <EmptyState
+            title={t('today.emptyTitle')}
+            description={t('today.emptyDescription')}
+            action={
+              <Button variant="primary" onClick={() => taskForm.openNew()}>
+                {t('sidebar.newTask')}
+              </Button>
+            }
+          />
+        )}
 
         {sortedOpenTasks.map((task) => (
           <TaskRow
@@ -105,8 +115,6 @@ export default function Today() {
             ))}
           </>
         )}
-
-        <div className={styles.pullPlaceholder}>{t('today.pullPlaceholder')}</div>
       </div>
     </div>
   );

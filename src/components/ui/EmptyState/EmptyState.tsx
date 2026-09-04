@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { EmptyStateIcon } from '../EmptyStateIcon';
 import styles from './EmptyState.module.css';
 
 interface EmptyStateProps {
@@ -10,7 +11,9 @@ interface EmptyStateProps {
 export function EmptyState({ title, description, action }: EmptyStateProps) {
   return (
     <div className={styles.container}>
-      <div className={styles.icon} aria-hidden="true" />
+      <div className={styles.icon}>
+        <EmptyStateIcon />
+      </div>
       <div className={styles.copy}>
         <span className={styles.title}>{title}</span>
         {description && <span className={styles.description}>{description}</span>}
