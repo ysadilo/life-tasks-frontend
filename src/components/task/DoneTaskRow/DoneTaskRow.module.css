@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 13px 18px;
+  padding: 8px 16px;
   background: var(--color-surface-muted);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-card);

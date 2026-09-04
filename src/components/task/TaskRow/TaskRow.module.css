@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 16px 18px;
+  padding: 10px 16px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
@@ -50,14 +50,14 @@
 @media (max-width: 768px) {
   .row {
     flex-wrap: wrap;
-    padding: 14px;
+    padding: 10px 12px;
     gap: 10px 12px;
   }
 
-  /* Checkbox + title/description share the full-width first row; edit button,
-     trailing and chips wrap onto the line below instead of colliding. */
+  /* auto (not the default 0%) basis makes .main claim its natural content
+     width, so edit/chips only wrap to a second line when they don't fit. */
   .main {
-    flex-basis: 100%;
+    flex-basis: auto;
   }
 
   .title {
