@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { PageHeader, PageState } from '../../components/layout';
 import { Button, EmptyState } from '../../components/ui';
 import { TaskRow, DoneTaskRow, taskForm } from '../../components/task';
@@ -12,8 +13,10 @@ import styles from './Today.module.css';
 
 export default function Today() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const { data: openTasks, isLoading, error } = useTasksByStatus('today');
   const { data: doneTasks } = useTasksByStatus('done');
+  const { data: triageTasks } = useTasksByStatus('needs_triage');
   const { data: recurringTasks } = useRecurringTasks();
   const updateStatus = useUpdateTaskStatus();
   const toggleOccurrence = useToggleOccurrence();
@@ -75,6 +78,15 @@ export default function Today() {
           </>
         }
       />
+
+      {!!triageTasks?.length && (
+        <div className={styles.triageBanner}>
+          <span>{t('today.triageBannerText', { count: triageTasks.length })}</span>
+          <Button variant="primary" onClick={() => navigate('/triage')}>
+            {t('today.startTriage')}
+          </Button>
+        </div>
+      )}
 
       <div className={styles.list}>
         {sortedOpenTasks.length === 0 && doneToday.length === 0 && (

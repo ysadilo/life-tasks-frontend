@@ -114,7 +114,29 @@
     "error": "Couldn't load today's board. Is the API running?",
     "emptyTitle": "Nothing on today's board",
     "emptyDescription": "Pull something in from the backlog, or enjoy the rare calm.",
-    "doneToday": "Done today"
+    "doneToday": "Done today",
+    "triageBannerText_one": "{{count}} task from yesterday never got closed out.",
+    "triageBannerText_other": "{{count}} tasks from yesterday never got closed out.",
+    "startTriage": "Start triage"
+  },
+  "triage": {
+    "title": "Triage",
+    "subtitle": "Card {{index}} of {{total}} · either it moves to today, or it goes back to the backlog",
+    "loading": "Loading triage…",
+    "error": "Couldn't load triage. Is the API running?",
+    "overdue_one": "overdue {{count}} day",
+    "overdue_other": "overdue {{count}} days",
+    "moveToToday": "Move to today",
+    "sendToBacklog": "Send to backlog",
+    "itsDone": "It's actually done",
+    "dropIt": "Drop it",
+    "undo": "Undo",
+    "hint": "Arrow keys or click to sort.",
+    "hintUndo": "undoes the last call.",
+    "emptyTitle": "Nothing left to triage",
+    "emptyDescription_one": "{{count}} card sorted.",
+    "emptyDescription_other": "{{count}} cards sorted.",
+    "goToToday": "Go to Today"
   },
   "backlog": {
     "title": "Backlog",
