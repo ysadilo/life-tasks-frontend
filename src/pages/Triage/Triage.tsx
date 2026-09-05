@@ -7,6 +7,7 @@ import { MetaChip } from '../../components/task';
 import { useTriageQueue, type TriageAction } from '../../hooks/useTriageQueue';
 import { daysOverdue } from '../../lib/taskDates';
 import { lifeAreaColorVar } from '../../lib/lifeAreas';
+import { useLifeAreaLookup } from '../../hooks/useLifeAreas';
 import styles from './Triage.module.css';
 
 const ACTION_KEYS: Record<string, TriageAction> = {
@@ -20,6 +21,8 @@ export default function Triage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { current, index, total, act, undo, canUndo, history, isLoading, error, done } = useTriageQueue();
+  const areas = useLifeAreaLookup();
+  const currentArea = current?.areaId ? areas.get(current.areaId) : undefined;
 
   useEffect(() => {
     if (!current) return;
@@ -102,10 +105,10 @@ export default function Triage() {
                 {current.priority ? `${current.priority} · ` : ''}
                 {t('triage.overdue', { count: overdue })}
               </Chip>
-              {current.area && (
+              {currentArea && (
                 <span className={styles.area}>
-                  <span className={styles.areaDot} style={{ background: lifeAreaColorVar(current.area) }} />
-                  {t(`lifeArea.${current.area}`)}
+                  <span className={styles.areaDot} style={{ background: lifeAreaColorVar(currentArea.order) }} />
+                  {currentArea.name}
                 </span>
               )}
             </div>

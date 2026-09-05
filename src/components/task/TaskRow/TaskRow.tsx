@@ -6,6 +6,7 @@ import { EditButton } from '../EditButton';
 import { MetaChip } from '../MetaChip';
 import { RecurrenceIcon } from '../RecurrenceIcon';
 import { dueUrgency, type DueUrgency } from '../../../lib/taskDates';
+import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
 import type { Task } from '../../../models';
 import styles from './TaskRow.module.css';
 
@@ -31,8 +32,10 @@ function dueLabelKey(urgency: DueUrgency): string {
 
 export function TaskRow({ task, done = false, onToggle, onEdit, trailing, showChips = true }: TaskRowProps) {
   const { t } = useTranslation();
+  const areas = useLifeAreaLookup();
   const urgency = dueUrgency(task);
-  const hasChips = showChips && (urgency || task.priority || task.energy || task.estimatedMinutes != null || task.area);
+  const areaName = task.areaId ? areas.get(task.areaId)?.name : undefined;
+  const hasChips = showChips && (urgency || task.priority || task.energy || task.estimatedMinutes != null || areaName);
 
   return (
     <div className={urgency ? `${styles.row} ${styles.dueSoon}` : styles.row}>
@@ -54,7 +57,7 @@ export function TaskRow({ task, done = false, onToggle, onEdit, trailing, showCh
           {task.priority && <MetaChip axis="priority" value={task.priority} />}
           {task.energy && <MetaChip axis="energy" value={task.energy} />}
           {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
-          {task.area && <Chip>{t(`lifeArea.${task.area}`)}</Chip>}
+          {areaName && <Chip>{areaName}</Chip>}
         </div>
       )}
     </div>

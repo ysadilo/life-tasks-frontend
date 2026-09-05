@@ -6,7 +6,7 @@ import { Input } from '../../ui/Input';
 import { toast } from '../../ui/Toast';
 import { useCreateTask, useUpdateTask, useDeleteTask, type TaskInput } from '../../../hooks/useTasks';
 import { taskForm, useTaskFormState } from '../taskFormStore';
-import { LIFE_AREAS } from '../../../lib/lifeAreas';
+import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { PRIORITIES } from '../../../lib/priority';
 import { RECURRENCES } from '../../../lib/recurrence';
 import { localISODate } from '../../../lib/dateUtils';
@@ -94,12 +94,13 @@ function TaskForm({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
+  const { data: lifeAreas } = useLifeAreas();
   const isEdit = task != null;
 
   const [title, setTitle] = useState(task?.title ?? '');
   const [description, setDescription] = useState(task?.description ?? '');
   const [dueDate, setDueDate] = useState(task?.dueDate ? task.dueDate.slice(0, 10) : (presetDate ?? ''));
-  const [area, setArea] = useState<LifeAreaId | ''>(task?.area ?? '');
+  const [area, setArea] = useState<LifeAreaId | ''>(task?.areaId ?? '');
   const [priority, setPriority] = useState<Priority | ''>(task?.priority ?? '');
   const [energy, setEnergy] = useState<Energy | ''>(task?.energy ?? '');
   const [effort, setEffort] = useState(task?.estimatedMinutes ? String(task.estimatedMinutes) : '');
@@ -125,7 +126,7 @@ function TaskForm({
     title: trimmedTitle,
     description: description.trim() || null,
     dueDate: dueDate ? new Date(dueDate).toISOString() : null,
-    area: area || null,
+    areaId: area || null,
     priority: priority || null,
     energy: energy || null,
     estimatedMinutes: effort ? Number(effort) : null,
@@ -205,9 +206,9 @@ function TaskForm({
           <span className={styles.label}>{t('taskForm.area')}</span>
           <select className={styles.select} value={area} onChange={(e) => setArea(e.target.value as LifeAreaId | '')}>
             <option value="">{t('taskForm.areaNone')}</option>
-            {LIFE_AREAS.map(({ id }) => (
+            {lifeAreas?.map(({ id, name }) => (
               <option key={id} value={id}>
-                {t(`lifeArea.${id}`)}
+                {name}
               </option>
             ))}
           </select>

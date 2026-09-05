@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button, ThemeToggle } from '../../ui';
 import { taskForm } from '../../task';
-import { LIFE_AREAS, lifeAreaColorVar } from '../../../lib/lifeAreas';
+import { lifeAreasModal } from '../../lifeAreas';
+import { lifeAreaColorVar } from '../../../lib/lifeAreas';
 import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
+import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { openRecurringOn } from '../../../lib/recurrence';
 import styles from './Sidebar.module.css';
 
@@ -18,6 +20,7 @@ export function Sidebar() {
   const { data: todayTasks } = useTasksByStatus('today');
   const { data: backlogTasks } = useTasksByStatus('backlog');
   const { data: recurringTasks } = useRecurringTasks();
+  const { data: lifeAreas } = useLifeAreas();
 
   const todayCount = (todayTasks?.length ?? 0) + openRecurringOn(recurringTasks, new Date()).length;
 
@@ -49,11 +52,16 @@ export function Sidebar() {
       </nav>
 
       <div className={styles.section}>
-        <span className={styles.sectionLabel}>{t('sidebar.lifeAreas')}</span>
-        {LIFE_AREAS.map((area) => (
+        <div className={styles.sectionHeader}>
+          <span className={styles.sectionLabel}>{t('sidebar.lifeAreas')}</span>
+          <button type="button" className={styles.manageLink} onClick={() => lifeAreasModal.openManage()}>
+            {t('sidebar.manage')}
+          </button>
+        </div>
+        {lifeAreas?.map((area) => (
           <div key={area.id} className={styles.areaRow}>
-            <span className={styles.areaDot} style={{ background: lifeAreaColorVar(area.id) }} />
-            {t(`lifeArea.${area.id}`)}
+            <span className={styles.areaDot} style={{ background: lifeAreaColorVar(area.order) }} />
+            {area.name}
           </div>
         ))}
       </div>

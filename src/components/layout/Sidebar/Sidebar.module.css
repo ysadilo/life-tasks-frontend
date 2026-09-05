@@ -86,11 +86,31 @@
   padding: 0 6px;
 }
 
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .sectionLabel {
   font: 600 11px/1 var(--font-sans);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+}
+
+.manageLink {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.manageLink:hover {
+  color: var(--color-text);
+  text-decoration: underline;
 }
 
 .areaRow {
@@ -152,7 +172,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--color-area-social);
+  background: var(--color-area-3);
   object-fit: cover;
   flex: none;
 }

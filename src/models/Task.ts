@@ -14,7 +14,7 @@ export interface Task {
   priority?: Priority;
   energy?: Energy;
   estimatedMinutes?: number;
-  area?: LifeAreaId;
+  areaId?: LifeAreaId | null;
   recurrence?: Recurrence | null;
   recurrenceEndDate?: string | null;
   /** Occurrence days (ISO) that have been ticked off, for a recurring series. */
