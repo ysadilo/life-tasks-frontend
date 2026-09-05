@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '../../../components/ui/Modal';
 import { Button } from '../../../components/ui/Button';
 import { TaskRow, taskForm } from '../../../components/task';
-import { localISODate } from '../../../lib/dateUtils';
+import { localISODate, startOfDay } from '../../../lib/dateUtils';
 import type { CalendarEntry } from '../../../lib/calendarEntries';
 import { openCalendarEntry } from '../openCalendarEntry';
 import styles from './DayTasksModal.module.css';
@@ -23,6 +23,7 @@ export function DayTasksModal({ day, entries, onClose }: DayTasksModalProps) {
   const doneCount = ordered.filter((entry) => entry.done).length;
 
   const title = day ? day.toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' }) : '';
+  const canAdd = day != null && day >= startOfDay(new Date());
 
   return (
     <Modal open={day != null} onClose={onClose} closeLabel={t('taskForm.close')} title={title}>
@@ -32,22 +33,24 @@ export function DayTasksModal({ day, entries, onClose }: DayTasksModalProps) {
         <div className={styles.list}>
           {ordered.map((entry) => (
             <button key={entry.key} type="button" className={styles.row} onClick={() => openCalendarEntry(entry)}>
-              <TaskRow task={entry.task} />
+              <TaskRow task={entry.task} done={entry.done} />
             </button>
           ))}
         </div>
 
-        <div className={styles.footer}>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => {
-              if (day) taskForm.openNew(localISODate(day));
-            }}
-          >
-            {t('calendar.addTask')}
-          </Button>
-        </div>
+        {canAdd && (
+          <div className={styles.footer}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                if (day) taskForm.openNew(localISODate(day));
+              }}
+            >
+              {t('calendar.addTask')}
+            </Button>
+          </div>
+        )}
       </div>
     </Modal>
   );

@@ -10,13 +10,14 @@ import styles from './TaskRow.module.css';
 
 interface TaskRowProps {
   task: Task;
+  done?: boolean;
   onToggle?: () => void;
   onEdit?: () => void;
   trailing?: ReactNode;
   showChips?: boolean;
 }
 
-export function TaskRow({ task, onToggle, onEdit, trailing, showChips = true }: TaskRowProps) {
+export function TaskRow({ task, done = false, onToggle, onEdit, trailing, showChips = true }: TaskRowProps) {
   const { t } = useTranslation();
   const hasChips = showChips && (task.priority || task.energy || task.estimatedMinutes != null || task.area);
 
@@ -25,7 +26,7 @@ export function TaskRow({ task, onToggle, onEdit, trailing, showChips = true }: 
       <div className={styles.main}>
         {onToggle && <Checkbox checked={false} onChange={onToggle} label={t('task.markDone', { title: task.title })} />}
         <div className={styles.body}>
-          <span className={styles.title}>
+          <span className={done ? `${styles.title} ${styles.done}` : styles.title}>
             {task.title}
             <RecurrenceIcon recurrence={task.recurrence} />
           </span>
