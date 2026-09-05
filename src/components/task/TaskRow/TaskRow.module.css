@@ -12,6 +12,11 @@
   border-color: var(--color-danger-border);
 }
 
+.dragging {
+  opacity: 0.6;
+  box-shadow: var(--shadow-shell);
+}
+
 .main {
   flex: 1;
   min-width: 0;
