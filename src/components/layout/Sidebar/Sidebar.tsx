@@ -43,11 +43,8 @@ export function Sidebar() {
           <span>{t('nav.backlog')}</span>
           {backlogTasks && <span className={styles.count}>{backlogTasks.length}</span>}
         </NavLink>
-        <NavLink to="/calendar/week" className={navClassName}>
-          <span>{t('nav.week')}</span>
-        </NavLink>
-        <NavLink to="/calendar/month" className={navClassName}>
-          <span>{t('nav.month')}</span>
+        <NavLink to="/calendar" className={navClassName}>
+          <span>{t('nav.calendar')}</span>
         </NavLink>
       </nav>
 

@@ -1,0 +1,140 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  padding: 20px 30px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 16px;
+  }
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-shell);
+  box-shadow: var(--shadow-shell);
+}
+
+.badgeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.areaDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.title {
+  font: 700 26px/1.15 var(--font-sans);
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.description {
+  margin: -8px 0 0;
+  font: 400 15px/1.5 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.metaRow {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 15px 17px;
+  border-radius: var(--radius-card);
+  font: 600 15px/1 var(--font-sans);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.today {
+  background: var(--color-accent);
+  border-color: var(--color-accent-border);
+  color: var(--color-accent-text);
+}
+
+.backlog {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.done {
+  background: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: var(--color-success-text);
+}
+
+.drop {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.key {
+  font:
+    500 11px/1 ui-monospace,
+    monospace;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border-radius: 6px;
+  padding: 5px 7px;
+}
+
+.hint {
+  text-align: center;
+  font: 400 13px/1 var(--font-sans);
+  color: var(--color-text-faint);
+}
+
+.hintKey {
+  font:
+    500 12px/1 ui-monospace,
+    monospace;
+  color: var(--color-text-muted);
+}

@@ -6,6 +6,7 @@ import { RequireAuth } from './auth/RequireAuth';
 import { AuthLandingPage } from './pages/Auth';
 import Backlog from './pages/Backlog';
 import Today from './pages/Today';
+import Triage from './pages/Triage';
 import CalendarPage from './pages/Calendar';
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
         <Route element={<AppShell />}>
           <Route path="/" element={<Navigate to="/today" replace />} />
           <Route path="/today" element={<Today />} />
+          <Route path="/triage" element={<Triage />} />
           <Route path="/backlog" element={<Backlog />} />
           <Route path="/calendar" element={<Navigate to="/calendar/week" replace />} />
           <Route path="/calendar/:view" element={<CalendarPage />} />

@@ -34,3 +34,10 @@ export function isOverdue(task: Task, now = new Date()): boolean {
   if (task.status === 'done' || task.recurrence || task.dueDate == null) return false;
   return storedDayKey(task.dueDate) < localDayKey(now);
 }
+
+/** Days since a task was last scheduled for (its today-board date, falling back to due date). */
+export function daysOverdue(task: Task, now = new Date()): number {
+  const iso = task.todayDate ?? task.dueDate;
+  if (!iso) return 0;
+  return Math.round((localDayKey(now) - storedDayKey(iso)) / 86_400_000);
+}
