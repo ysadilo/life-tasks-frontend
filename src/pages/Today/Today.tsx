@@ -3,7 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader, PageState } from '../../components/layout';
 import { Button, EmptyState } from '../../components/ui';
-import { TaskRow, DoneTaskRow, taskForm } from '../../components/task';
+import {
+  TaskRow,
+  DoneTaskRow,
+  taskForm,
+  TaskFilterPopover,
+  EMPTY_TASK_FILTERS,
+  activeFilterCount,
+  matchesFilters,
+  type TaskFilters,
+} from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus, useRecurringTasks, useToggleOccurrence } from '../../hooks/useTasks';
 import { PRIORITY_RANK } from '../../lib/priority';
 import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recurrence';
@@ -23,6 +32,8 @@ export default function Today() {
 
   const [hideDone, setHideDone] = useState(false);
   const [sortByPriority, setSortByPriority] = useState(true);
+  const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const today = useMemo(() => new Date(), []);
 
@@ -55,6 +66,16 @@ export default function Today() {
     return [...oneOff, ...recurring];
   }, [doneTasks, recurringToday, today]);
 
+  const filteredOpenTasks = useMemo(
+    () => sortedOpenTasks.filter((task) => matchesFilters(task, filters)),
+    [sortedOpenTasks, filters]
+  );
+  const filteredDoneToday = useMemo(
+    () => doneToday.filter((task) => matchesFilters(task, filters)),
+    [doneToday, filters]
+  );
+  const filterCount = activeFilterCount(filters);
+
   if (isLoading) return <PageState>{t('today.loading')}</PageState>;
   if (error) return <PageState>{t('today.error')}</PageState>;
 
@@ -68,7 +89,19 @@ export default function Today() {
         subtitle={t('today.subtitle', { date: dateLabel, done: doneToday.length, total: totalCount })}
         actions={
           <>
-            <Button variant="ghost">{t('today.filter')}</Button>
+            <div className={styles.filterWrap}>
+              <Button variant="ghost" onClick={() => setFilterOpen((v) => !v)}>
+                {filterCount > 0 ? `${t('today.filter')} · ${filterCount}` : t('today.filter')}
+              </Button>
+              {filterOpen && (
+                <TaskFilterPopover
+                  filters={filters}
+                  onChange={setFilters}
+                  matchCount={filteredOpenTasks.length + filteredDoneToday.length}
+                  onClose={() => setFilterOpen(false)}
+                />
+              )}
+            </div>
             <Button variant="ghost" onClick={() => setSortByPriority((v) => !v)}>
               {sortByPriority ? t('today.sortPriority') : t('today.sortDefault')}
             </Button>
@@ -89,7 +122,7 @@ export default function Today() {
       )}
 
       <div className={styles.list}>
-        {sortedOpenTasks.length === 0 && doneToday.length === 0 && (
+        {filteredOpenTasks.length === 0 && filteredDoneToday.length === 0 && (
           <EmptyState
             title={t('today.emptyTitle')}
             description={t('today.emptyDescription')}
@@ -101,7 +134,7 @@ export default function Today() {
           />
         )}
 
-        {sortedOpenTasks.map((task) => (
+        {filteredOpenTasks.map((task) => (
           <TaskRow
             key={task.id}
             task={task}
@@ -110,14 +143,14 @@ export default function Today() {
           />
         ))}
 
-        {!hideDone && doneToday.length > 0 && (
+        {!hideDone && filteredDoneToday.length > 0 && (
           <>
             <div className={styles.doneDivider}>
               <span className={styles.doneDividerLabel}>{t('today.doneToday')}</span>
               <span className={styles.doneDividerRule} />
-              <span className={styles.doneDividerCount}>{doneToday.length}</span>
+              <span className={styles.doneDividerCount}>{filteredDoneToday.length}</span>
             </div>
-            {doneToday.map((task) => (
+            {filteredDoneToday.map((task) => (
               <DoneTaskRow
                 key={task.id}
                 task={task}

@@ -12,59 +12,8 @@ import { RECURRENCES } from '../../../lib/recurrence';
 import { localISODate } from '../../../lib/dateUtils';
 import { ENERGIES, EFFORT_MINUTES, energyRampKey, effortRampKey, priorityRampKey } from '../../../lib/taskMeta';
 import type { Energy, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../../../models';
-import ramp from '../chipRamp.module.css';
+import { OptionGroup } from '../OptionGroup';
 import styles from './TaskFormModal.module.css';
-
-interface Option {
-  value: string;
-  label: string;
-  /** chipRamp.module.css class key; applied only when the option is selected. */
-  rampKey?: string;
-}
-
-/** Row of single-select buttons; click the active one to clear. Matches the mockup's chip selectors. */
-function OptionGroup({
-  label,
-  options,
-  value,
-  onChange,
-  stretch = false,
-}: {
-  label: string;
-  options: Option[];
-  value: string;
-  onChange: (value: string) => void;
-  stretch?: boolean;
-}) {
-  return (
-    <div className={styles.field}>
-      <span className={styles.label}>{label}</span>
-      <div className={styles.options}>
-        {options.map((option) => {
-          const selected = option.value === value;
-          return (
-            <button
-              key={option.value}
-              type="button"
-              aria-pressed={selected}
-              className={[
-                styles.option,
-                stretch ? styles.optionStretch : '',
-                selected ? styles.optionSelected : '',
-                selected && option.rampKey ? ramp[option.rampKey] : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-              onClick={() => onChange(selected ? '' : option.value)}
-            >
-              {option.label}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 /** Mount once (see AppShell); opened from anywhere via `taskForm.openNew()` / `taskForm.openEdit()`. */
 export function TaskFormModal() {
