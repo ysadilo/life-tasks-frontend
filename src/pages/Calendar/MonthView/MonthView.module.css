@@ -6,9 +6,14 @@
   overflow-y: auto;
 }
 
+.scrollArea {
+  overflow-x: auto;
+}
+
 .weekdayRow {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(160px, 1fr));
+  gap: 8px;
   padding: 14px 0;
 }
 
@@ -17,11 +22,12 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+  padding-left: 9px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(160px, 1fr));
   gap: 8px;
 }
 
@@ -83,7 +89,17 @@
     padding: 0 16px 16px;
   }
 
+  .weekdayRow {
+    grid-template-columns: repeat(7, minmax(160px, 1fr));
+    gap: 4px;
+  }
+
+  .weekdayLabel {
+    padding-left: 6px;
+  }
+
   .grid {
+    grid-template-columns: repeat(7, minmax(160px, 1fr));
     gap: 4px;
   }
 
