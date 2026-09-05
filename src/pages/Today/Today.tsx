@@ -11,10 +11,14 @@ import {
   EMPTY_TASK_FILTERS,
   activeFilterCount,
   matchesFilters,
+  TaskSortPopover,
+  SORT_COMPARATORS,
   type TaskFilters,
+  type SortBy,
 } from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus, useRecurringTasks, useToggleOccurrence } from '../../hooks/useTasks';
-import { PRIORITY_RANK } from '../../lib/priority';
+import { useManualOrder } from '../../hooks/useManualOrder';
+import { useDragReorder } from '../../hooks/useDragReorder';
 import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recurrence';
 import { isSameDay } from '../../lib/dateUtils';
 import type { Task } from '../../models';
@@ -29,11 +33,13 @@ export default function Today() {
   const { data: recurringTasks } = useRecurringTasks();
   const updateStatus = useUpdateTaskStatus();
   const toggleOccurrence = useToggleOccurrence();
+  const manualOrder = useManualOrder();
 
   const [hideDone, setHideDone] = useState(false);
-  const [sortByPriority, setSortByPriority] = useState(true);
+  const [sortBy, setSortBy] = useState<SortBy>('priority');
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
 
   const today = useMemo(() => new Date(), []);
 
@@ -52,13 +58,11 @@ export default function Today() {
 
   const sortedOpenTasks = useMemo(() => {
     const tasks = [...(openTasks ?? []), ...recurringToday.filter((task) => !isOccurrenceDone(task, today))];
-    if (sortByPriority) {
-      tasks.sort(
-        (a, b) => (a.priority ? PRIORITY_RANK[a.priority] : 99) - (b.priority ? PRIORITY_RANK[b.priority] : 99)
-      );
-    }
+    if (sortBy === 'manual') return manualOrder.applyOrder(tasks);
+    const comparator = SORT_COMPARATORS[sortBy];
+    if (comparator) tasks.sort(comparator);
     return tasks;
-  }, [openTasks, recurringToday, today, sortByPriority]);
+  }, [openTasks, recurringToday, today, sortBy, manualOrder.applyOrder]);
 
   const doneToday = useMemo(() => {
     const oneOff = (doneTasks ?? []).filter((task) => task.completedAt && isSameDay(new Date(task.completedAt), today));
@@ -75,6 +79,14 @@ export default function Today() {
     [doneToday, filters]
   );
   const filterCount = activeFilterCount(filters);
+
+  const openTaskIds = useMemo(() => filteredOpenTasks.map((task) => task.id), [filteredOpenTasks]);
+  const dragReorder = useDragReorder(openTaskIds, manualOrder.reorder);
+  const displayedOpenTasks = useMemo(() => {
+    if (sortBy !== 'manual') return filteredOpenTasks;
+    const byId = new Map(filteredOpenTasks.map((task) => [task.id, task]));
+    return dragReorder.order.map((id) => byId.get(id)).filter((task): task is Task => !!task);
+  }, [sortBy, filteredOpenTasks, dragReorder.order]);
 
   if (isLoading) return <PageState>{t('today.loading')}</PageState>;
   if (error) return <PageState>{t('today.error')}</PageState>;
@@ -102,9 +114,12 @@ export default function Today() {
                 />
               )}
             </div>
-            <Button variant="ghost" onClick={() => setSortByPriority((v) => !v)}>
-              {sortByPriority ? t('today.sortPriority') : t('today.sortDefault')}
-            </Button>
+            <div className={styles.sortWrap}>
+              <Button variant="ghost" onClick={() => setSortOpen((v) => !v)}>
+                {t('today.sort.label', { mode: t(`today.sort.${sortBy}`) })}
+              </Button>
+              {sortOpen && <TaskSortPopover sortBy={sortBy} onChange={setSortBy} onClose={() => setSortOpen(false)} />}
+            </div>
             <Button variant="ghost" onClick={() => setHideDone((v) => !v)}>
               {hideDone ? t('today.showDone') : t('today.hideDone')}
             </Button>
@@ -122,7 +137,7 @@ export default function Today() {
       )}
 
       <div className={styles.list}>
-        {filteredOpenTasks.length === 0 && filteredDoneToday.length === 0 && (
+        {displayedOpenTasks.length === 0 && filteredDoneToday.length === 0 && (
           <EmptyState
             title={t('today.emptyTitle')}
             description={t('today.emptyDescription')}
@@ -134,12 +149,18 @@ export default function Today() {
           />
         )}
 
-        {filteredOpenTasks.map((task) => (
+        {displayedOpenTasks.map((task) => (
           <TaskRow
             key={task.id}
             task={task}
             onToggle={() => toggle(task, true)}
             onEdit={() => taskForm.openEdit(task)}
+            rowRef={sortBy === 'manual' ? dragReorder.registerRow(task.id) : undefined}
+            dragHandleProps={
+              sortBy === 'manual'
+                ? { dragging: dragReorder.draggingId === task.id, ...dragReorder.dragHandleProps(task.id) }
+                : undefined
+            }
           />
         ))}
 

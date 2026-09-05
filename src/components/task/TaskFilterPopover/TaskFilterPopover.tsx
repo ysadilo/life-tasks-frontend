@@ -1,8 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../ui/Button';
 import { OptionGroup } from '../OptionGroup';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
+import { useOutsideClick } from '../../../hooks/useOutsideClick';
+import { useAnchoredPopoverPosition } from '../../../hooks/useAnchoredPopoverPosition';
 import { PRIORITIES } from '../../../lib/priority';
 import { ENERGIES, energyRampKey, priorityRampKey } from '../../../lib/taskMeta';
 import { lifeAreaColorVar } from '../../../lib/lifeAreas';
@@ -40,24 +42,11 @@ export function TaskFilterPopover({ filters, onChange, matchCount, onClose }: Ta
   const { t } = useTranslation();
   const { data: areas } = useLifeAreas();
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onPointerDown = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
-    };
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('mousedown', onPointerDown);
-    document.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', onPointerDown);
-      document.removeEventListener('keydown', onKeyDown);
-    };
-  }, [onClose]);
+  useOutsideClick(ref, onClose);
+  const position = useAnchoredPopoverPosition(ref);
 
   return (
-    <div ref={ref} className={styles.popover}>
+    <div ref={ref} className={styles.popover} style={position ?? undefined}>
       <OptionGroup
         multiple
         label={t('taskForm.priority')}
