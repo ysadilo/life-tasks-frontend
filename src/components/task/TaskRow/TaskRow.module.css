@@ -8,6 +8,10 @@
   border-radius: var(--radius-card);
 }
 
+.dueSoon {
+  border-color: var(--color-danger-border);
+}
+
 .main {
   flex: 1;
   min-width: 0;

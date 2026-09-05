@@ -41,3 +41,19 @@ export function daysOverdue(task: Task, now = new Date()): number {
   if (!iso) return 0;
   return Math.round((localDayKey(now) - storedDayKey(iso)) / 86_400_000);
 }
+
+export type DueUrgency = 'overdue' | 'today' | 'tomorrow';
+
+/**
+ * How urgent a task's due date is, for highlighting tasks with one day or
+ * less left. Null when there's nothing to flag: no due date, already done,
+ * recurring (a cadence anchor, not a deadline), or due more than a day out.
+ */
+export function dueUrgency(task: Task, now = new Date()): DueUrgency | null {
+  if (task.status === 'done' || task.recurrence || task.dueDate == null) return null;
+  const daysUntil = Math.round((storedDayKey(task.dueDate) - localDayKey(now)) / 86_400_000);
+  if (daysUntil < 0) return 'overdue';
+  if (daysUntil === 0) return 'today';
+  if (daysUntil === 1) return 'tomorrow';
+  return null;
+}

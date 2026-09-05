@@ -5,6 +5,7 @@ import { Chip } from '../../ui/Chip';
 import { EditButton } from '../EditButton';
 import { MetaChip } from '../MetaChip';
 import { RecurrenceIcon } from '../RecurrenceIcon';
+import { dueUrgency, type DueUrgency } from '../../../lib/taskDates';
 import type { Task } from '../../../models';
 import styles from './TaskRow.module.css';
 
@@ -17,12 +18,24 @@ interface TaskRowProps {
   showChips?: boolean;
 }
 
+function dueLabelKey(urgency: DueUrgency): string {
+  switch (urgency) {
+    case 'overdue':
+      return 'task.dueOverdue';
+    case 'today':
+      return 'task.dueToday';
+    case 'tomorrow':
+      return 'task.dueTomorrow';
+  }
+}
+
 export function TaskRow({ task, done = false, onToggle, onEdit, trailing, showChips = true }: TaskRowProps) {
   const { t } = useTranslation();
-  const hasChips = showChips && (task.priority || task.energy || task.estimatedMinutes != null || task.area);
+  const urgency = dueUrgency(task);
+  const hasChips = showChips && (urgency || task.priority || task.energy || task.estimatedMinutes != null || task.area);
 
   return (
-    <div className={styles.row}>
+    <div className={urgency ? `${styles.row} ${styles.dueSoon}` : styles.row}>
       <div className={styles.main}>
         {onToggle && <Checkbox checked={false} onChange={onToggle} label={t('task.markDone', { title: task.title })} />}
         <div className={styles.body}>
@@ -37,6 +50,7 @@ export function TaskRow({ task, done = false, onToggle, onEdit, trailing, showCh
       {trailing}
       {hasChips && (
         <div className={styles.chips}>
+          {urgency && <Chip variant="danger">{t(dueLabelKey(urgency))}</Chip>}
           {task.priority && <MetaChip axis="priority" value={task.priority} />}
           {task.energy && <MetaChip axis="energy" value={task.energy} />}
           {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}

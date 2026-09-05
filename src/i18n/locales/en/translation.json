@@ -60,7 +60,10 @@
     "markNotDone": "Mark \"{{title}}\" not done",
     "addToToday": "Add to today",
     "edit": "Edit \"{{title}}\"",
-    "recurs": "Repeats · {{schedule}}"
+    "recurs": "Repeats · {{schedule}}",
+    "dueOverdue": "Overdue",
+    "dueToday": "Due today",
+    "dueTomorrow": "Due tomorrow"
   },
   "taskForm": {
     "newTitle": "New task",
