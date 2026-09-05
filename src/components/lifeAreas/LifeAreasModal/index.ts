@@ -1,0 +1,1 @@
+export { LifeAreasModal } from './LifeAreasModal';

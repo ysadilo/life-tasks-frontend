@@ -117,7 +117,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: var(--color-area-social);
+    background: var(--color-area-3);
     object-fit: cover;
     flex: none;
   }

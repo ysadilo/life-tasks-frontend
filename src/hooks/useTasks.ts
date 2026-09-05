@@ -8,7 +8,7 @@ export interface TaskInput {
   dueDate?: string | null;
   status?: TaskStatus;
   todayDate?: string | null;
-  area?: LifeAreaId | null;
+  areaId?: LifeAreaId | null;
   priority?: Priority | null;
   energy?: Energy | null;
   estimatedMinutes?: number | null;

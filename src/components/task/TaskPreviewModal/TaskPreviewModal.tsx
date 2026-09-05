@@ -23,7 +23,7 @@ export function TaskPreviewModal() {
       {
         title: task.title,
         description: task.description,
-        area: task.area ?? null,
+        areaId: task.areaId ?? null,
         priority: task.priority ?? null,
         energy: task.energy ?? null,
         estimatedMinutes: task.estimatedMinutes ?? null,

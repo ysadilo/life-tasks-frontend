@@ -4,26 +4,30 @@ import { PageHeader, PageState } from '../../components/layout';
 import { Button, Input, EmptyState } from '../../components/ui';
 import { TaskRow, taskForm } from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
-import { LIFE_AREAS, lifeAreaColorVar } from '../../lib/lifeAreas';
-import type { LifeAreaId, Task } from '../../models';
+import { useLifeAreas } from '../../hooks/useLifeAreas';
+import { lifeAreaColorVar } from '../../lib/lifeAreas';
+import type { LifeArea, Task } from '../../models';
 import styles from './Backlog.module.css';
 
-const AREA_ORDER: LifeAreaId[] = LIFE_AREAS.map((area) => area.id);
+interface Group {
+  area: LifeArea | null;
+  tasks: Task[];
+}
 
-function groupByArea(tasks: Task[]): { id: LifeAreaId | 'other'; tasks: Task[] }[] {
-  const groups = new Map<LifeAreaId | 'other', Task[]>();
+function groupByArea(tasks: Task[], areas: LifeArea[]): Group[] {
+  const groups = new Map<string, Task[]>();
   for (const task of tasks) {
-    const key = task.area ?? 'other';
+    const key = task.areaId ?? 'other';
     groups.set(key, [...(groups.get(key) ?? []), task]);
   }
 
-  const ordered: { id: LifeAreaId | 'other'; tasks: Task[] }[] = [];
-  for (const areaId of AREA_ORDER) {
-    const areaTasks = groups.get(areaId);
-    if (areaTasks?.length) ordered.push({ id: areaId, tasks: areaTasks });
+  const ordered: Group[] = [];
+  for (const area of areas) {
+    const areaTasks = groups.get(area.id);
+    if (areaTasks?.length) ordered.push({ area, tasks: areaTasks });
   }
   const other = groups.get('other');
-  if (other?.length) ordered.push({ id: 'other', tasks: other });
+  if (other?.length) ordered.push({ area: null, tasks: other });
 
   return ordered;
 }
@@ -31,6 +35,7 @@ function groupByArea(tasks: Task[]): { id: LifeAreaId | 'other'; tasks: Task[] }
 export default function Backlog() {
   const { t } = useTranslation();
   const { data: tasks, isLoading, error } = useTasksByStatus('backlog');
+  const { data: areas } = useLifeAreas();
   const updateStatus = useUpdateTaskStatus();
   const [search, setSearch] = useState('');
 
@@ -40,7 +45,7 @@ export default function Backlog() {
     return (tasks ?? []).filter((task) => task.title.toLowerCase().includes(query));
   }, [tasks, search]);
 
-  const groups = useMemo(() => groupByArea(filteredTasks), [filteredTasks]);
+  const groups = useMemo(() => groupByArea(filteredTasks, areas ?? []), [filteredTasks, areas]);
 
   if (isLoading) return <PageState>{t('backlog.loading')}</PageState>;
   if (error) return <PageState>{t('backlog.error')}</PageState>;
@@ -78,14 +83,12 @@ export default function Backlog() {
         )}
 
         {groups.map((group) => (
-          <div key={group.id} className={styles.group}>
+          <div key={group.area?.id ?? 'other'} className={styles.group}>
             <div className={styles.groupHeader}>
-              {group.id !== 'other' && (
-                <span className={styles.groupDot} style={{ background: lifeAreaColorVar(group.id) }} />
+              {group.area && (
+                <span className={styles.groupDot} style={{ background: lifeAreaColorVar(group.area.order) }} />
               )}
-              <span className={styles.groupLabel}>
-                {group.id === 'other' ? t('backlog.otherGroup') : t(`lifeArea.${group.id}`)}
-              </span>
+              <span className={styles.groupLabel}>{group.area ? group.area.name : t('backlog.otherGroup')}</span>
               <span className={styles.groupCount}>{group.tasks.length}</span>
             </div>
             {group.tasks.map((task) => (

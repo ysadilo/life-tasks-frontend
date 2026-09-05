@@ -6,6 +6,7 @@ import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
 import { openRecurringOn } from '../../../lib/recurrence';
 import { useTheme } from '../../../theme/ThemeProvider';
 import { taskForm } from '../../task';
+import { lifeAreasModal } from '../../lifeAreas';
 import styles from './BottomNav.module.css';
 
 function navClassName({ isActive }: { isActive: boolean }) {
@@ -97,6 +98,18 @@ export function BottomNav() {
             >
               <span className={styles.menuIcon}>{isGlamour ? '✦' : '☾'}</span>
               {t('sidebar.switchThemeShort')}
+            </button>
+            <button
+              type="button"
+              role="menuitem"
+              className={styles.menuItem}
+              onClick={() => {
+                lifeAreasModal.openManage();
+                setMenuOpen(false);
+              }}
+            >
+              <span className={styles.menuIcon}>◧</span>
+              {t('sidebar.manageLifeAreas')}
             </button>
             <button
               type="button"

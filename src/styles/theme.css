@@ -58,11 +58,17 @@
   --color-neutral-chip-bg: #f1eee7;
   --color-neutral-chip-text: #6e6a63;
 
-  --color-area-home: #b6c9de;
-  --color-area-health: #afc8b5;
-  --color-area-money: #e1b4a8;
-  --color-area-social: #c4b8dc;
-  --color-area-admin: #cfc7ba;
+  /* Life area palette — 10 slots, auto-assigned by creation order. */
+  --color-area-0: #b6c9de;
+  --color-area-1: #afc8b5;
+  --color-area-2: #e1b4a8;
+  --color-area-3: #c4b8dc;
+  --color-area-4: #cfc7ba;
+  --color-area-5: #e0b8c4;
+  --color-area-6: #c3c9a0;
+  --color-area-7: #a9c8d1;
+  --color-area-8: #d9c68a;
+  --color-area-9: #b0b7bd;
 
   --shadow-shell: 0 4px 18px rgba(43, 42, 40, 0.07);
 
@@ -147,11 +153,16 @@
   --color-neutral-chip-bg: #2a2233;
   --color-neutral-chip-text: #b4a5c1;
 
-  --color-area-home: #7c93b8;
-  --color-area-health: #6e9c7c;
-  --color-area-money: #b87f79;
-  --color-area-social: #8d7bb5;
-  --color-area-admin: #7a6e88;
+  --color-area-0: #7c93b8;
+  --color-area-1: #6e9c7c;
+  --color-area-2: #b87f79;
+  --color-area-3: #8d7bb5;
+  --color-area-4: #7a6e88;
+  --color-area-5: #b8798d;
+  --color-area-6: #8f9468;
+  --color-area-7: #6f97a3;
+  --color-area-8: #a68f4c;
+  --color-area-9: #737b83;
 
   --shadow-shell: 0 4px 18px rgba(0, 0, 0, 0.55);
 

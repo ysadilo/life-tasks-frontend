@@ -14,6 +14,8 @@
   "sidebar": {
     "newTask": "New task",
     "lifeAreas": "Life areas",
+    "manage": "Manage",
+    "manageLifeAreas": "Manage life areas",
     "soloBoard": "Solo board",
     "switchTheme": "Switch to {{theme}} theme",
     "switchThemeShort": "Switch theme"
@@ -22,12 +24,22 @@
     "powder": "Powder",
     "glamour": "Glamour"
   },
-  "lifeArea": {
-    "home": "Home",
-    "health": "Health",
-    "money": "Money",
-    "social": "Social",
-    "admin": "Admin"
+  "lifeAreasModal": {
+    "title": "Life areas",
+    "subtitle": "{{count}} of {{max}} used · colours assign automatically, in order added",
+    "tasksCount_one": "{{count}} task",
+    "tasksCount_other": "{{count}} tasks",
+    "rename": "Rename",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "addLabel": "Add a life area",
+    "addPlaceholder": "e.g. Creative Projects",
+    "add": "Add",
+    "nextColor": "Next colour:",
+    "nextColorHint": "assigned automatically — no picker needed",
+    "limitNote": "At {{max}} areas, \"Add\" disables until one is deleted. Deleting an area moves its tasks to the first remaining area.",
+    "close": "Close"
   },
   "user": {
     "defaultName": "Yana"

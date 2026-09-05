@@ -73,7 +73,7 @@ export function useTriageQueue() {
             title: last.task.title,
             description: last.task.description,
             dueDate: last.task.dueDate,
-            area: last.task.area ?? null,
+            areaId: last.task.areaId ?? null,
             priority: last.task.priority ?? null,
             energy: last.task.energy ?? null,
             estimatedMinutes: last.task.estimatedMinutes ?? null,
