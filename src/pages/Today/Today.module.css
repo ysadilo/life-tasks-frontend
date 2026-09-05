@@ -5,8 +5,8 @@
   min-height: 0;
 }
 
-.filterWrap {
-  position: relative;
+.filterWrap,
+.sortWrap {
   display: inline-flex;
 }
 

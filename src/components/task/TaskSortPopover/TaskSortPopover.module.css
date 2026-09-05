@@ -1,0 +1,50 @@
+.popover {
+  composes: popover from '../Popover.module.css';
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-card);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.optionSelected {
+  background: var(--color-accent-light-bg);
+  border-color: var(--color-accent-light-border);
+}
+
+.radio {
+  width: 19px;
+  height: 19px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-checkbox-border);
+  background: transparent;
+}
+
+.radioSelected {
+  border-color: var(--color-text);
+  background: radial-gradient(circle, var(--color-text) 38%, transparent 40%);
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.optionLabel {
+  font: 600 14px/1.2 var(--font-sans);
+  color: var(--color-text);
+}
+
+.optionDescription {
+  font: 400 13px/1.3 var(--font-sans);
+  color: var(--color-text-muted);
+}

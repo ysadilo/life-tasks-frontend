@@ -1,17 +1,5 @@
 .popover {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 20;
-  width: min(340px, calc(100vw - 32px));
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-shell);
-  box-shadow: var(--shadow-shell);
+  composes: popover from '../Popover.module.css';
 }
 
 .footer {
