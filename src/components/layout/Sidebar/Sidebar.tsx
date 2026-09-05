@@ -60,12 +60,7 @@ export function Sidebar() {
 
       <div className={styles.footer}>
         <ThemeToggle />
-        <button
-          type="button"
-          className={styles.profile}
-          onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-          title={t('auth.signOut')}
-        >
+        <div className={styles.profile}>
           {user?.picture ? (
             <img className={styles.avatar} src={user.picture} alt="" />
           ) : (
@@ -75,7 +70,15 @@ export function Sidebar() {
             <span className={styles.profileName}>{displayName}</span>
             <span className={styles.profileSubtitle}>{t('sidebar.soloBoard')}</span>
           </div>
-        </button>
+          <button
+            type="button"
+            className={styles.signOutButton}
+            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+            title={t('auth.signOut')}
+          >
+            ⇥
+          </button>
+        </div>
       </div>
     </aside>
   );

@@ -99,6 +99,7 @@ export function useTriageQueue() {
     act,
     undo,
     canUndo: history.length > 0,
+    history,
     isLoading,
     error,
     done,

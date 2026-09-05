@@ -82,7 +82,7 @@ export default function Today() {
       {!!triageTasks?.length && (
         <div className={styles.triageBanner}>
           <span>{t('today.triageBannerText', { count: triageTasks.length })}</span>
-          <Button variant="primary" onClick={() => navigate('/triage')}>
+          <Button variant="primary" className={styles.triageBannerAction} onClick={() => navigate('/triage')}>
             {t('today.startTriage')}
           </Button>
         </div>

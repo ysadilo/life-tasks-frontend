@@ -25,6 +25,13 @@
   }
 }
 
+.triageBannerAction {
+  flex: none;
+  background: var(--color-danger-text);
+  border-color: var(--color-danger-text);
+  color: var(--color-surface);
+}
+
 .list {
   flex: 1;
   padding: 20px 30px 26px;

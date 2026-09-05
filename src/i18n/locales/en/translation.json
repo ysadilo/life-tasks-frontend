@@ -134,8 +134,12 @@
     "hint": "Arrow keys or click to sort.",
     "hintUndo": "undoes the last call.",
     "emptyTitle": "Nothing left to triage",
-    "emptyDescription_one": "{{count}} card sorted.",
-    "emptyDescription_other": "{{count}} cards sorted.",
+    "cardsSorted_one": "{{count}} card sorted",
+    "cardsSorted_other": "{{count}} cards sorted",
+    "sortedToday": "{{count}} on today",
+    "sortedBacklog": "{{count}} back to the backlog",
+    "sortedDone": "{{count}} marked done",
+    "sortedDropped": "{{count}} dropped",
     "goToToday": "Go to Today"
   },
   "backlog": {
