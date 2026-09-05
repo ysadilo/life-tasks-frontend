@@ -4,12 +4,21 @@ import { setAuthTokenGetter } from './authToken';
 
 /** Bridges Auth0's `getAccessTokenSilently` into the module-level `api` client. Renders nothing. */
 export function Auth0TokenBridge() {
-  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const { getAccessTokenSilently, loginWithRedirect, isAuthenticated } = useAuth0();
 
   useEffect(() => {
-    setAuthTokenGetter(async () => (isAuthenticated ? getAccessTokenSilently() : null));
+    setAuthTokenGetter(async () => {
+      if (!isAuthenticated) return null;
+      try {
+        return await getAccessTokenSilently();
+      } catch {
+        // Silent renewal failed (expired/revoked refresh token) — send the user back through login.
+        await loginWithRedirect({ appState: { returnTo: window.location.pathname } });
+        return null;
+      }
+    });
     return () => setAuthTokenGetter(async () => null);
-  }, [getAccessTokenSilently, isAuthenticated]);
+  }, [getAccessTokenSilently, loginWithRedirect, isAuthenticated]);
 
   return null;
 }
