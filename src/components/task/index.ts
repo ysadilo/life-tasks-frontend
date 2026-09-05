@@ -4,5 +4,7 @@ export { MetaChip } from './MetaChip';
 export { TaskChip } from './TaskChip';
 export { TaskFormModal } from './TaskFormModal';
 export { TaskPreviewModal } from './TaskPreviewModal';
+export { TaskFilterPopover, EMPTY_TASK_FILTERS, activeFilterCount, matchesFilters } from './TaskFilterPopover';
+export type { TaskFilters } from './TaskFilterPopover';
 export { taskForm } from './taskFormStore';
 export { taskPreview } from './taskPreviewStore';
