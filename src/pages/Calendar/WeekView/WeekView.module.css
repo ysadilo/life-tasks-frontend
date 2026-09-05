@@ -2,13 +2,13 @@
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(160px, 1fr));
   /* One row that fills the visible area, so each column has a bounded height
      to fit chips into (see DayColumn's measure loop). */
   grid-auto-rows: minmax(0, 1fr);
   gap: 10px;
   padding: 20px 30px 26px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 @media (max-width: 768px) {
