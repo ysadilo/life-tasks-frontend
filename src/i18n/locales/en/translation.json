@@ -38,7 +38,7 @@
     "add": "Add",
     "nextColor": "Next colour:",
     "nextColorHint": "assigned automatically — no picker needed",
-    "limitNote": "At {{max}} areas, \"Add\" disables until one is deleted. Deleting an area moves its tasks to the first remaining area.",
+    "limitNote": "At {{max}} areas, \"Add\" disables until one is deleted. Deleting an area leaves its tasks with no life area.",
     "close": "Close"
   },
   "user": {

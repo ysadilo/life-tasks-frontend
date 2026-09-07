@@ -38,7 +38,7 @@ export function useDeleteLifeArea() {
     mutationFn: (id: string) => api.delete<void>(`/life-areas/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['life-areas'] });
-      // Deleting an area reassigns its tasks, so every task list is stale too.
+      // Deleting an area clears it from its tasks, so every task list is stale too.
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
   });
