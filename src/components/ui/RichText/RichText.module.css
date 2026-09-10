@@ -24,42 +24,77 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-input);
   background: var(--color-surface);
-  overflow: hidden;
 }
 
 .toolbar {
   display: flex;
+  align-items: center;
   gap: 2px;
-  padding: 4px;
+  padding: 6px 8px;
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
+.toolItem {
+  display: inline-flex;
+  align-items: center;
+}
+
+.divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 8px;
+  background: var(--color-border);
+}
+
 .toolBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
   border: none;
   background: transparent;
-  padding: 5px 9px;
-  border-radius: 6px;
-  font: 600 13px/1 var(--font-sans);
-  color: var(--color-text-secondary);
+  border-radius: 7px;
+  color: var(--color-text-muted);
   cursor: pointer;
 }
 
 .toolBtn:hover {
   background: var(--color-border-subtle);
+  color: var(--color-text);
+}
+
+.glyph {
+  font: 700 15px/1 var(--font-sans);
+  font-style: normal;
+  text-decoration: none;
+}
+
+.glyph:is(i) {
+  font-style: italic;
+}
+
+.glyph:is(u) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .surface {
-  min-height: 84px;
+  min-height: 88px;
+  max-height: 480px;
   padding: 12px 16px;
-  font: 400 14px/1.45 var(--font-sans);
+  font: 400 15px/1.5 var(--font-sans);
   color: var(--color-text);
   outline: none;
+  overflow: auto;
   overflow-wrap: anywhere;
+  resize: vertical;
 }
 
 .surface:empty::before {
   content: attr(data-placeholder);
   color: var(--color-text-faint);
+  pointer-events: none;
 }
 
 .surface :is(p, ul, ol) {

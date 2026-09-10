@@ -81,7 +81,9 @@
   "richText": {
     "bold": "Bold",
     "italic": "Italic",
+    "underline": "Underline",
     "bulletList": "Bullet list",
+    "orderedList": "Numbered list",
     "link": "Link",
     "linkPrompt": "Link URL"
   },
