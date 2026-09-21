@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from '../Modal';
 import { Input } from '../Input';
@@ -89,7 +89,7 @@ interface RichTextEditorProps {
   ariaLabel?: string;
 }
 
-type Command = { key: keyof typeof ICONS; title: string; divider?: boolean; onClick: () => void };
+type Command = { key: keyof typeof ICONS; title: string; divider?: boolean; disabled?: boolean; onClick: () => void };
 
 // ponytail: document.execCommand — deprecated but works in every current browser for
 // this small command set. Swap for TipTap if we ever need tables/mentions/collab.
@@ -113,38 +113,56 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: Rich
   // Uncontrolled: seed once, then let the browser own the DOM. Callers remount (key=) to reset.
   const initial = useRef(value);
   const savedRange = useRef<Range | null>(null);
-  const editingLink = useRef<HTMLAnchorElement | null>(null);
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
+  // Drives the Link/Unlink disabled split below — recomputed on every selection change.
+  const [inLink, setInLink] = useState(false);
+
+  useEffect(() => {
+    const update = () => {
+      const el = ref.current;
+      const sel = window.getSelection();
+      if (!el || !sel || sel.rangeCount === 0 || !el.contains(sel.anchorNode)) {
+        setInLink(false);
+        return;
+      }
+      setInLink(!!closestLink(sel.anchorNode, el));
+    };
+    document.addEventListener('selectionchange', update);
+    return () => document.removeEventListener('selectionchange', update);
+  }, []);
 
   const emit = () => onChange(sanitizeHtml(ref.current?.innerHTML ?? ''));
 
+  // Only reachable while the cursor isn't already inside a link (the Link button is disabled
+  // otherwise), so this always creates a new link rather than editing one.
   const openLinkModal = () => {
     const el = ref.current;
     if (!el) return;
     if (!el.contains(document.activeElement)) el.focus();
     const sel = window.getSelection();
-    const inEditor = sel && sel.rangeCount > 0 && el.contains(sel.anchorNode) ? sel : null;
-    savedRange.current = inEditor ? inEditor.getRangeAt(0).cloneRange() : null;
-    editingLink.current = inEditor ? closestLink(inEditor.anchorNode, el) : null;
-    setLinkUrl(editingLink.current?.getAttribute('href') ?? '');
+    savedRange.current =
+      sel && sel.rangeCount > 0 && el.contains(sel.anchorNode) ? sel.getRangeAt(0).cloneRange() : null;
+    setLinkUrl('');
     setLinkModalOpen(true);
   };
 
   const confirmLink = (url: string) => {
     setLinkModalOpen(false);
-    const el = ref.current;
-    if (!el) return;
-    el.focus();
-    if (editingLink.current) {
-      editingLink.current.setAttribute('href', url);
-    } else if (savedRange.current) {
+    const range = savedRange.current;
+    if (!range) return;
+    // The link dialog is still modal (browsers block focusing anything outside an open <dialog>)
+    // until its close() effect commits — defer the restore until after that happens.
+    setTimeout(() => {
+      const el = ref.current;
+      if (!el) return;
+      el.focus();
       const sel = window.getSelection();
       sel?.removeAllRanges();
-      sel?.addRange(savedRange.current);
+      sel?.addRange(range);
       exec('createLink', url);
-    }
-    emit();
+      emit();
+    }, 0);
   };
 
   const unlink = () => {
@@ -168,8 +186,8 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: Rich
       onClick: () => run(() => exec('insertUnorderedList')),
     },
     { key: 'orderedList', title: t('richText.orderedList'), onClick: () => run(() => exec('insertOrderedList')) },
-    { key: 'link', title: t('richText.link'), divider: true, onClick: openLinkModal },
-    { key: 'unlink', title: t('richText.unlink'), onClick: () => run(unlink) },
+    { key: 'link', title: t('richText.link'), divider: true, disabled: inLink, onClick: openLinkModal },
+    { key: 'unlink', title: t('richText.unlink'), disabled: !inLink, onClick: () => run(unlink) },
   ];
 
   function run(action: () => void) {
@@ -189,6 +207,7 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: Rich
               className={styles.toolBtn}
               title={c.title}
               aria-label={c.title}
+              disabled={c.disabled}
               // Keep the editor selection while clicking the toolbar.
               onMouseDown={(e) => e.preventDefault()}
               onClick={c.onClick}

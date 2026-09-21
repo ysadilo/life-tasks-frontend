@@ -64,6 +64,16 @@
   color: var(--color-text);
 }
 
+.toolBtn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.toolBtn:disabled:hover {
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
 .glyph {
   font: 700 15px/1 var(--font-sans);
   font-style: normal;
