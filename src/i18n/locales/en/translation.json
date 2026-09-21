@@ -78,6 +78,19 @@
     "dueToday": "Due today",
     "dueTomorrow": "Due tomorrow"
   },
+  "richText": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "bulletList": "Bullet list",
+    "orderedList": "Numbered list",
+    "link": "Link",
+    "unlink": "Remove link",
+    "linkModalTitle": "Add link",
+    "linkPlaceholder": "https://…",
+    "linkApply": "Apply",
+    "linkCancel": "Cancel"
+  },
   "taskForm": {
     "newTitle": "New task",
     "editTitle": "Edit task",

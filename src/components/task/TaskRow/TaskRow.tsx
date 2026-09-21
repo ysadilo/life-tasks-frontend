@@ -7,6 +7,7 @@ import { EditButton } from '../EditButton';
 import { MetaChip } from '../MetaChip';
 import { RecurrenceIcon } from '../RecurrenceIcon';
 import { dueUrgency, type DueUrgency } from '../../../lib/taskDates';
+import { htmlToText } from '../../../lib/richText';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
 import type { Task } from '../../../models';
 import styles from './TaskRow.module.css';
@@ -73,7 +74,7 @@ export function TaskRow({
             {task.title}
             <RecurrenceIcon recurrence={task.recurrence} />
           </span>
-          {task.description && <span className={styles.description}>{task.description}</span>}
+          {task.description && <span className={styles.description}>{htmlToText(task.description)}</span>}
         </div>
       </div>
       {onEdit && <EditButton title={task.title} onClick={onEdit} />}

@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '../../ui/Modal';
 import { Button } from '../../ui/Button';
 import { Input } from '../../ui/Input';
+import { RichTextEditor } from '../../ui/RichText';
 import { toast } from '../../ui/Toast';
+import { isBlankHtml } from '../../../lib/richText';
 import { useCreateTask, useUpdateTask, useDeleteTask, type TaskInput } from '../../../hooks/useTasks';
 import { taskForm, useTaskFormState } from '../taskFormStore';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
@@ -73,7 +75,7 @@ function TaskForm({
 
   const buildInput = (status: TaskStatus): TaskInput => ({
     title: trimmedTitle,
-    description: description.trim() || null,
+    description: isBlankHtml(description) ? null : description,
     dueDate: dueDate ? new Date(dueDate).toISOString() : null,
     areaId: area || null,
     priority: priority || null,
@@ -111,12 +113,11 @@ function TaskForm({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
-      <textarea
-        className={styles.textarea}
-        rows={3}
-        placeholder={t('taskForm.descriptionPlaceholder')}
+      <RichTextEditor
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={setDescription}
+        placeholder={t('taskForm.descriptionPlaceholder')}
+        ariaLabel={t('taskForm.descriptionPlaceholder')}
       />
 
       <OptionGroup

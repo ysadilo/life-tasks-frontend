@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
-import { Button, Chip } from '../../components/ui';
+import { Button, Chip, RichText } from '../../components/ui';
 import { MetaChip } from '../../components/task';
 import { useTriageQueue, type TriageAction } from '../../hooks/useTriageQueue';
 import { daysOverdue } from '../../lib/taskDates';
@@ -114,7 +114,7 @@ export default function Triage() {
             </div>
 
             <div className={styles.title}>{current.title}</div>
-            {current.description && <p className={styles.description}>{current.description}</p>}
+            {current.description && <RichText html={current.description} className={styles.description} />}
 
             <div className={styles.metaRow}>
               {current.estimatedMinutes != null && <MetaChip axis="effort" minutes={current.estimatedMinutes} />}
