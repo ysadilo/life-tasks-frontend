@@ -1,5 +1,8 @@
-import { useRef, type CSSProperties, type ReactNode } from 'react';
+import { useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Modal } from '../Modal';
+import { Input } from '../Input';
+import { Button } from '../Button';
 import { sanitizeHtml } from '../../../lib/richText';
 import styles from './RichText.module.css';
 
@@ -17,6 +20,13 @@ const icon = (path: ReactNode) => (
   >
     {path}
   </svg>
+);
+
+const LINK_PATH = (
+  <>
+    <path d="M10 13a5 5 0 0 0 7.07 0l1.93-1.93a5 5 0 0 0-7.07-7.07l-1.1 1.1" />
+    <path d="M14 11a5 5 0 0 0-7.07 0L5 12.93a5 5 0 0 0 7.07 7.07l1.1-1.1" />
+  </>
 );
 
 const ICONS = {
@@ -46,10 +56,11 @@ const ICONS = {
       </text>
     </>
   ),
-  link: icon(
+  link: icon(LINK_PATH),
+  unlink: icon(
     <>
-      <path d="M10 13a5 5 0 0 0 7.07 0l1.93-1.93a5 5 0 0 0-7.07-7.07l-1.1 1.1" />
-      <path d="M14 11a5 5 0 0 0-7.07 0L5 12.93a5 5 0 0 0 7.07 7.07l1.1-1.1" />
+      {LINK_PATH}
+      <line x1="3" y1="3" x2="21" y2="21" />
     </>
   ),
 } as const;
@@ -78,7 +89,7 @@ interface RichTextEditorProps {
   ariaLabel?: string;
 }
 
-type Command = { key: keyof typeof ICONS; title: string; divider?: boolean; run: () => void };
+type Command = { key: keyof typeof ICONS; title: string; divider?: boolean; onClick: () => void };
 
 // ponytail: document.execCommand — deprecated but works in every current browser for
 // this small command set. Swap for TipTap if we ever need tables/mentions/collab.
@@ -86,29 +97,86 @@ function exec(cmd: string, value?: string) {
   document.execCommand(cmd, false, value);
 }
 
+/** Walks up from `node` to find an enclosing `<a>`, stopping at `root`. */
+function closestLink(node: Node | null, root: HTMLElement): HTMLAnchorElement | null {
+  let n = node;
+  while (n && n !== root) {
+    if (n instanceof HTMLAnchorElement) return n;
+    n = n.parentNode;
+  }
+  return null;
+}
+
 export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: RichTextEditorProps) {
   const { t } = useTranslation();
   const ref = useRef<HTMLDivElement>(null);
   // Uncontrolled: seed once, then let the browser own the DOM. Callers remount (key=) to reset.
   const initial = useRef(value);
+  const savedRange = useRef<Range | null>(null);
+  const editingLink = useRef<HTMLAnchorElement | null>(null);
+  const [linkModalOpen, setLinkModalOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
 
   const emit = () => onChange(sanitizeHtml(ref.current?.innerHTML ?? ''));
 
+  const openLinkModal = () => {
+    const el = ref.current;
+    if (!el) return;
+    if (!el.contains(document.activeElement)) el.focus();
+    const sel = window.getSelection();
+    const inEditor = sel && sel.rangeCount > 0 && el.contains(sel.anchorNode) ? sel : null;
+    savedRange.current = inEditor ? inEditor.getRangeAt(0).cloneRange() : null;
+    editingLink.current = inEditor ? closestLink(inEditor.anchorNode, el) : null;
+    setLinkUrl(editingLink.current?.getAttribute('href') ?? '');
+    setLinkModalOpen(true);
+  };
+
+  const confirmLink = (url: string) => {
+    setLinkModalOpen(false);
+    const el = ref.current;
+    if (!el) return;
+    el.focus();
+    if (editingLink.current) {
+      editingLink.current.setAttribute('href', url);
+    } else if (savedRange.current) {
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(savedRange.current);
+      exec('createLink', url);
+    }
+    emit();
+  };
+
+  const unlink = () => {
+    const el = ref.current;
+    const sel = window.getSelection();
+    const link = el && sel ? closestLink(sel.anchorNode, el) : null;
+    if (!link) return;
+    const parent = link.parentNode;
+    while (link.firstChild) parent?.insertBefore(link.firstChild, link);
+    parent?.removeChild(link);
+  };
+
   const commands: Command[] = [
-    { key: 'bold', title: t('richText.bold'), run: () => exec('bold') },
-    { key: 'italic', title: t('richText.italic'), run: () => exec('italic') },
-    { key: 'underline', title: t('richText.underline'), run: () => exec('underline') },
-    { key: 'bulletList', title: t('richText.bulletList'), divider: true, run: () => exec('insertUnorderedList') },
-    { key: 'orderedList', title: t('richText.orderedList'), run: () => exec('insertOrderedList') },
+    { key: 'bold', title: t('richText.bold'), onClick: () => run(() => exec('bold')) },
+    { key: 'italic', title: t('richText.italic'), onClick: () => run(() => exec('italic')) },
+    { key: 'underline', title: t('richText.underline'), onClick: () => run(() => exec('underline')) },
     {
-      key: 'link',
-      title: t('richText.link'),
-      run: () => {
-        const url = window.prompt(t('richText.linkPrompt'));
-        if (url) exec('createLink', url);
-      },
+      key: 'bulletList',
+      title: t('richText.bulletList'),
+      divider: true,
+      onClick: () => run(() => exec('insertUnorderedList')),
     },
+    { key: 'orderedList', title: t('richText.orderedList'), onClick: () => run(() => exec('insertOrderedList')) },
+    { key: 'link', title: t('richText.link'), divider: true, onClick: openLinkModal },
+    { key: 'unlink', title: t('richText.unlink'), onClick: () => run(unlink) },
   ];
+
+  function run(action: () => void) {
+    ref.current?.focus();
+    action();
+    emit();
+  }
 
   return (
     <div className={styles.editor}>
@@ -123,11 +191,7 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: Rich
               aria-label={c.title}
               // Keep the editor selection while clicking the toolbar.
               onMouseDown={(e) => e.preventDefault()}
-              onClick={() => {
-                ref.current?.focus();
-                c.run();
-                emit();
-              }}
+              onClick={c.onClick}
             >
               {ICONS[c.key]}
             </button>
@@ -147,6 +211,53 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: Rich
         onInput={emit}
         onBlur={emit}
       />
+      <LinkModal
+        open={linkModalOpen}
+        url={linkUrl}
+        onUrlChange={setLinkUrl}
+        onCancel={() => setLinkModalOpen(false)}
+        onSubmit={confirmLink}
+      />
     </div>
+  );
+}
+
+interface LinkModalProps {
+  open: boolean;
+  url: string;
+  onUrlChange: (url: string) => void;
+  onCancel: () => void;
+  onSubmit: (url: string) => void;
+}
+
+function LinkModal({ open, url, onUrlChange, onCancel, onSubmit }: LinkModalProps) {
+  const { t } = useTranslation();
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    const trimmed = url.trim();
+    if (trimmed) onSubmit(trimmed);
+  };
+
+  return (
+    <Modal open={open} onClose={onCancel} closeLabel={t('richText.linkCancel')} title={t('richText.linkModalTitle')}>
+      <form className={styles.linkForm} onSubmit={submit}>
+        <Input
+          autoFocus
+          type="url"
+          placeholder={t('richText.linkPlaceholder')}
+          value={url}
+          onChange={(e) => onUrlChange(e.target.value)}
+        />
+        <div className={styles.linkFooter}>
+          <Button type="submit" variant="primary" disabled={!url.trim()}>
+            {t('richText.linkApply')}
+          </Button>
+          <button type="button" className={styles.linkCancel} onClick={onCancel}>
+            {t('richText.linkCancel')}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }

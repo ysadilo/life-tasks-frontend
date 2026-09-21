@@ -109,3 +109,24 @@
   outline: 2px solid var(--color-accent-border);
   outline-offset: 1px;
 }
+
+.linkForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.linkFooter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.linkCancel {
+  border: none;
+  background: transparent;
+  padding: 10px 13px;
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}

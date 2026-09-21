@@ -85,7 +85,11 @@
     "bulletList": "Bullet list",
     "orderedList": "Numbered list",
     "link": "Link",
-    "linkPrompt": "Link URL"
+    "unlink": "Remove link",
+    "linkModalTitle": "Add link",
+    "linkPlaceholder": "https://…",
+    "linkApply": "Apply",
+    "linkCancel": "Cancel"
   },
   "taskForm": {
     "newTitle": "New task",
