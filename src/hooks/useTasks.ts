@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
+import { localISODate } from '../lib/dateUtils';
 import type { Energy, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../models';
+
+export type ResolveMissedAction = 'done' | 'dismiss' | 'addToday';
 
 export interface TaskInput {
   title: string;
@@ -16,10 +19,13 @@ export interface TaskInput {
   recurrenceEndDate?: string | null;
 }
 
+/** Passing the local calendar day drives the BE's lazy today→triage rollover
+ *  and recurring missed-occurrence detection (see the tasks-backend repo). */
 export function useTasksByStatus(status: TaskStatus) {
+  const today = localISODate();
   return useQuery({
-    queryKey: ['tasks', { status }],
-    queryFn: () => api.get<Task[]>(`/tasks?status=${status}`),
+    queryKey: ['tasks', { status, today }],
+    queryFn: () => api.get<Task[]>(`/tasks?status=${status}&today=${today}`),
   });
 }
 
@@ -32,9 +38,10 @@ export function useTasksInRange(from: string, to: string) {
 
 /** Recurring series (the calendar/Today expand their virtual occurrences). */
 export function useRecurringTasks() {
+  const today = localISODate();
   return useQuery({
-    queryKey: ['tasks', { recurring: true }],
-    queryFn: () => api.get<Task[]>(`/tasks?recurring=true`),
+    queryKey: ['tasks', { recurring: true, today }],
+    queryFn: () => api.get<Task[]>(`/tasks?recurring=true&today=${today}`),
   });
 }
 
@@ -44,6 +51,16 @@ export function useToggleOccurrence() {
   return useMutation({
     mutationFn: ({ id, date, done }: { id: string; date: string; done: boolean }) =>
       api.patch<Task>(`/tasks/${id}`, { occurrenceDate: date, occurrenceDone: done }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+  });
+}
+
+export function useResolveMissedOccurrence() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, action }: { id: string; action: ResolveMissedAction }) =>
+      api.patch<Task>(`/tasks/${id}`, { resolveMissedAction: action }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
   });
 }

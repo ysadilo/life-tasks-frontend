@@ -55,6 +55,11 @@ export default function Today() {
     () => (recurringTasks ?? []).filter((task) => hasOccurrenceOn(task, today)),
     [recurringTasks, today]
   );
+  const missedOccurrenceCount = useMemo(
+    () => (recurringTasks ?? []).filter((task) => (task.missedDates ?? []).length > 0).length,
+    [recurringTasks]
+  );
+  const triageCount = (triageTasks?.length ?? 0) + missedOccurrenceCount;
 
   const sortedOpenTasks = useMemo(() => {
     const tasks = [...(openTasks ?? []), ...recurringToday.filter((task) => !isOccurrenceDone(task, today))];
@@ -127,9 +132,9 @@ export default function Today() {
         }
       />
 
-      {!!triageTasks?.length && (
+      {!!triageCount && (
         <div className={styles.triageBanner}>
-          <span>{t('today.triageBannerText', { count: triageTasks.length })}</span>
+          <span>{t('today.triageBannerText', { count: triageCount })}</span>
           <Button variant="primary" className={styles.triageBannerAction} onClick={() => navigate('/triage')}>
             {t('today.startTriage')}
           </Button>

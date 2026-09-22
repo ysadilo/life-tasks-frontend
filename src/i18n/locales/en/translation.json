@@ -182,7 +182,11 @@
     "sortedBacklog": "{{count}} back to the backlog",
     "sortedDone": "{{count}} marked done",
     "sortedDropped": "{{count}} dropped",
-    "goToToday": "Go to Today"
+    "goToToday": "Go to Today",
+    "missedBadge": "Missed · {{date}}",
+    "markDone": "Mark done",
+    "addToToday": "Add to today",
+    "dismissMissed": "Dismiss"
   },
   "backlog": {
     "title": "Backlog",

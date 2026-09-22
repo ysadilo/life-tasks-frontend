@@ -19,5 +19,9 @@ export interface Task {
   recurrenceEndDate?: string | null;
   /** Occurrence days (ISO) that have been ticked off, for a recurring series. */
   completedDates?: string[];
+  /** Unresolved missed occurrence day(s) (ISO), surfaced in Triage. In practice holds at most one. */
+  missedDates?: string[];
+  /** Occurrence day(s) (ISO) forced onto Today outside the normal cadence. */
+  extraTodayDates?: string[];
   completedAt?: string | null;
 }
