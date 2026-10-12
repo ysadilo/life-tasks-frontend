@@ -123,6 +123,10 @@
   gap: 10px;
 }
 
+.actionsThree {
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .action {
   display: flex;
   align-items: center;
