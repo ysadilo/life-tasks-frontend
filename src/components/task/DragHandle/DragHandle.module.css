@@ -11,6 +11,7 @@
   color: var(--color-text-faint);
   cursor: grab;
   touch-action: none;
+  transition: color var(--dur-base);
 }
 
 .handle:hover {

@@ -5,6 +5,7 @@ import { PageHeader, PageState } from '../../components/layout';
 import { Button, Chip, RichText } from '../../components/ui';
 import { MetaChip } from '../../components/task';
 import { useTriageQueue, type TriageAction } from '../../hooks/useTriageQueue';
+import type { ResolveMissedAction } from '../../hooks/useTasks';
 import { daysOverdue } from '../../lib/taskDates';
 import { lifeAreaColorVar } from '../../lib/lifeAreas';
 import { useLifeAreaLookup } from '../../hooks/useLifeAreas';
@@ -17,16 +18,32 @@ const ACTION_KEYS: Record<string, TriageAction> = {
   ArrowDown: 'drop',
 };
 
+const MISSED_ACTION_KEYS: Record<string, ResolveMissedAction> = {
+  ArrowRight: 'addToday',
+  ArrowUp: 'done',
+  ArrowDown: 'dismiss',
+};
+
 export default function Triage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { current, index, total, act, undo, canUndo, history, isLoading, error, done } = useTriageQueue();
+  const { current, index, total, act, actMissed, undo, canUndo, history, isLoading, error, done } = useTriageQueue();
   const areas = useLifeAreaLookup();
-  const currentArea = current?.areaId ? areas.get(current.areaId) : undefined;
+  const currentTask = current?.task;
+  const currentArea = currentTask?.areaId ? areas.get(currentTask.areaId) : undefined;
+  const isMissed = current?.kind === 'missed';
 
   useEffect(() => {
     if (!current) return;
     const onKeyDown = (e: KeyboardEvent) => {
+      if (current.kind === 'missed') {
+        const missedAction = MISSED_ACTION_KEYS[e.key];
+        if (missedAction) {
+          e.preventDefault();
+          actMissed(missedAction);
+        }
+        return;
+      }
       const action = ACTION_KEYS[e.key];
       if (action) {
         e.preventDefault();
@@ -37,12 +54,16 @@ export default function Triage() {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [current, act, undo]);
+  }, [current, act, actMissed, undo]);
 
   if (isLoading) return <PageState>{t('triage.loading')}</PageState>;
   if (error) return <PageState>{t('triage.error')}</PageState>;
 
-  const overdue = current ? daysOverdue(current) : 0;
+  const overdue = currentTask && !isMissed ? daysOverdue(currentTask) : 0;
+  const missedDateLabel =
+    isMissed && currentTask?.missedDates?.[0]
+      ? new Date(currentTask.missedDates[0]).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long' })
+      : '';
 
   const counts: Record<TriageAction, number> = { today: 0, backlog: 0, done: 0, drop: 0 };
   for (const entry of history) counts[entry.action]++;
@@ -101,10 +122,16 @@ export default function Triage() {
         ) : (
           <div className={styles.card}>
             <div className={styles.badgeRow}>
-              <Chip variant="danger" pill>
-                {current.priority ? `${current.priority} · ` : ''}
-                {t('triage.overdue', { count: overdue })}
-              </Chip>
+              {isMissed ? (
+                <Chip variant="danger" pill>
+                  {t('triage.missedBadge', { date: missedDateLabel })}
+                </Chip>
+              ) : (
+                <Chip variant="danger" pill>
+                  {currentTask?.priority ? `${currentTask.priority} · ` : ''}
+                  {t('triage.overdue', { count: overdue })}
+                </Chip>
+              )}
               {currentArea && (
                 <span className={styles.area}>
                   <span className={styles.areaDot} style={{ background: lifeAreaColorVar(currentArea.order) }} />
@@ -113,36 +140,63 @@ export default function Triage() {
               )}
             </div>
 
-            <div className={styles.title}>{current.title}</div>
-            {current.description && <RichText html={current.description} className={styles.description} />}
+            <div className={styles.title}>{currentTask?.title}</div>
+            {currentTask?.description && <RichText html={currentTask.description} className={styles.description} />}
 
             <div className={styles.metaRow}>
-              {current.estimatedMinutes != null && <MetaChip axis="effort" minutes={current.estimatedMinutes} />}
-              {current.energy && <MetaChip axis="energy" value={current.energy} />}
+              {currentTask?.estimatedMinutes != null && (
+                <MetaChip axis="effort" minutes={currentTask.estimatedMinutes} />
+              )}
+              {currentTask?.energy && <MetaChip axis="energy" value={currentTask.energy} />}
             </div>
 
-            <div className={styles.actions}>
-              <button type="button" className={`${styles.action} ${styles.today}`} onClick={() => act('today')}>
-                {t('triage.moveToToday')}
-                <span className={styles.key}>→</span>
-              </button>
-              <button type="button" className={`${styles.action} ${styles.backlog}`} onClick={() => act('backlog')}>
-                {t('triage.sendToBacklog')}
-                <span className={styles.key}>←</span>
-              </button>
-              <button type="button" className={`${styles.action} ${styles.done}`} onClick={() => act('done')}>
-                {t('triage.itsDone')}
-                <span className={styles.key}>↑</span>
-              </button>
-              <button type="button" className={`${styles.action} ${styles.drop}`} onClick={() => act('drop')}>
-                {t('triage.dropIt')}
-                <span className={styles.key}>↓</span>
-              </button>
-            </div>
+            {isMissed ? (
+              <div className={`${styles.actions} ${styles.actionsThree}`}>
+                <button type="button" className={`${styles.action} ${styles.done}`} onClick={() => actMissed('done')}>
+                  {t('triage.markDone')}
+                  <span className={styles.key}>↑</span>
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.action} ${styles.today}`}
+                  onClick={() => actMissed('addToday')}
+                >
+                  {t('triage.addToToday')}
+                  <span className={styles.key}>→</span>
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.action} ${styles.drop}`}
+                  onClick={() => actMissed('dismiss')}
+                >
+                  {t('triage.dismissMissed')}
+                  <span className={styles.key}>↓</span>
+                </button>
+              </div>
+            ) : (
+              <div className={styles.actions}>
+                <button type="button" className={`${styles.action} ${styles.today}`} onClick={() => act('today')}>
+                  {t('triage.moveToToday')}
+                  <span className={styles.key}>→</span>
+                </button>
+                <button type="button" className={`${styles.action} ${styles.backlog}`} onClick={() => act('backlog')}>
+                  {t('triage.sendToBacklog')}
+                  <span className={styles.key}>←</span>
+                </button>
+                <button type="button" className={`${styles.action} ${styles.done}`} onClick={() => act('done')}>
+                  {t('triage.itsDone')}
+                  <span className={styles.key}>↑</span>
+                </button>
+                <button type="button" className={`${styles.action} ${styles.drop}`} onClick={() => act('drop')}>
+                  {t('triage.dropIt')}
+                  <span className={styles.key}>↓</span>
+                </button>
+              </div>
+            )}
 
             <span className={styles.hint}>
               {t('triage.hint')}{' '}
-              {canUndo && (
+              {!isMissed && canUndo && (
                 <>
                   <span className={styles.hintKey}>U</span> {t('triage.hintUndo')}
                 </>

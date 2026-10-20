@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
 import { Button, Input, EmptyState } from '../../components/ui';
-import { TaskRow, taskForm } from '../../components/task';
+import { TaskRow, taskForm, leaveThen } from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { lifeAreaColorVar } from '../../lib/lifeAreas';
@@ -97,7 +97,10 @@ export default function Backlog() {
                 task={task}
                 onEdit={() => taskForm.openEdit(task)}
                 trailing={
-                  <Button variant="secondary" onClick={() => updateStatus.mutate({ id: task.id, status: 'today' })}>
+                  <Button
+                    variant="secondary"
+                    onClick={() => leaveThen(task.id, () => updateStatus.mutateAsync({ id: task.id, status: 'today' }))}
+                  >
                     {t('task.addToToday')}
                   </Button>
                 }
