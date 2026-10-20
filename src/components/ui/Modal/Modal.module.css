@@ -8,8 +8,16 @@
   box-shadow: var(--shadow-shell);
 }
 
+.dialog[open] {
+  animation: var(--kf-pop-in) var(--dur-base) var(--ease-out);
+}
+
 .dialog::backdrop {
   background: rgba(0, 0, 0, 0.45);
+}
+
+.dialog[open]::backdrop {
+  animation: var(--kf-fade-in) var(--dur-base);
 }
 
 .inner {
@@ -43,4 +51,14 @@
   color: var(--color-text-secondary);
   font: 500 16px/1 var(--font-sans);
   cursor: pointer;
+  transition:
+    color var(--dur-base),
+    border-color var(--dur-base),
+    background var(--dur-base);
+}
+
+.close:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent-border);
+  background: var(--color-surface);
 }

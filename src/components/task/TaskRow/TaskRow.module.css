@@ -6,6 +6,22 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
+  animation: var(--kf-fade-up) var(--dur-base) var(--ease-out);
+  transition:
+    box-shadow var(--dur-fast),
+    border-color var(--dur-fast),
+    opacity var(--dur-fast);
+}
+
+.row:hover {
+  border-color: var(--color-accent-border);
+}
+
+.leaving {
+  max-height: 240px;
+  overflow: hidden;
+  pointer-events: none;
+  animation: var(--kf-curdle-away) 500ms ease-in forwards;
 }
 
 .dueSoon {
@@ -45,6 +61,7 @@
 .done {
   color: var(--color-text-faint);
   text-decoration: line-through;
+  transition: color var(--dur-base);
 }
 
 .description {

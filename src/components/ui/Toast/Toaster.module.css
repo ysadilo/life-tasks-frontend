@@ -21,6 +21,7 @@
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-shell);
   cursor: pointer;
+  animation: var(--kf-fade-up) var(--dur-base) var(--ease-spring);
 }
 
 @media (max-width: 768px) {
