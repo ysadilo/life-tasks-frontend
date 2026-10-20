@@ -52,7 +52,8 @@ export function useUpdateTaskStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: TaskStatus }) => api.patch<Task>(`/tasks/${id}`, { status }),
+    mutationFn: ({ id, ...patch }: { id: string; status: TaskStatus; dueDate?: string | null }) =>
+      api.patch<Task>(`/tasks/${id}`, patch),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
   });
 }

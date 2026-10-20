@@ -45,7 +45,8 @@ export function useTriageQueue() {
         updateStatus.mutate({ id: current.id, status: 'today' });
         break;
       case 'backlog':
-        updateStatus.mutate({ id: current.id, status: 'backlog' });
+        // Clear the due date, or the BE would promote the overdue task straight back to Today.
+        updateStatus.mutate({ id: current.id, status: 'backlog', dueDate: null });
         break;
       case 'done':
         updateStatus.mutate({ id: current.id, status: 'done' });
@@ -84,7 +85,7 @@ export function useTriageQueue() {
         break;
       default:
         setQueue((q) => [last.task, ...(q ?? [])]);
-        updateStatus.mutate({ id: last.task.id, status: 'needs_triage' });
+        updateStatus.mutate({ id: last.task.id, status: 'needs_triage', dueDate: last.task.dueDate });
         break;
     }
   }
