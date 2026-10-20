@@ -57,6 +57,17 @@
   font: 500 14px/1 var(--font-sans);
   color: var(--color-text-secondary);
   text-decoration: none;
+  transition:
+    background var(--dur-base),
+    border-color var(--dur-base),
+    color var(--dur-base);
+}
+
+/* Fades in the same fill the active item has, only fainter. */
+.navItem:hover:not(.navItemActive) {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text);
 }
 
 .navItemActive {
@@ -161,6 +172,9 @@
   font-size: 14px;
   color: var(--color-text-secondary);
   cursor: pointer;
+  transition:
+    border-color var(--dur-base),
+    color var(--dur-base);
 }
 
 .signOutButton:hover {

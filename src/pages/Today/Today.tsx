@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader, PageState } from '../../components/layout';
-import { Button, EmptyState } from '../../components/ui';
+import { Button, EmptyState, SamoyedCheer } from '../../components/ui';
 import {
   TaskRow,
   DoneTaskRow,
@@ -40,10 +40,13 @@ export default function Today() {
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const [celebrating, setCelebrating] = useState(false);
 
   const today = useMemo(() => new Date(), []);
 
   const toggle = (task: Task, done: boolean) => {
+    // Finishing the only remaining open task (recurring occurrences included) earns a cheer.
+    if (done && sortedOpenTasks.length === 1) setCelebrating(true);
     if (task.recurrence) {
       toggleOccurrence.mutate({ id: task.id, date: occurrenceISO(today), done });
     } else {
@@ -101,6 +104,7 @@ export default function Today() {
 
   return (
     <div className={styles.page}>
+      {celebrating && <SamoyedCheer onDone={() => setCelebrating(false)} />}
       <PageHeader
         title={t('today.title')}
         subtitle={t('today.subtitle', { date: dateLabel, done: doneToday.length, total: totalCount })}

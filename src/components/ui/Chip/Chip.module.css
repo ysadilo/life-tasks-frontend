@@ -6,6 +6,7 @@
   padding: 6px 9px;
   border-radius: var(--radius-sm);
   white-space: nowrap;
+  animation: var(--kf-pop-in) var(--dur-fast) var(--ease-out);
 }
 
 .pill {

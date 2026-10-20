@@ -10,6 +10,14 @@
   color: var(--color-text-secondary);
   font: 500 12px/1 var(--font-sans);
   cursor: pointer;
+  transition:
+    border-color var(--dur-base),
+    color var(--dur-base);
+}
+
+.toggle:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent-border);
 }
 
 .icon {

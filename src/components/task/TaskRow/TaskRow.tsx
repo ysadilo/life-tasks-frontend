@@ -10,6 +10,7 @@ import { dueUrgency, type DueUrgency } from '../../../lib/taskDates';
 import { htmlToText } from '../../../lib/richText';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
 import type { Task } from '../../../models';
+import { useIsLeaving } from '../taskLeavingStore';
 import styles from './TaskRow.module.css';
 
 interface DragHandleProps {
@@ -50,11 +51,17 @@ export function TaskRow({
   dragHandleProps,
 }: TaskRowProps) {
   const { t } = useTranslation();
+  const leaving = useIsLeaving(task.id);
   const areas = useLifeAreaLookup();
   const urgency = dueUrgency(task);
   const areaName = task.areaId ? areas.get(task.areaId)?.name : undefined;
   const hasChips = showChips && (urgency || task.priority || task.energy || task.estimatedMinutes != null || areaName);
-  const rowClassName = [styles.row, urgency && styles.dueSoon, dragHandleProps?.dragging && styles.dragging]
+  const rowClassName = [
+    styles.row,
+    urgency && styles.dueSoon,
+    dragHandleProps?.dragging && styles.dragging,
+    leaving && styles.leaving,
+  ]
     .filter(Boolean)
     .join(' ');
 
