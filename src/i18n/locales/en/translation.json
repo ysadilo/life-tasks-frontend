@@ -214,5 +214,21 @@
     "daySummary_one": "{{count}} task · {{done}} done",
     "daySummary_other": "{{count}} tasks · {{done}} done",
     "addTask": "Add task"
+  },
+  "cheer": {
+    "phrases": [
+      "Nice!",
+      "Yay!",
+      "All done!",
+      "You did it!",
+      "Great job!",
+      "Clean slate!",
+      "Good human!",
+      "Woof, well done!",
+      "Paw-some!",
+      "Treat time? You earned it!",
+      "Tail wag for you!",
+      "Best human ever!"
+    ]
   }
 }
