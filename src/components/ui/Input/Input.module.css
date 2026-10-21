@@ -5,6 +5,13 @@
   border-radius: var(--radius-input);
   font: 400 13px/1 var(--font-sans);
   color: var(--color-text);
+  transition:
+    border-color 0.12s,
+    box-shadow 0.12s;
+}
+
+.input:hover:not(:disabled):not(:focus) {
+  border-color: var(--color-border-strong);
 }
 
 .input::placeholder {
@@ -12,6 +19,20 @@
 }
 
 .input:focus {
-  outline: 2px solid var(--color-accent-border);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--color-accent-border);
+  box-shadow: 0 0 0 4px var(--color-focus-halo);
+}
+
+.input[aria-invalid='true'] {
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger-solid);
+  color: var(--color-danger-text);
+}
+
+.input:disabled {
+  background: var(--color-hover-bg);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-faint);
+  cursor: not-allowed;
 }

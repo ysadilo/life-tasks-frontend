@@ -8,17 +8,41 @@
   padding: 0;
   cursor: pointer;
   transition:
-    background var(--dur-fast),
+    background-color var(--dur-fast),
     border-color var(--dur-fast),
     transform var(--dur-fast) var(--ease-out);
 }
 
 .checkbox:hover {
-  transform: scale(1.1);
+  border-color: var(--color-border-strong);
+  background: var(--color-hover-bg);
+}
+
+.checkbox:active {
+  background: var(--color-pressed-bg);
+  transform: scale(0.88);
+}
+
+.checkbox:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-surface),
+    0 0 0 5px var(--color-focus-ring);
+}
+
+.checkbox:disabled {
+  border-color: var(--color-border-subtle);
+  background: var(--color-hover-bg);
+  cursor: not-allowed;
 }
 
 .checked {
   background: var(--color-success-solid);
   border-color: var(--color-success-solid-border);
   animation: var(--kf-check-pop) 300ms var(--ease-spring);
+}
+
+.checked:hover {
+  background: var(--color-success-solid);
+  border-color: var(--color-success-solid-border);
 }
