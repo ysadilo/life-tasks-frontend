@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal } from '../../ui/Modal';
+import { SidePanel } from '../../ui/SidePanel';
 import { Button } from '../../ui/Button';
 import { Input } from '../../ui/Input';
 import { RichTextEditor } from '../../ui/RichText';
@@ -15,23 +15,23 @@ import { localISODate } from '../../../lib/dateUtils';
 import { ENERGIES, EFFORT_MINUTES, energyRampKey, effortRampKey, priorityRampKey } from '../../../lib/taskMeta';
 import type { Energy, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../../../models';
 import { OptionGroup } from '../OptionGroup';
-import styles from './TaskFormModal.module.css';
+import styles from './TaskFormPanel.module.css';
 
-/** Mount once (see AppShell); opened from anywhere via `taskForm.openNew()` / `taskForm.openEdit()`. */
-export function TaskFormModal() {
+/** Mount once (see AppShell, beside <main>); opened from anywhere via `taskForm.openNew()` / `taskForm.openEdit()`. */
+export function TaskFormPanel() {
   const { open, task, presetDate } = useTaskFormState();
   const { t } = useTranslation();
   const onClose = taskForm.close;
 
   return (
-    <Modal
+    <SidePanel
       open={open}
       onClose={onClose}
       closeLabel={t('taskForm.close')}
       title={task ? t('taskForm.editTitle') : t('taskForm.newTitle')}
     >
       <TaskForm key={task?.id ?? presetDate ?? 'new'} task={task} presetDate={presetDate} onClose={onClose} />
-    </Modal>
+    </SidePanel>
   );
 }
 
@@ -107,88 +107,92 @@ function TaskForm({
 
   return (
     <form className={styles.form} onSubmit={onSubmit}>
-      <Input
-        autoFocus
-        placeholder={t('taskForm.titlePlaceholder')}
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <RichTextEditor
-        value={description}
-        onChange={setDescription}
-        placeholder={t('taskForm.descriptionPlaceholder')}
-        ariaLabel={t('taskForm.descriptionPlaceholder')}
-      />
-
-      <OptionGroup
-        stretch
-        label={t('taskForm.priority')}
-        value={priority}
-        onChange={(v) => setPriority(v as Priority | '')}
-        options={PRIORITIES.map((p) => ({ value: p, label: p, rampKey: priorityRampKey(p) }))}
-      />
-
-      <div className={styles.grid2}>
-        <OptionGroup
-          label={t('taskForm.effort')}
-          value={effort}
-          onChange={setEffort}
-          options={EFFORT_MINUTES.map((m) => ({
-            value: String(m),
-            label: t(`taskForm.effortOption.${m}`),
-            rampKey: effortRampKey(m),
-          }))}
+      <div className={styles.fields}>
+        <Input
+          autoFocus
+          className={styles.titleInput}
+          placeholder={t('taskForm.titlePlaceholder')}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
-        <OptionGroup
-          label={t('taskForm.energy')}
-          value={energy}
-          onChange={(v) => setEnergy(v as Energy | '')}
-          options={ENERGIES.map((e) => ({
-            value: e,
-            label: t(`taskForm.energyOption.${e}`),
-            rampKey: energyRampKey(e),
-          }))}
-        />
-      </div>
+        <div className={styles.props}>
+          <label className={styles.row}>
+            <span className={styles.label}>{recurrence ? t('taskForm.startsOn') : t('taskForm.dueDate')}</span>
+            <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+          </label>
 
-      <div className={styles.grid2}>
-        <label className={styles.field}>
-          <span className={styles.label}>{t('taskForm.area')}</span>
-          <select className={styles.select} value={area} onChange={(e) => setArea(e.target.value as LifeAreaId | '')}>
-            <option value="">{t('taskForm.areaNone')}</option>
-            {lifeAreas?.map(({ id, name }) => (
-              <option key={id} value={id}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.field}>
-          <span className={styles.label}>{recurrence ? t('taskForm.startsOn') : t('taskForm.dueDate')}</span>
-          <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-        </label>
-      </div>
-
-      <OptionGroup
-        label={t('taskForm.recurrence')}
-        value={recurrence}
-        onChange={(v) => setRecurrence(v as Recurrence | '')}
-        options={RECURRENCES.map((r) => ({ value: r, label: t(`taskForm.recurrenceOption.${r}`) }))}
-      />
-      {missingStart && <p className={styles.error}>{t('taskForm.startsOnRequired')}</p>}
-      {recurrence && (
-        <label className={styles.field}>
-          <span className={styles.label}>{t('taskForm.recurrenceEnd')}</span>
-          <Input
-            type="date"
-            value={recurrenceEnd}
-            min={dueDate || undefined}
-            onChange={(e) => setRecurrenceEnd(e.target.value)}
+          <OptionGroup
+            row
+            label={t('taskForm.priority')}
+            value={priority}
+            onChange={(v) => setPriority(v as Priority | '')}
+            options={PRIORITIES.map((p) => ({ value: p, label: p, rampKey: priorityRampKey(p) }))}
           />
-        </label>
-      )}
+          <OptionGroup
+            row
+            label={t('taskForm.effort')}
+            value={effort}
+            onChange={setEffort}
+            options={EFFORT_MINUTES.map((m) => ({
+              value: String(m),
+              label: t(`taskForm.effortOption.${m}`),
+              rampKey: effortRampKey(m),
+            }))}
+          />
+          <OptionGroup
+            row
+            label={t('taskForm.energy')}
+            value={energy}
+            onChange={(v) => setEnergy(v as Energy | '')}
+            options={ENERGIES.map((e) => ({
+              value: e,
+              label: t(`taskForm.energyOption.${e}`),
+              rampKey: energyRampKey(e),
+            }))}
+          />
 
-      {failed && <p className={styles.error}>{t('taskForm.error')}</p>}
+          <label className={styles.row}>
+            <span className={styles.label}>{t('taskForm.area')}</span>
+            <select className={styles.select} value={area} onChange={(e) => setArea(e.target.value as LifeAreaId | '')}>
+              <option value="">{t('taskForm.areaNone')}</option>
+              {lifeAreas?.map(({ id, name }) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <OptionGroup
+            row
+            label={t('taskForm.recurrence')}
+            value={recurrence}
+            onChange={(v) => setRecurrence(v as Recurrence | '')}
+            options={RECURRENCES.map((r) => ({ value: r, label: t(`taskForm.recurrenceOption.${r}`) }))}
+          />
+          {recurrence && (
+            <label className={styles.row}>
+              <span className={styles.label}>{t('taskForm.recurrenceEnd')}</span>
+              <Input
+                type="date"
+                value={recurrenceEnd}
+                min={dueDate || undefined}
+                onChange={(e) => setRecurrenceEnd(e.target.value)}
+              />
+            </label>
+          )}
+        </div>
+        {missingStart && <p className={styles.error}>{t('taskForm.startsOnRequired')}</p>}
+
+        <RichTextEditor
+          value={description}
+          onChange={setDescription}
+          placeholder={t('taskForm.descriptionPlaceholder')}
+          ariaLabel={t('taskForm.descriptionPlaceholder')}
+        />
+
+        {failed && <p className={styles.error}>{t('taskForm.error')}</p>}
+      </div>
 
       <div className={styles.footer}>
         {recurrence ? (

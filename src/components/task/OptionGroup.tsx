@@ -14,6 +14,8 @@ interface BaseProps {
   label: string;
   options: Option[];
   stretch?: boolean;
+  /** Label in a fixed left column with the options beside it (property-list layout). */
+  row?: boolean;
 }
 
 type OptionGroupProps =
@@ -22,7 +24,7 @@ type OptionGroupProps =
 
 /** Row of toggle-chip buttons; single-select clears on re-click, multi-select toggles membership. */
 export function OptionGroup(props: OptionGroupProps) {
-  const { label, options, stretch = false } = props;
+  const { label, options, stretch = false, row = false } = props;
 
   const isSelected = (value: string) => (props.multiple ? props.value.includes(value) : props.value === value);
 
@@ -36,7 +38,7 @@ export function OptionGroup(props: OptionGroupProps) {
   };
 
   return (
-    <div className={styles.field}>
+    <div className={row ? styles.fieldRow : styles.field}>
       <span className={styles.label}>{label}</span>
       <div className={styles.options}>
         {options.map((option) => {

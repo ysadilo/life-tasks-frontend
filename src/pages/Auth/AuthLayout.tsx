@@ -2,9 +2,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './AuthLayout.module.css';
 
-const PILL_KEYS = ['pwa', 'offline', 'family'] as const;
-
-/** Split-panel shell from mockup 01: gold marketing panel + a slot for the Clerk widget. */
+/** Split-panel shell from mockup 01: product-preview marketing panel + a slot for the sign-in form. */
 export function AuthLayout({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
 
@@ -16,17 +14,37 @@ export function AuthLayout({ children }: { children: ReactNode }) {
             <span className={styles.logoMark} />
             <span className={styles.logoText}>{t('app.name')}</span>
           </div>
+          <div className={styles.preview} aria-hidden="true">
+            <div className={styles.todayCard}>
+              <span className={styles.cardTitle}>{t('nav.today')}</span>
+              <div className={styles.previewRow}>
+                <span className={styles.box} />
+                <span className={styles.rowTitle}>{t('auth.preview.taxes')}</span>
+                <span className={styles.chipP1}>P1</span>
+              </div>
+              <div className={styles.previewRow}>
+                <span className={styles.box} />
+                <span className={styles.rowTitle}>{t('auth.preview.dentist')}</span>
+                <span className={styles.chipDue}>{t('task.dueToday')}</span>
+              </div>
+              <div className={`${styles.previewRow} ${styles.previewDone}`}>
+                <span className={`${styles.box} ${styles.boxDone}`} />
+                <span className={styles.rowTitle}>{t('auth.preview.gym')}</span>
+              </div>
+            </div>
+            <div className={styles.triageCard}>
+              <span className={styles.chipDue}>{t('auth.preview.fromYesterday')}</span>
+              <span className={styles.triageTitle}>{t('auth.preview.bike')}</span>
+              <div className={styles.triageActions}>
+                <span className={styles.triageToday}>{t('nav.today')}</span>
+                <span className={styles.triageBacklog}>{t('nav.backlog')}</span>
+              </div>
+            </div>
+          </div>
           <div className={styles.pitch}>
             <h1 className={styles.headline}>{t('auth.headline')}</h1>
             <p className={styles.blurb}>{t('auth.blurb')}</p>
           </div>
-          <ul className={styles.pills}>
-            {PILL_KEYS.map((key) => (
-              <li key={key} className={styles.pill}>
-                {t(`auth.pill.${key}`)}
-              </li>
-            ))}
-          </ul>
         </aside>
         <div className={styles.form}>{children}</div>
       </div>

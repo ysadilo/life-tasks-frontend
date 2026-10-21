@@ -75,19 +75,19 @@ export function TaskRow({
             <RecurrenceIcon recurrence={task.recurrence} />
           </span>
           {task.description && <span className={styles.description}>{htmlToText(task.description)}</span>}
+          {hasChips && (
+            <div className={styles.chips}>
+              {urgency && <Chip variant="danger">{t(dueLabelKey(urgency))}</Chip>}
+              {task.priority && <MetaChip axis="priority" value={task.priority} />}
+              {task.energy && <MetaChip axis="energy" value={task.energy} />}
+              {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
+              {areaName && <Chip>{areaName}</Chip>}
+            </div>
+          )}
         </div>
       </div>
       {onEdit && <EditButton title={task.title} onClick={onEdit} />}
       {trailing}
-      {hasChips && (
-        <div className={styles.chips}>
-          {urgency && <Chip variant="danger">{t(dueLabelKey(urgency))}</Chip>}
-          {task.priority && <MetaChip axis="priority" value={task.priority} />}
-          {task.energy && <MetaChip axis="energy" value={task.energy} />}
-          {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
-          {areaName && <Chip>{areaName}</Chip>}
-        </div>
-      )}
     </div>
   );
 }

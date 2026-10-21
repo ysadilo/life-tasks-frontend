@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { Modal } from '../../ui/Modal';
+import { SidePanel } from '../../ui/SidePanel';
 import { Button } from '../../ui/Button';
 import { toast } from '../../ui/Toast';
 import { TaskRow } from '../TaskRow';
 import { useCreateTask, useDeleteTask } from '../../../hooks/useTasks';
 import { taskPreview, useTaskPreviewState } from '../taskPreviewStore';
-import styles from './TaskPreviewModal.module.css';
+import styles from './TaskPreviewPanel.module.css';
 
-/** Mount once (see AppShell); opened via `taskPreview.open(task)` for past calendar days. */
-export function TaskPreviewModal() {
+/** Mount once (see AppShell, beside <main>); opened via `taskPreview.open(task)` for past calendar days. */
+export function TaskPreviewPanel() {
   const { open, task } = useTaskPreviewState();
   const { t } = useTranslation();
   const onClose = taskPreview.close;
@@ -39,7 +39,7 @@ export function TaskPreviewModal() {
   };
 
   return (
-    <Modal open={open} onClose={onClose} closeLabel={t('taskForm.close')} title={t('taskPreview.title')}>
+    <SidePanel open={open} onClose={onClose} closeLabel={t('taskForm.close')} title={t('taskPreview.title')}>
       {task && (
         <div className={styles.body}>
           <TaskRow task={task} />
@@ -59,6 +59,6 @@ export function TaskPreviewModal() {
           </div>
         </div>
       )}
-    </Modal>
+    </SidePanel>
   );
 }

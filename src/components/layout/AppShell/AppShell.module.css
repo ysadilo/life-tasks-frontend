@@ -1,7 +1,20 @@
 .shell {
   display: flex;
   height: 100dvh;
-  background: var(--color-bg);
+  background: var(--color-sidebar-bg);
+}
+
+/* One inset canvas beside the sidebar; the task side panel lives inside it. */
+.canvas {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  margin: 10px 10px 10px 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .main {
@@ -15,5 +28,12 @@
 @media (max-width: 768px) {
   .shell {
     flex-direction: column;
+    background: var(--color-bg);
+  }
+
+  .canvas {
+    margin: 0;
+    border: none;
+    border-radius: 0;
   }
 }
