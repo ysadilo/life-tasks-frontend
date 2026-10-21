@@ -133,6 +133,11 @@
     "copyToBacklog": "Copy to backlog",
     "copiedToast": "Copied to backlog."
   },
+  "filters": {
+    "showing": "Showing",
+    "clear": "Clear",
+    "remove": "Remove filter {{label}}"
+  },
   "today": {
     "title": "Today",
     "subtitle": "{{date}} · {{done}} of {{total}} done",

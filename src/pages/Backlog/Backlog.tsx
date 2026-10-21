@@ -2,7 +2,17 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
 import { Button, Input, EmptyState } from '../../components/ui';
-import { TaskRow, taskForm, leaveThen } from '../../components/task';
+import {
+  TaskRow,
+  taskForm,
+  leaveThen,
+  AppliedFilters,
+  TaskFilterPopover,
+  EMPTY_TASK_FILTERS,
+  activeFilterCount,
+  matchesFilters,
+  type TaskFilters,
+} from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { lifeAreaColorVar } from '../../lib/lifeAreas';
@@ -38,12 +48,14 @@ export default function Backlog() {
   const { data: areas } = useLifeAreas();
   const updateStatus = useUpdateTaskStatus();
   const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const filteredTasks = useMemo(() => {
     const query = search.trim().toLowerCase();
-    if (!query) return tasks ?? [];
-    return (tasks ?? []).filter((task) => task.title.toLowerCase().includes(query));
-  }, [tasks, search]);
+    return (tasks ?? []).filter((task) => task.title.toLowerCase().includes(query) && matchesFilters(task, filters));
+  }, [tasks, search, filters]);
+  const filterCount = activeFilterCount(filters);
 
   const groups = useMemo(() => groupByArea(filteredTasks, areas ?? []), [filteredTasks, areas]);
 
@@ -63,17 +75,33 @@ export default function Backlog() {
               onChange={(e) => setSearch(e.target.value)}
             />
             <Button variant="ghost">{t('backlog.groupByArea')}</Button>
+            <div className={styles.filterWrap}>
+              <Button variant="ghost" onClick={() => setFilterOpen((v) => !v)}>
+                {filterCount > 0 ? `${t('today.filter')} · ${filterCount}` : t('today.filter')}
+              </Button>
+              {filterOpen && (
+                <TaskFilterPopover
+                  filters={filters}
+                  onChange={setFilters}
+                  matchCount={filteredTasks.length}
+                  onClose={() => setFilterOpen(false)}
+                />
+              )}
+            </div>
           </>
         }
       />
+
+      <AppliedFilters filters={filters} onChange={setFilters} />
 
       <div className={styles.groups}>
         {groups.length === 0 && (
           <EmptyState
             title={t('backlog.emptyTitle')}
-            description={search ? t('backlog.emptyNoResults') : t('backlog.emptyDefault')}
+            description={search || filterCount ? t('backlog.emptyNoResults') : t('backlog.emptyDefault')}
             action={
-              !search && (
+              !search &&
+              !filterCount && (
                 <Button variant="primary" onClick={() => taskForm.openNew()}>
                   {t('sidebar.newTask')}
                 </Button>

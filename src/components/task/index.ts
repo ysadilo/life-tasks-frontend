@@ -4,6 +4,7 @@ export { MetaChip } from './MetaChip';
 export { TaskChip } from './TaskChip';
 export { TaskFormPanel } from './TaskFormPanel';
 export { TaskPreviewPanel } from './TaskPreviewPanel';
+export { AppliedFilters } from './AppliedFilters';
 export { TaskFilterPopover, EMPTY_TASK_FILTERS, activeFilterCount, matchesFilters } from './TaskFilterPopover';
 export type { TaskFilters } from './TaskFilterPopover';
 export { TaskSortPopover, SORT_OPTIONS, SORT_COMPARATORS } from './TaskSortPopover';
