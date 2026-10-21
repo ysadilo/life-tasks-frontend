@@ -1,8 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { useCreateTask, useDeleteTask, useTasksByStatus, useUpdateTaskStatus } from './useTasks';
+import {
+  useCreateTask,
+  useDeleteTask,
+  useRecurringTasks,
+  useResolveMissedOccurrence,
+  useTasksByStatus,
+  useUpdateTaskStatus,
+  type ResolveMissedAction,
+} from './useTasks';
 import type { Task } from '../models';
 
 export type TriageAction = 'today' | 'backlog' | 'done' | 'drop';
+
+export type TriageQueueItem = { kind: 'task'; task: Task } | { kind: 'missed'; task: Task };
 
 interface HistoryEntry {
   task: Task;
@@ -10,50 +20,68 @@ interface HistoryEntry {
 }
 
 /**
- * One-card-at-a-time queue over the needs_triage tasks. The queue is a local
- * snapshot taken on first load so cards don't reshuffle mid-session as
+ * One-card-at-a-time queue mixing needs_triage tasks with recurring series
+ * that have a flagged missed occurrence (task.missedDates). The queue is a
+ * local snapshot taken on first load so cards don't reshuffle mid-session as
  * mutations invalidate the query; each action pops the front card and fires
- * the matching mutation in the background, keeping a one-entry-per-step
- * history so the last call can be undone.
+ * the matching mutation in the background. Undo only covers the normal
+ * needs_triage actions — resolving a missed occurrence isn't reversible
+ * (it can touch completedDates/extraTodayDates), so those aren't undoable.
  */
 export function useTriageQueue() {
-  const { data, isLoading, error } = useTasksByStatus('needs_triage');
+  const { data: needsTriage, isLoading: loadingTriage, error: errorTriage } = useTasksByStatus('needs_triage');
+  const { data: recurring, isLoading: loadingRecurring, error: errorRecurring } = useRecurringTasks();
   const updateStatus = useUpdateTaskStatus();
   const deleteTask = useDeleteTask();
   const createTask = useCreateTask();
+  const resolveMissed = useResolveMissedOccurrence();
 
-  const [queue, setQueue] = useState<Task[] | null>(null);
+  const [queue, setQueue] = useState<TriageQueueItem[] | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const total = useRef(0);
 
   useEffect(() => {
-    if (data && queue === null) {
-      setQueue(data);
-      total.current = data.length;
+    if (needsTriage && recurring && queue === null) {
+      const missed = recurring.filter((task) => (task.missedDates ?? []).length > 0);
+      const items: TriageQueueItem[] = [
+        ...needsTriage.map((task): TriageQueueItem => ({ kind: 'task', task })),
+        ...missed.map((task): TriageQueueItem => ({ kind: 'missed', task })),
+      ];
+      setQueue(items);
+      total.current = items.length;
     }
-  }, [data, queue]);
+  }, [needsTriage, recurring, queue]);
 
   const current = queue?.[0] ?? null;
 
   function act(action: TriageAction) {
-    if (!current) return;
+    if (!current || current.kind !== 'task') return;
+    const task = current.task;
     setQueue((q) => (q ?? []).slice(1));
-    setHistory((h) => [...h, { task: current, action }]);
+    setHistory((h) => [...h, { task, action }]);
 
     switch (action) {
       case 'today':
-        updateStatus.mutate({ id: current.id, status: 'today' });
+        updateStatus.mutate({ id: task.id, status: 'today' });
         break;
       case 'backlog':
-        updateStatus.mutate({ id: current.id, status: 'backlog' });
+        // Clear the due date, or the BE would promote the overdue task straight back to Today.
+        updateStatus.mutate({ id: task.id, status: 'backlog', dueDate: null });
         break;
       case 'done':
-        updateStatus.mutate({ id: current.id, status: 'done' });
+        updateStatus.mutate({ id: task.id, status: 'done' });
         break;
       case 'drop':
-        deleteTask.mutate(current.id);
+        deleteTask.mutate(task.id);
         break;
     }
+  }
+
+  function actMissed(action: ResolveMissedAction) {
+    if (!current || current.kind !== 'missed') return;
+    const task = current.task;
+    setQueue((q) => (q ?? []).slice(1));
+    resolveMissed.mutate({ id: task.id, action });
   }
 
   function undo() {
@@ -79,12 +107,12 @@ export function useTriageQueue() {
             estimatedMinutes: last.task.estimatedMinutes ?? null,
             status: 'needs_triage',
           },
-          { onSuccess: (restored) => setQueue((q) => [restored, ...(q ?? [])]) }
+          { onSuccess: (restored) => setQueue((q) => [{ kind: 'task', task: restored }, ...(q ?? [])]) }
         );
         break;
       default:
-        setQueue((q) => [last.task, ...(q ?? [])]);
-        updateStatus.mutate({ id: last.task.id, status: 'needs_triage' });
+        setQueue((q) => [{ kind: 'task', task: last.task }, ...(q ?? [])]);
+        updateStatus.mutate({ id: last.task.id, status: 'needs_triage', dueDate: last.task.dueDate });
         break;
     }
   }
@@ -97,11 +125,12 @@ export function useTriageQueue() {
     index: total.current - (queue?.length ?? 0) + 1,
     total: total.current,
     act,
+    actMissed,
     undo,
     canUndo: history.length > 0,
     history,
-    isLoading,
-    error,
+    isLoading: loadingTriage || loadingRecurring,
+    error: errorTriage || errorRecurring,
     done,
   };
 }

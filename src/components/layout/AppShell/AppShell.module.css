@@ -25,6 +25,11 @@
   flex-direction: column;
 }
 
+/* Each route's root element remounts on navigation, replaying the entrance. */
+.main > * {
+  animation: var(--kf-fade-up) var(--dur-base) var(--ease-out);
+}
+
 @media (max-width: 768px) {
   .shell {
     flex-direction: column;

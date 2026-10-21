@@ -11,6 +11,7 @@ import { htmlToText } from '../../../lib/richText';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
 import { useTaskFormState } from '../taskFormStore';
 import type { Task } from '../../../models';
+import { useIsLeaving } from '../taskLeavingStore';
 import styles from './TaskRow.module.css';
 
 interface DragHandleProps {
@@ -51,6 +52,7 @@ export function TaskRow({
   dragHandleProps,
 }: TaskRowProps) {
   const { t } = useTranslation();
+  const leaving = useIsLeaving(task.id);
   const areas = useLifeAreaLookup();
   // Highlight the row whose details are open in the side panel (mockup 03).
   const selected = useTaskFormState().task?.id === task.id;
@@ -62,6 +64,7 @@ export function TaskRow({
     urgency && styles.dueSoon,
     selected && styles.selected,
     dragHandleProps?.dragging && styles.dragging,
+    leaving && styles.leaving,
   ]
     .filter(Boolean)
     .join(' ');

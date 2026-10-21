@@ -42,9 +42,12 @@ function occursOn(task: Task, d: Date): boolean {
   return matchesRule(d, start, task.recurrence);
 }
 
-/** Does the recurring series have an occurrence on `day` (a local wall-clock day)? */
+/** Does the recurring series have an occurrence on `day` (a local wall-clock day) —
+ *  by its normal cadence, or forced in via a Triage "add to today" resolution? */
 export function hasOccurrenceOn(task: Task, day: Date): boolean {
-  return occursOn(task, fromLocal(day));
+  const d = fromLocal(day);
+  if (occursOn(task, d)) return true;
+  return (task.extraTodayDates ?? []).some((iso) => fromStored(iso).getTime() === d.getTime());
 }
 
 /** Occurrence days of a recurring series within [from, to], as local-midnight Dates. */

@@ -8,5 +8,6 @@ export { TaskFilterPopover, EMPTY_TASK_FILTERS, activeFilterCount, matchesFilter
 export type { TaskFilters } from './TaskFilterPopover';
 export { TaskSortPopover, SORT_OPTIONS, SORT_COMPARATORS } from './TaskSortPopover';
 export type { SortBy } from './TaskSortPopover';
+export { leaveThen } from './taskLeavingStore';
 export { taskForm } from './taskFormStore';
 export { taskPreview } from './taskPreviewStore';

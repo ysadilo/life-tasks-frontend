@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" width="612" height="612" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <title>Samoyed</title>
+  <rect width="612" height="612" fill="#d9aaae"/>
+  <!-- head -->
+  <path fill="#fff" d="M165 132 C168 98 192 82 218 92 C255 108 330 120 382 94 C408 72 442 68 448 102 C452 128 464 142 482 152 C524 186 548 262 540 362 C534 452 504 502 440 522 C380 540 250 546 170 541 C108 536 78 492 78 420 C78 330 90 250 126 196 C150 166 163 152 165 132 Z"/>
+  <!-- fur marks -->
+  <g stroke="#4a4444" stroke-width="7">
+    <path d="M152 164 L124 200 M114 236 L92 278 M99 298 L88 328 M85 380 L75 402 M85 432 L81 470"/>
+    <path d="M480 158 L505 178 M519 232 L527 250 M523 306 L540 346 M521 398 L525 446 M504 484 L496 510"/>
+  </g>
+  <!-- eyes -->
+  <g fill="#4a4444">
+    <ellipse cx="260" cy="245" rx="14" ry="11" transform="rotate(12 260 245)"/>
+    <ellipse cx="346" cy="243" rx="13" ry="10" transform="rotate(-12 346 243)"/>
+  </g>
+  <!-- nose -->
+  <path fill="#4a4444" d="M284 270 C284 260 295 258 305 258 C316 258 327 260 327 270 C327 282 316 293 305 298 C294 293 284 282 284 270 Z"/>
+  <!-- tongue (fill reaches up under the mouth line) -->
+  <path fill="#f4716f" d="M277 320 L304 302 L329 319 V351 H277 Z"/>
+  <path fill="#f4716f" stroke="#4a4444" stroke-width="6" d="M277 323 V352 C277 369 289 378 303 378 C318 378 329 369 329 351 V323"/>
+  <path stroke="#4a4444" stroke-width="5" d="M303 332 V354"/>
+  <!-- smile -->
+  <path stroke="#4a4444" stroke-width="5" d="M243 311 Q266 332 304 300 M368 310 Q342 332 304 300 M304 300 V310"/>
+</svg>

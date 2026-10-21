@@ -7,9 +7,18 @@
   background: transparent;
   padding: 0;
   cursor: pointer;
+  transition:
+    background var(--dur-fast),
+    border-color var(--dur-fast),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.checkbox:hover {
+  transform: scale(1.1);
 }
 
 .checked {
   background: var(--color-success-solid);
   border-color: var(--color-success-solid-border);
+  animation: var(--kf-check-pop) 300ms var(--ease-spring);
 }

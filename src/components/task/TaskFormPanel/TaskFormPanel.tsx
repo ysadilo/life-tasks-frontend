@@ -8,6 +8,7 @@ import { toast } from '../../ui/Toast';
 import { isBlankHtml } from '../../../lib/richText';
 import { useCreateTask, useUpdateTask, useDeleteTask, type TaskInput } from '../../../hooks/useTasks';
 import { taskForm, useTaskFormState } from '../taskFormStore';
+import { leaveThen } from '../taskLeavingStore';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { PRIORITIES } from '../../../lib/priority';
 import { RECURRENCES } from '../../../lib/recurrence';
@@ -89,6 +90,14 @@ function TaskForm({
 
   const save = (status: TaskStatus) => {
     if (blocked) return;
+    if (isEdit && task.status === 'today' && status === 'backlog') {
+      // Close first so the row's exit animation is visible, then move it.
+      const input = { id: task.id, ...buildInput(status) };
+      if (recurrence) toast.show(t('taskForm.scheduledToast'));
+      onClose();
+      void leaveThen(task.id, () => updateTask.mutateAsync(input));
+      return;
+    }
     const done = () => {
       if (recurrence) toast.show(t('taskForm.scheduledToast'));
       onClose();
