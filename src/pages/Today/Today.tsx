@@ -7,6 +7,7 @@ import {
   TaskRow,
   DoneTaskRow,
   taskForm,
+  AppliedFilters,
   TaskFilterPopover,
   EMPTY_TASK_FILTERS,
   activeFilterCount,
@@ -144,6 +145,8 @@ export default function Today() {
           </Button>
         </div>
       )}
+
+      <AppliedFilters filters={filters} onChange={setFilters} />
 
       <div className={styles.list}>
         {displayedOpenTasks.length === 0 && filteredDoneToday.length === 0 && (

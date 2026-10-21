@@ -48,3 +48,7 @@
   font: 400 13px/1 var(--font-sans);
   color: var(--color-text-muted);
 }
+
+.filterWrap {
+  display: inline-flex;
+}
