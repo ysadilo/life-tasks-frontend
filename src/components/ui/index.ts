@@ -4,6 +4,7 @@ export type { ChipVariant } from './Chip';
 export { Checkbox } from './Checkbox';
 export { Input } from './Input';
 export { Modal } from './Modal';
+export { SidePanel } from './SidePanel';
 export { RichText, RichTextEditor } from './RichText';
 export { SegmentedTabs } from './SegmentedTabs';
 export type { SegmentedTabOption } from './SegmentedTabs';

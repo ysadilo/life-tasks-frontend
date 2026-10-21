@@ -49,14 +49,16 @@
     "signOut": "Sign out",
     "headline": "Your life, in a board you can actually finish.",
     "blurb": "Backlog for someday. Today for now. Triage for everything yesterday left behind.",
-    "pill": {
-      "pwa": "Installable PWA",
-      "offline": "Works offline",
-      "family": "Family boards soon"
+    "preview": {
+      "taxes": "Pay Q3 taxes",
+      "dentist": "Call dentist",
+      "gym": "Gym — legs",
+      "fromYesterday": "From yesterday",
+      "bike": "Fix the bike brake"
     },
     "login": {
-      "title": "Sign in",
-      "subtitle": "Continue to your board with Auth0 — Google, email, or a passkey.",
+      "title": "Welcome back",
+      "subtitle": "Continue with Google, email, or a passkey.",
       "cta": "Continue",
       "alt": "New here? Create an account"
     },

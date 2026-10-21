@@ -13,22 +13,27 @@
   min-height: 780px;
   display: flex;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-shell);
+  border-radius: 22px;
   background: var(--color-surface);
   box-shadow: var(--shadow-shell);
   overflow: hidden;
 }
 
 .brand {
-  width: 540px;
+  position: relative;
+  width: 600px;
   flex: none;
-  padding: 52px 46px;
+  padding: 48px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 32px;
-  background: var(--color-accent);
-  color: var(--color-accent-text);
+  background:
+    radial-gradient(420px 300px at 15% 15%, var(--color-accent-light-bg) 0%, transparent 70%),
+    radial-gradient(420px 320px at 90% 55%, var(--color-area-3) 0%, transparent 70%),
+    radial-gradient(460px 300px at 30% 100%, var(--color-info-bg) 0%, transparent 70%), var(--color-sidebar-bg);
+  color: var(--color-text);
+  overflow: hidden;
 }
 
 .logo {
@@ -41,8 +46,7 @@
   width: 30px;
   height: 30px;
   border-radius: 9px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-accent-border);
+  background: var(--color-accent);
 }
 
 .logoText {
@@ -52,45 +56,157 @@
 .pitch {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
 .headline {
   margin: 0;
-  font: 700 52px/1.06 var(--font-sans);
-  letter-spacing: -0.03em;
+  font: 700 44px/1.02 var(--font-sans);
+  letter-spacing: -0.04em;
   text-wrap: balance;
 }
 
 .blurb {
   margin: 0;
-  max-width: 32ch;
-  font: 400 17px/1.5 var(--font-sans);
-  opacity: 0.85;
+  max-width: 40ch;
+  font: 400 16px/1.5 var(--font-sans);
+  color: var(--color-text-secondary);
 }
 
-.pills {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.preview {
+  position: relative;
+  height: 300px;
+  flex: none;
+}
+
+.todayCard,
+.triageCard {
+  position: absolute;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 24px 50px -24px rgba(43, 42, 40, 0.35);
 }
 
-.pill {
-  font: 500 13px/1 var(--font-sans);
+.todayCard {
+  left: 30px;
+  top: 10px;
+  width: 340px;
+  gap: 7px;
+  padding: 16px;
+  border-radius: 18px;
+}
+
+.cardTitle {
+  padding-bottom: 4px;
+  font: 700 17px/1 var(--font-sans);
+}
+
+.previewRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-input);
+}
+
+.previewDone {
+  border: none;
+  background: var(--color-surface-muted);
+}
+
+.previewDone .rowTitle {
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.box {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  border: 1.5px solid var(--color-checkbox-border);
+  border-radius: 5px;
+}
+
+.boxDone {
+  background: var(--color-success-solid);
+  border-color: var(--color-success-solid-border);
+}
+
+.rowTitle {
+  flex: 1;
+  font: 600 12px/1 var(--font-sans);
+}
+
+.chipP1,
+.chipDue {
+  align-self: flex-start;
+  border-radius: 8px;
+  padding: 5px 8px;
+  font: 600 10px/1 var(--font-sans);
+  white-space: nowrap;
+}
+
+.chipP1 {
+  background: var(--chip-priority-p1-bg);
+  border: 1px solid var(--chip-priority-p1-border);
+  color: var(--chip-priority-p1-text);
+}
+
+.chipDue {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+}
+
+.previewRow .chipP1,
+.previewRow .chipDue {
+  align-self: center;
+}
+
+.triageCard {
+  right: 20px;
+  bottom: 0;
+  width: 220px;
+  gap: 9px;
+  padding: 15px;
+  border-radius: 16px;
+  transform: rotate(3deg);
+}
+
+.triageTitle {
+  font: 700 15px/1 var(--font-sans);
+}
+
+.triageActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.triageToday,
+.triageBacklog {
+  padding: 8px 0;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font: 600 11px/1 var(--font-sans);
+}
+
+.triageToday {
+  background: var(--color-accent);
   color: var(--color-accent-text);
-  background: var(--color-surface);
-  border: 1px solid var(--color-accent-border);
-  border-radius: var(--radius-pill);
-  padding: 9px 13px;
+}
+
+.triageBacklog {
+  background: var(--color-sidebar-bg);
 }
 
 .form {
   flex: 1;
   min-width: 0;
-  padding: 52px 60px;
+  padding: 0 110px;
   display: flex;
   flex-direction: column;
   justify-content: center;

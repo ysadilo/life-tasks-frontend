@@ -1,12 +1,10 @@
 .sidebar {
   width: 236px;
   flex: none;
-  border-right: 1px solid var(--color-border-subtle);
-  background: var(--color-sidebar-bg);
-  padding: 22px 14px;
+  padding: 18px 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
   overflow-y: auto;
 }
 
@@ -37,7 +35,8 @@
 
 .newTaskButton {
   width: 100%;
-  padding: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
   font-size: 14px;
 }
 
@@ -72,7 +71,8 @@
 
 .navItemActive {
   background: var(--color-surface);
-  border-color: var(--color-border);
+  border-color: var(--color-border-subtle);
+  box-shadow: 0 1px 3px rgba(43, 42, 40, 0.06);
   color: var(--color-text);
   font-weight: 600;
 }
@@ -133,8 +133,8 @@
 }
 
 .areaDot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 3px;
   flex: none;
 }

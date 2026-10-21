@@ -1,8 +1,7 @@
 .header {
-  padding: 22px 30px;
-  border-bottom: 1px solid var(--color-border-subtle);
+  padding: 28px 30px 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
@@ -16,14 +15,14 @@
 
 .title {
   margin: 0;
-  font: 700 28px/1 var(--font-sans);
+  font: 700 34px/1.05 var(--font-sans);
   color: var(--color-text);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
 }
 
 .subtitle {
-  font: 400 14px/1 var(--font-sans);
-  color: var(--color-text-muted);
+  font: 500 14px/1 var(--font-sans);
+  color: var(--color-text-secondary);
 }
 
 .actions {

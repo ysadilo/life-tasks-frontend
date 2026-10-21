@@ -9,6 +9,7 @@ import { RecurrenceIcon } from '../RecurrenceIcon';
 import { dueUrgency, type DueUrgency } from '../../../lib/taskDates';
 import { htmlToText } from '../../../lib/richText';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
+import { useTaskFormState } from '../taskFormStore';
 import type { Task } from '../../../models';
 import { useIsLeaving } from '../taskLeavingStore';
 import styles from './TaskRow.module.css';
@@ -53,12 +54,15 @@ export function TaskRow({
   const { t } = useTranslation();
   const leaving = useIsLeaving(task.id);
   const areas = useLifeAreaLookup();
+  // Highlight the row whose details are open in the side panel (mockup 03).
+  const selected = useTaskFormState().task?.id === task.id;
   const urgency = dueUrgency(task);
   const areaName = task.areaId ? areas.get(task.areaId)?.name : undefined;
   const hasChips = showChips && (urgency || task.priority || task.energy || task.estimatedMinutes != null || areaName);
   const rowClassName = [
     styles.row,
     urgency && styles.dueSoon,
+    selected && styles.selected,
     dragHandleProps?.dragging && styles.dragging,
     leaving && styles.leaving,
   ]
@@ -82,19 +86,19 @@ export function TaskRow({
             <RecurrenceIcon recurrence={task.recurrence} />
           </span>
           {task.description && <span className={styles.description}>{htmlToText(task.description)}</span>}
+          {hasChips && (
+            <div className={styles.chips}>
+              {urgency && <Chip variant="danger">{t(dueLabelKey(urgency))}</Chip>}
+              {task.priority && <MetaChip axis="priority" value={task.priority} />}
+              {task.energy && <MetaChip axis="energy" value={task.energy} />}
+              {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
+              {areaName && <Chip>{areaName}</Chip>}
+            </div>
+          )}
         </div>
       </div>
       {onEdit && <EditButton title={task.title} onClick={onEdit} />}
       {trailing}
-      {hasChips && (
-        <div className={styles.chips}>
-          {urgency && <Chip variant="danger">{t(dueLabelKey(urgency))}</Chip>}
-          {task.priority && <MetaChip axis="priority" value={task.priority} />}
-          {task.energy && <MetaChip axis="energy" value={task.energy} />}
-          {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
-          {areaName && <Chip>{areaName}</Chip>}
-        </div>
-      )}
     </div>
   );
 }
