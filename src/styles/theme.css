@@ -29,6 +29,16 @@
 
   --color-checkbox-border: #b9b3a8;
 
+  /* Interaction states: hover fill/border, pressed fill, focus halo. */
+  --color-hover-bg: #f4f1eb;
+  --color-pressed-bg: #eae6de;
+  --color-border-strong: #c9c2b6;
+  --color-focus-halo: #f3e3b3;
+  --color-focus-ring: #e8c766;
+  --color-accent-hover-border: #cfaa3f;
+  --shadow-lift: 0 10px 20px -12px rgba(43, 42, 40, 0.35);
+  --shadow-drag: 0 24px 40px -16px rgba(43, 42, 40, 0.4);
+
   --color-accent: #e8c766;
   --color-accent-border: #d9b650;
   --color-accent-text: #3a362e;
@@ -123,6 +133,15 @@
   --color-text-faint: #8c7f9b;
 
   --color-checkbox-border: #6b5f7a;
+
+  --color-hover-bg: #2a2233;
+  --color-pressed-bg: #332a40;
+  --color-border-strong: #6b5f7a;
+  --color-focus-halo: #4a3e1c;
+  --color-focus-ring: #c79f2c;
+  --color-accent-hover-border: #a88628;
+  --shadow-lift: 0 10px 20px -12px rgba(0, 0, 0, 0.6);
+  --shadow-drag: 0 24px 40px -16px rgba(0, 0, 0, 0.7);
 
   --color-accent: linear-gradient(140deg, #ebd290, #c79f2c);
   --color-accent-border: #8e7220;

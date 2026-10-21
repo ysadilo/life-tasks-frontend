@@ -8,13 +8,16 @@
   border-radius: 14px;
   animation: var(--kf-fade-up) var(--dur-base) var(--ease-out);
   transition:
+    transform var(--dur-fast),
     box-shadow var(--dur-fast),
     border-color var(--dur-fast),
     opacity var(--dur-fast);
 }
 
 .row:hover {
-  border-color: var(--color-accent-border);
+  border-color: var(--color-border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
 }
 
 .leaving {
@@ -33,9 +36,24 @@
   box-shadow: 0 0 0 3px var(--color-accent-light-bg);
 }
 
-.dragging {
-  opacity: 0.6;
-  box-shadow: var(--shadow-shell);
+.selected:hover {
+  border-color: var(--color-accent-border);
+  box-shadow: 0 0 0 3px var(--color-accent-light-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .row:hover,
+  .dragging {
+    transform: none;
+    transition: none;
+  }
+}
+
+.dragging,
+.dragging:hover {
+  transform: rotate(-1.5deg) scale(1.02);
+  box-shadow: var(--shadow-drag);
 }
 
 .main {
