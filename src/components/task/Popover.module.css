@@ -11,9 +11,9 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 12px;
+  padding: 18px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-shell);
+  border-radius: 16px;
   box-shadow: var(--shadow-shell);
 }
