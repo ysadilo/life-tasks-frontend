@@ -1,4 +1,13 @@
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type FormEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from '../Modal';
 import { Input } from '../Input';
@@ -41,6 +50,15 @@ const ICONS = {
       <circle cx="4.5" cy="6" r="1.4" fill="currentColor" stroke="none" />
       <circle cx="4.5" cy="12" r="1.4" fill="currentColor" stroke="none" />
       <circle cx="4.5" cy="18" r="1.4" fill="currentColor" stroke="none" />
+    </>
+  ),
+  checklist: icon(
+    <>
+      <rect x="3" y="4" width="6" height="6" rx="1.5" />
+      <path d="m4.5 7 1.2 1.2L7.8 6" />
+      <rect x="3" y="14" width="6" height="6" rx="1.5" />
+      <line x1="13" y1="7" x2="21" y2="7" />
+      <line x1="13" y1="17" x2="21" y2="17" />
     </>
   ),
   orderedList: icon(
@@ -102,6 +120,16 @@ function closestLink(node: Node | null, root: HTMLElement): HTMLAnchorElement | 
   let n = node;
   while (n && n !== root) {
     if (n instanceof HTMLAnchorElement) return n;
+    n = n.parentNode;
+  }
+  return null;
+}
+
+/** Walks up from `node` to find an enclosing element with `tag`, stopping at `root`. */
+function closestTag(node: Node | null, root: HTMLElement, tag: string): HTMLElement | null {
+  let n = node;
+  while (n && n !== root) {
+    if (n instanceof HTMLElement && n.tagName === tag) return n;
     n = n.parentNode;
   }
   return null;
@@ -175,6 +203,37 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: Rich
     parent?.removeChild(link);
   };
 
+  // insertUnorderedList toggles; when it produced a list, tag it as a checklist.
+  const toggleChecklist = () => {
+    const el = ref.current;
+    const sel = window.getSelection();
+    if (!el || !sel) return;
+    const existing = closestTag(sel.anchorNode, el, 'UL');
+    if (existing?.hasAttribute('data-checklist')) return exec('insertUnorderedList');
+    if (!existing) exec('insertUnorderedList');
+    // In an empty editor the caret can sit on the root itself — descend to the child it points at.
+    const node = sel.anchorNode === el ? (el.childNodes[sel.anchorOffset] ?? el.lastChild) : sel.anchorNode;
+    (closestTag(node, el, 'UL') ?? el.querySelector('ul'))?.setAttribute('data-checklist', '');
+  };
+
+  // The box is a ::before in the li's left gutter — hit-test by x offset.
+  const onSurfaceClick = (e: MouseEvent<HTMLDivElement>) => {
+    const li = e.target instanceof HTMLLIElement ? e.target : null;
+    if (!li?.parentElement?.hasAttribute('data-checklist') || e.nativeEvent.offsetX > 20) return;
+    li.toggleAttribute('data-checked');
+    emit();
+  };
+
+  // Chrome clones attributes when Enter splits an li — a new item starts unchecked.
+  const onSurfaceKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Enter') return;
+    setTimeout(() => {
+      const sel = window.getSelection();
+      const li = sel?.anchorNode && ref.current ? closestTag(sel.anchorNode, ref.current, 'LI') : null;
+      li?.removeAttribute('data-checked');
+    }, 0);
+  };
+
   const commands: Command[] = [
     { key: 'bold', title: t('richText.bold'), onClick: () => run(() => exec('bold')) },
     { key: 'italic', title: t('richText.italic'), onClick: () => run(() => exec('italic')) },
@@ -185,6 +244,7 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: Rich
       divider: true,
       onClick: () => run(() => exec('insertUnorderedList')),
     },
+    { key: 'checklist', title: t('richText.checklist'), onClick: () => run(toggleChecklist) },
     { key: 'orderedList', title: t('richText.orderedList'), onClick: () => run(() => exec('insertOrderedList')) },
     { key: 'link', title: t('richText.link'), divider: true, disabled: inLink, onClick: openLinkModal },
     { key: 'unlink', title: t('richText.unlink'), disabled: !inLink, onClick: () => run(unlink) },
@@ -227,7 +287,15 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: Rich
         aria-label={ariaLabel}
         data-placeholder={placeholder}
         dangerouslySetInnerHTML={{ __html: sanitizeHtml(initial.current) }}
-        onInput={emit}
+        onClick={onSurfaceClick}
+        onKeyDown={onSurfaceKeyDown}
+        onInput={() => {
+          // A deleted item can leave an empty <li data-checked> behind that would restyle the next typing.
+          ref.current?.querySelectorAll('li[data-checked]').forEach((li) => {
+            if (!li.textContent) li.removeAttribute('data-checked');
+          });
+          emit();
+        }}
         onBlur={emit}
       />
       <LinkModal
