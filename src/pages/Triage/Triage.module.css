@@ -245,23 +245,39 @@
   box-shadow: 0 30px 60px -28px rgb(43 42 40 / 0.35);
 }
 
-/* Offset layers underneath show how many cards are still waiting. */
-.cardStack1 {
-  box-shadow:
-    0 11px 0 -2px var(--color-surface-muted),
-    0 12px 0 -2px var(--color-border),
-    0 30px 60px -28px rgb(43 42 40 / 0.35);
+/* The next card waits underneath and grows into place as the top one is dragged away. */
+.cards {
+  width: 100%;
+  display: grid;
+}
+
+.cards > .card {
+  grid-area: 1 / 1;
+}
+
+.cardTop {
+  z-index: 1;
+}
+
+.cardUnder {
+  overflow: hidden;
+  transform: translateY(calc(11px * (1 - var(--swipe-progress, 0)))) scale(calc(0.96 + 0.04 * var(--swipe-progress, 0)));
+  box-shadow: none;
+}
+
+/* Further cards still waiting show as extra edges below the next one. */
+.layers1 {
   margin-bottom: 12px;
 }
 
-.cardStack2 {
+.layers2 {
+  margin-bottom: 23px;
+}
+
+.layers2 .cardUnder {
   box-shadow:
     0 11px 0 -2px var(--color-surface-muted),
-    0 12px 0 -2px var(--color-border),
-    0 22px 0 -4px var(--color-sidebar-bg),
-    0 23px 0 -4px var(--color-border),
-    0 30px 60px -28px rgb(43 42 40 / 0.35);
-  margin-bottom: 23px;
+    0 12px 0 -2px var(--color-border);
 }
 
 @media (max-width: 768px) {

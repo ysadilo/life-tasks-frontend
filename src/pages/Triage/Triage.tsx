@@ -5,7 +5,7 @@ import { PageState } from '../../components/layout';
 import { Button, Chip, RichText } from '../../components/ui';
 import { MetaChip } from '../../components/task';
 import { useSwipe, type SwipeDirection } from '../../hooks/useSwipe';
-import { useTriageQueue, type TriageAction } from '../../hooks/useTriageQueue';
+import { useTriageQueue, type TriageAction, type TriageQueueItem } from '../../hooks/useTriageQueue';
 import type { ResolveMissedAction } from '../../hooks/useTasks';
 import { daysOverdue } from '../../lib/taskDates';
 import { lifeAreaColorVar } from '../../lib/lifeAreas';
@@ -33,13 +33,10 @@ const MISSED_ACTION_KEYS: Record<string, ResolveMissedAction> = {
 };
 
 export default function Triage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { current, upcoming, index, total, act, actMissed, undo, canUndo, history, isLoading, error, done } =
     useTriageQueue();
-  const areas = useLifeAreaLookup();
-  const currentTask = current?.task;
-  const currentArea = currentTask?.areaId ? areas.get(currentTask.areaId) : undefined;
   const isMissed = current?.kind === 'missed';
   const swipe = useSwipe(
     (direction) => {
@@ -76,12 +73,6 @@ export default function Triage() {
 
   if (isLoading) return <PageState>{t('triage.loading')}</PageState>;
   if (error) return <PageState>{t('triage.error')}</PageState>;
-
-  const overdue = currentTask && !isMissed ? daysOverdue(currentTask) : 0;
-  const missedDateLabel =
-    isMissed && currentTask?.missedDates?.[0]
-      ? new Date(currentTask.missedDates[0]).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long' })
-      : '';
 
   const counts: Record<TriageAction, number> = { today: 0, backlog: 0, done: 0, drop: 0 };
   for (const entry of history) counts[entry.action]++;
@@ -168,37 +159,20 @@ export default function Triage() {
         ) : (
           <div className={styles.stack}>
             <div
-              {...swipe.bind}
-              style={{ ...swipe.style, '--swipe-progress': swipe.progress } as CSSProperties}
-              className={`${styles.card} ${styles[`swipe_${SWIPE_ACTIONS[swipe.direction]}` as 'swipe_today']} ${styles[`cardStack${Math.min(upcoming.length, 2)}` as 'cardStack1' | 'cardStack2'] ?? ''}`}
+              className={`${styles.cards} ${styles[`layers${Math.min(upcoming.length, 2)}` as 'layers1' | 'layers2'] ?? ''}`}
+              style={{ '--swipe-progress': swipe.progress } as CSSProperties}
             >
-              <div className={styles.badgeRow}>
-                {isMissed ? (
-                  <Chip variant="danger" pill>
-                    {t('triage.missedBadge', { date: missedDateLabel })}
-                  </Chip>
-                ) : (
-                  <Chip variant="danger" pill>
-                    {currentTask?.priority ? `${currentTask.priority} · ` : ''}
-                    {t('triage.overdue', { count: overdue })}
-                  </Chip>
-                )}
-                {currentArea && (
-                  <span className={styles.area}>
-                    <span className={styles.areaDot} style={{ background: lifeAreaColorVar(currentArea.order) }} />
-                    {currentArea.name}
-                  </span>
-                )}
-              </div>
-
-              <div className={styles.title}>{currentTask?.title}</div>
-              {currentTask?.description && <RichText html={currentTask.description} className={styles.description} />}
-
-              <div className={styles.metaRow}>
-                {currentTask?.estimatedMinutes != null && (
-                  <MetaChip axis="effort" minutes={currentTask.estimatedMinutes} />
-                )}
-                {currentTask?.energy && <MetaChip axis="energy" value={currentTask.energy} />}
+              {upcoming[0] && (
+                <div className={`${styles.card} ${styles.cardUnder}`} aria-hidden>
+                  <TaskCardBody item={upcoming[0]} />
+                </div>
+              )}
+              <div
+                {...swipe.bind}
+                style={swipe.style}
+                className={`${styles.card} ${styles.cardTop} ${styles[`swipe_${SWIPE_ACTIONS[swipe.direction]}` as 'swipe_today']}`}
+              >
+                <TaskCardBody item={current} />
               </div>
             </div>
 
@@ -270,5 +244,49 @@ export default function Triage() {
         </aside>
       </div>
     </div>
+  );
+}
+
+function TaskCardBody({ item }: { item: TriageQueueItem }) {
+  const { t, i18n } = useTranslation();
+  const areas = useLifeAreaLookup();
+  const { task } = item;
+  const isMissed = item.kind === 'missed';
+  const area = task.areaId ? areas.get(task.areaId) : undefined;
+  const overdue = isMissed ? 0 : daysOverdue(task);
+  const missedDateLabel =
+    isMissed && task.missedDates?.[0]
+      ? new Date(task.missedDates[0]).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long' })
+      : '';
+
+  return (
+    <>
+      <div className={styles.badgeRow}>
+        {isMissed ? (
+          <Chip variant="danger" pill>
+            {t('triage.missedBadge', { date: missedDateLabel })}
+          </Chip>
+        ) : (
+          <Chip variant="danger" pill>
+            {task.priority ? `${task.priority} · ` : ''}
+            {t('triage.overdue', { count: overdue })}
+          </Chip>
+        )}
+        {area && (
+          <span className={styles.area}>
+            <span className={styles.areaDot} style={{ background: lifeAreaColorVar(area.order) }} />
+            {area.name}
+          </span>
+        )}
+      </div>
+
+      <div className={styles.title}>{task.title}</div>
+      {task.description && <RichText html={task.description} className={styles.description} />}
+
+      <div className={styles.metaRow}>
+        {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
+        {task.energy && <MetaChip axis="energy" value={task.energy} />}
+      </div>
+    </>
   );
 }
