@@ -79,7 +79,13 @@
     "dueOverdue": "Overdue",
     "dueToday": "Due today",
     "dueTomorrow": "Due tomorrow",
-    "swipe": { "delete": "Delete", "toBacklog": "Add to backlog", "toToday": "Add to today" },
+    "swipe": {
+      "delete": "Delete",
+      "toBacklog": "Add to backlog",
+      "toToday": "Add to today",
+      "cantDelete": "You can't delete a repeating task by swiping",
+      "cantMove": "You can't move a repeating task"
+    },
     "deletedToast": "Deleted \"{{title}}\"",
     "undo": "Undo"
   },

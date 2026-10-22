@@ -3,6 +3,8 @@ import { useState, type CSSProperties, type PointerEvent } from 'react';
 export type SwipeDirection = 'left' | 'right' | 'up' | 'down';
 
 const THRESHOLD_PX = 90;
+/** How far a blocked side can be dragged to reveal its message before it stops following the finger. */
+const BLOCKED_MAX_PX = 200;
 
 function dominantDirection({ x, y }: { x: number; y: number }): { direction: SwipeDirection; distance: number } {
   const horizontal = Math.abs(x) > Math.abs(y);
@@ -21,12 +23,13 @@ type Mode = 'idle' | 'drag' | 'fly';
  * Pass `{ horizontalOnly: true }` for a list row: it slides without tilting or following vertical movement, and if
  * `onSwipe` returns a promise the row stays off-screen until it settles. Touches that start on a button, input or
  * link are ignored so their clicks aren't swallowed by pointer capture.
+ * `blocked` directions only peek (the row resists at BLOCKED_MAX_PX) and always spring back instead of committing.
  * Spread `bind` on the card and `style` onto it (`direction` + `progress` 0..1 drive a colour fill); give it `touch-action: none` in CSS.
  */
 export function useSwipe(
   onSwipe: (direction: SwipeDirection) => void | Promise<unknown>,
   allowed: SwipeDirection[],
-  { horizontalOnly = false }: { horizontalOnly?: boolean } = {}
+  { horizontalOnly = false, blocked = [] }: { horizontalOnly?: boolean; blocked?: SwipeDirection[] } = {}
 ) {
   const [start, setStart] = useState<{ x: number; y: number } | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -42,14 +45,19 @@ export function useSwipe(
     },
     onPointerMove: (e: PointerEvent) => {
       if (!start) return;
-      setOffset({ x: e.clientX - start.x, y: e.clientY - start.y });
+      const x = e.clientX - start.x;
+      const side: SwipeDirection = x > 0 ? 'right' : 'left';
+      setOffset({
+        x: blocked.includes(side) ? Math.sign(x) * Math.min(Math.abs(x), BLOCKED_MAX_PX) : x,
+        y: e.clientY - start.y,
+      });
     },
     onPointerUp: () => {
       if (!start) return;
       setStart(null);
       const { direction, distance } = dominantDirection(offset);
       const horizontal = direction === 'left' || direction === 'right';
-      if (distance < THRESHOLD_PX || !allowed.includes(direction)) {
+      if (distance < THRESHOLD_PX || !allowed.includes(direction) || blocked.includes(direction)) {
         setMode('idle');
         setOffset({ x: 0, y: 0 });
         return;

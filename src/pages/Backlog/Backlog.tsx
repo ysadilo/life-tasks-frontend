@@ -134,7 +134,7 @@ export default function Backlog() {
                   },
                   // A recurring series is forced to the backlog by the BE, so it can't move to Today.
                   right: task.recurrence
-                    ? undefined
+                    ? { label: t('task.swipe.cantMove'), tone: 'blocked' }
                     : {
                         label: t('task.swipe.toToday'),
                         tone: 'neutral',

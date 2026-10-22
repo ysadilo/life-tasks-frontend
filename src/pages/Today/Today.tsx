@@ -61,10 +61,15 @@ export default function Today() {
     }
   };
 
-  // Recurring rows are virtual occurrences, so there's nothing to delete or move per day. The BE would
+  // Recurring rows are virtual occurrences, so they can't be deleted or moved per day (swiping explains that). The BE would
   // promote a due-today task straight back to Today, so those can't be sent to the backlog either.
   const swipeFor = (task: Task) => {
-    if (task.recurrence) return undefined;
+    if (task.recurrence) {
+      return {
+        left: { label: t('task.swipe.cantDelete'), tone: 'blocked' as const },
+        right: { label: t('task.swipe.cantMove'), tone: 'blocked' as const },
+      };
+    }
     const urgency = dueUrgency(task);
     return {
       left: { label: t('task.swipe.delete'), tone: 'danger' as const, onAction: () => deleteTask(task) },
