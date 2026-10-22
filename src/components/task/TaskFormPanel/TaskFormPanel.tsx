@@ -12,7 +12,7 @@ import { leaveThen } from '../taskLeavingStore';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { PRIORITIES } from '../../../lib/priority';
 import { RECURRENCES } from '../../../lib/recurrence';
-import { localISODate } from '../../../lib/dateUtils';
+import { localDayAsUTC, localISODate } from '../../../lib/dateUtils';
 import { ENERGIES, EFFORT_MINUTES, energyRampKey, effortRampKey, priorityRampKey } from '../../../lib/taskMeta';
 import type { Energy, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../../../models';
 import { OptionGroup } from '../OptionGroup';
@@ -85,7 +85,7 @@ function TaskForm({
     recurrence: recurrence || null,
     recurrenceEndDate: recurrence && recurrenceEnd ? new Date(recurrenceEnd).toISOString() : null,
     status,
-    todayDate: status === 'today' ? new Date().toISOString() : null,
+    todayDate: status === 'today' ? localDayAsUTC() : null,
   });
 
   const save = (status: TaskStatus) => {
