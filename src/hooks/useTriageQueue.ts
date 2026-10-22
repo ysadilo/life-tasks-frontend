@@ -121,6 +121,8 @@ export function useTriageQueue() {
 
   return {
     current,
+    /** Cards after `current`, in order. */
+    upcoming: queue?.slice(1) ?? [],
     /** 1-based position of `current` in the original queue. */
     index: total.current - (queue?.length ?? 0) + 1,
     total: total.current,
