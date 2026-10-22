@@ -193,7 +193,16 @@
     "missedBadge": "Missed · {{date}}",
     "markDone": "Mark done",
     "addToToday": "Add to today",
-    "dismissMissed": "Dismiss"
+    "dismissMissed": "Dismiss",
+    "finishLater": "Finish later",
+    "sorted": "Sorted",
+    "stillToSort": "Still to sort",
+    "short": {
+      "today": "Today",
+      "backlog": "Backlog",
+      "done": "Done",
+      "drop": "Drop"
+    }
   },
   "backlog": {
     "title": "Backlog",

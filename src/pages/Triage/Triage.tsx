@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { PageHeader, PageState } from '../../components/layout';
+import { PageState } from '../../components/layout';
 import { Button, Chip, RichText } from '../../components/ui';
 import { MetaChip } from '../../components/task';
+import { useSwipe, type SwipeDirection } from '../../hooks/useSwipe';
 import { useTriageQueue, type TriageAction } from '../../hooks/useTriageQueue';
 import type { ResolveMissedAction } from '../../hooks/useTasks';
 import { daysOverdue } from '../../lib/taskDates';
@@ -18,6 +19,13 @@ const ACTION_KEYS: Record<string, TriageAction> = {
   ArrowDown: 'drop',
 };
 
+const SWIPE_ACTIONS: Record<SwipeDirection, TriageAction> = {
+  right: 'today',
+  left: 'backlog',
+  up: 'done',
+  down: 'drop',
+};
+
 const MISSED_ACTION_KEYS: Record<string, ResolveMissedAction> = {
   ArrowRight: 'addToday',
   ArrowUp: 'done',
@@ -27,11 +35,21 @@ const MISSED_ACTION_KEYS: Record<string, ResolveMissedAction> = {
 export default function Triage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { current, index, total, act, actMissed, undo, canUndo, history, isLoading, error, done } = useTriageQueue();
+  const { current, upcoming, index, total, act, actMissed, undo, canUndo, history, isLoading, error, done } =
+    useTriageQueue();
   const areas = useLifeAreaLookup();
   const currentTask = current?.task;
   const currentArea = currentTask?.areaId ? areas.get(currentTask.areaId) : undefined;
   const isMissed = current?.kind === 'missed';
+  const swipe = useSwipe(
+    (direction) => {
+      if (!isMissed) return act(SWIPE_ACTIONS[direction]);
+      const missedAction =
+        MISSED_ACTION_KEYS[{ right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown', left: '' }[direction]];
+      if (missedAction) actMissed(missedAction);
+    },
+    isMissed ? ['right', 'up', 'down'] : ['left', 'right', 'up', 'down']
+  );
 
   useEffect(() => {
     if (!current) return;
@@ -78,19 +96,47 @@ export default function Triage() {
 
   return (
     <div className={styles.page}>
-      <PageHeader
-        title={t('triage.title')}
-        subtitle={done ? undefined : t('triage.subtitle', { index, total })}
-        actions={
-          canUndo ? (
+      <header className={styles.header}>
+        <div className={styles.titleGroup}>
+          <h1 className={styles.heading}>{t('triage.title')}</h1>
+          {!done && <span className={styles.subtitle}>{t('triage.subtitle', { index, total })}</span>}
+        </div>
+        <div className={styles.progress} aria-hidden>
+          {Array.from({ length: total }, (_, i) => (
+            <span
+              key={i}
+              className={`${styles.segment} ${i < index - 1 || done ? styles.segmentDone : i === index - 1 ? styles.segmentCurrent : ''}`}
+            />
+          ))}
+        </div>
+        <div className={styles.headerActions}>
+          {canUndo && (
             <Button variant="ghost" onClick={undo}>
               {t('triage.undo')}
             </Button>
-          ) : undefined
-        }
-      />
+          )}
+          <button type="button" className={styles.finishLater} onClick={() => navigate('/today')}>
+            {t('triage.finishLater')}
+          </button>
+        </div>
+      </header>
 
       <div className={styles.content}>
+        <aside className={styles.side}>
+          {history.length > 0 && (
+            <>
+              <span className={styles.sideLabel}>{t('triage.sorted')}</span>
+              {history.slice(-6).map((entry, i) => (
+                <div key={`${entry.task.id}-${i}`} className={styles.sideItem}>
+                  <span className={styles.sideTitle}>{entry.task.title}</span>
+                  <span className={`${styles.sideBadge} ${styles[entry.action]}`}>
+                    {t(`triage.short.${entry.action}`)}
+                  </span>
+                </div>
+              ))}
+            </>
+          )}
+        </aside>
         {done || !current ? (
           <div className={styles.complete}>
             <div className={styles.completeIcon}>
@@ -120,40 +166,46 @@ export default function Triage() {
             </Button>
           </div>
         ) : (
-          <div className={styles.card}>
-            <div className={styles.badgeRow}>
-              {isMissed ? (
-                <Chip variant="danger" pill>
-                  {t('triage.missedBadge', { date: missedDateLabel })}
-                </Chip>
-              ) : (
-                <Chip variant="danger" pill>
-                  {currentTask?.priority ? `${currentTask.priority} · ` : ''}
-                  {t('triage.overdue', { count: overdue })}
-                </Chip>
-              )}
-              {currentArea && (
-                <span className={styles.area}>
-                  <span className={styles.areaDot} style={{ background: lifeAreaColorVar(currentArea.order) }} />
-                  {currentArea.name}
-                </span>
-              )}
-            </div>
+          <div className={styles.stack}>
+            <div
+              {...swipe.bind}
+              style={{ ...swipe.style, '--swipe-progress': swipe.progress } as CSSProperties}
+              className={`${styles.card} ${styles[`swipe_${SWIPE_ACTIONS[swipe.direction]}` as 'swipe_today']} ${styles[`cardStack${Math.min(upcoming.length, 2)}` as 'cardStack1' | 'cardStack2'] ?? ''}`}
+            >
+              <div className={styles.badgeRow}>
+                {isMissed ? (
+                  <Chip variant="danger" pill>
+                    {t('triage.missedBadge', { date: missedDateLabel })}
+                  </Chip>
+                ) : (
+                  <Chip variant="danger" pill>
+                    {currentTask?.priority ? `${currentTask.priority} · ` : ''}
+                    {t('triage.overdue', { count: overdue })}
+                  </Chip>
+                )}
+                {currentArea && (
+                  <span className={styles.area}>
+                    <span className={styles.areaDot} style={{ background: lifeAreaColorVar(currentArea.order) }} />
+                    {currentArea.name}
+                  </span>
+                )}
+              </div>
 
-            <div className={styles.title}>{currentTask?.title}</div>
-            {currentTask?.description && <RichText html={currentTask.description} className={styles.description} />}
+              <div className={styles.title}>{currentTask?.title}</div>
+              {currentTask?.description && <RichText html={currentTask.description} className={styles.description} />}
 
-            <div className={styles.metaRow}>
-              {currentTask?.estimatedMinutes != null && (
-                <MetaChip axis="effort" minutes={currentTask.estimatedMinutes} />
-              )}
-              {currentTask?.energy && <MetaChip axis="energy" value={currentTask.energy} />}
+              <div className={styles.metaRow}>
+                {currentTask?.estimatedMinutes != null && (
+                  <MetaChip axis="effort" minutes={currentTask.estimatedMinutes} />
+                )}
+                {currentTask?.energy && <MetaChip axis="energy" value={currentTask.energy} />}
+              </div>
             </div>
 
             {isMissed ? (
               <div className={`${styles.actions} ${styles.actionsThree}`}>
                 <button type="button" className={`${styles.action} ${styles.done}`} onClick={() => actMissed('done')}>
-                  {t('triage.markDone')}
+                  {t('triage.short.done')}
                   <span className={styles.key}>↑</span>
                 </button>
                 <button
@@ -161,7 +213,7 @@ export default function Triage() {
                   className={`${styles.action} ${styles.today}`}
                   onClick={() => actMissed('addToday')}
                 >
-                  {t('triage.addToToday')}
+                  {t('triage.short.today')}
                   <span className={styles.key}>→</span>
                 </button>
                 <button
@@ -176,19 +228,19 @@ export default function Triage() {
             ) : (
               <div className={styles.actions}>
                 <button type="button" className={`${styles.action} ${styles.today}`} onClick={() => act('today')}>
-                  {t('triage.moveToToday')}
+                  {t('triage.short.today')}
                   <span className={styles.key}>→</span>
                 </button>
                 <button type="button" className={`${styles.action} ${styles.backlog}`} onClick={() => act('backlog')}>
-                  {t('triage.sendToBacklog')}
+                  {t('triage.short.backlog')}
                   <span className={styles.key}>←</span>
                 </button>
                 <button type="button" className={`${styles.action} ${styles.done}`} onClick={() => act('done')}>
-                  {t('triage.itsDone')}
+                  {t('triage.short.done')}
                   <span className={styles.key}>↑</span>
                 </button>
                 <button type="button" className={`${styles.action} ${styles.drop}`} onClick={() => act('drop')}>
-                  {t('triage.dropIt')}
+                  {t('triage.short.drop')}
                   <span className={styles.key}>↓</span>
                 </button>
               </div>
@@ -204,6 +256,18 @@ export default function Triage() {
             </span>
           </div>
         )}
+        <aside className={styles.side}>
+          {upcoming.length > 0 && (
+            <>
+              <span className={styles.sideLabel}>{t('triage.stillToSort')}</span>
+              {upcoming.slice(0, 6).map((item) => (
+                <div key={`${item.kind}-${item.task.id}`} className={`${styles.sideItem} ${styles.sideItemPending}`}>
+                  <span className={styles.sideTitle}>{item.task.title}</span>
+                </div>
+              ))}
+            </>
+          )}
+        </aside>
       </div>
     </div>
   );
