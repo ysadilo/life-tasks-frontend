@@ -2,6 +2,7 @@ import type { PointerEvent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from '../../ui/Checkbox';
 import { Chip } from '../../ui/Chip';
+import { SwipeActions, type SwipeAction } from '../../ui/SwipeActions';
 import { DragHandle } from '../DragHandle';
 import { EditButton } from '../EditButton';
 import { MetaChip } from '../MetaChip';
@@ -27,6 +28,8 @@ interface TaskRowProps {
   /** Shows the "Done + reflect" pill, which opens the check-in instead of ticking straight to done. */
   onReflect?: () => void;
   trailing?: ReactNode;
+  /** Touch swipe actions: `left` = swipe left, `right` = swipe right. Skipped while drag-reordering. */
+  swipe?: { left?: SwipeAction; right?: SwipeAction };
   showChips?: boolean;
   rowRef?: (el: HTMLDivElement | null) => void;
   dragHandleProps?: DragHandleProps;
@@ -50,6 +53,7 @@ export function TaskRow({
   onEdit,
   onReflect,
   trailing,
+  swipe,
   showChips = true,
   rowRef,
   dragHandleProps,
@@ -72,7 +76,7 @@ export function TaskRow({
     .filter(Boolean)
     .join(' ');
 
-  return (
+  const row = (
     <div ref={rowRef} className={rowClassName}>
       {dragHandleProps && (
         <DragHandle
@@ -109,4 +113,6 @@ export function TaskRow({
       {trailing}
     </div>
   );
+
+  return swipe && !dragHandleProps ? <SwipeActions {...swipe}>{row}</SwipeActions> : row;
 }

@@ -78,7 +78,8 @@
     "recurs": "Repeats · {{schedule}}",
     "dueOverdue": "Overdue",
     "dueToday": "Due today",
-    "dueTomorrow": "Due tomorrow"
+    "dueTomorrow": "Due tomorrow",
+    "swipe": { "delete": "Delete", "toBacklog": "Move to backlog", "toToday": "Move to today" }
   },
   "richText": {
     "bold": "Bold",

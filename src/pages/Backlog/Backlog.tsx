@@ -13,7 +13,7 @@ import {
   matchesFilters,
   type TaskFilters,
 } from '../../components/task';
-import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
+import { useDeleteTask, useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { lifeAreaColorVar } from '../../lib/lifeAreas';
 import type { LifeArea, Task } from '../../models';
@@ -47,6 +47,7 @@ export default function Backlog() {
   const { data: tasks, isLoading, error } = useTasksByStatus('backlog');
   const { data: areas } = useLifeAreas();
   const updateStatus = useUpdateTaskStatus();
+  const deleteTask = useDeleteTask();
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -124,6 +125,21 @@ export default function Backlog() {
                 key={task.id}
                 task={task}
                 onEdit={() => taskForm.openEdit(task)}
+                swipe={{
+                  left: {
+                    label: t('task.swipe.delete'),
+                    tone: 'danger',
+                    onAction: () => deleteTask.mutateAsync(task.id),
+                  },
+                  // A recurring series is forced to the backlog by the BE, so it can't move to Today.
+                  right: task.recurrence
+                    ? undefined
+                    : {
+                        label: t('task.swipe.toToday'),
+                        tone: 'neutral',
+                        onAction: () => updateStatus.mutateAsync({ id: task.id, status: 'today' }),
+                      },
+                }}
                 trailing={
                   <Button
                     variant="secondary"

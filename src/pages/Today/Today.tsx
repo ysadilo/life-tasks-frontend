@@ -19,11 +19,18 @@ import {
   type TaskFilters,
   type SortBy,
 } from '../../components/task';
-import { useTasksByStatus, useUpdateTaskStatus, useRecurringTasks, useToggleOccurrence } from '../../hooks/useTasks';
+import {
+  useDeleteTask,
+  useTasksByStatus,
+  useUpdateTaskStatus,
+  useRecurringTasks,
+  useToggleOccurrence,
+} from '../../hooks/useTasks';
 import { useManualOrder } from '../../hooks/useManualOrder';
 import { useDragReorder } from '../../hooks/useDragReorder';
 import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recurrence';
 import { isSameDay } from '../../lib/dateUtils';
+import { dueUrgency } from '../../lib/taskDates';
 import type { Task } from '../../models';
 import styles from './Today.module.css';
 
@@ -35,6 +42,7 @@ export default function Today() {
   const { data: triageTasks } = useTasksByStatus('needs_triage');
   const { data: recurringTasks } = useRecurringTasks();
   const updateStatus = useUpdateTaskStatus();
+  const deleteTask = useDeleteTask();
   const toggleOccurrence = useToggleOccurrence();
   const manualOrder = useManualOrder();
 
@@ -56,6 +64,24 @@ export default function Today() {
     } else {
       updateStatus.mutate({ id: task.id, status: done ? 'done' : 'today', ...reflection });
     }
+  };
+
+  // Recurring rows are virtual occurrences, so there's nothing to delete or move per day. The BE would
+  // promote a due-today task straight back to Today, so those can't be sent to the backlog either.
+  const swipeFor = (task: Task) => {
+    if (task.recurrence) return undefined;
+    const urgency = dueUrgency(task);
+    return {
+      left: { label: t('task.swipe.delete'), tone: 'danger' as const, onAction: () => deleteTask.mutateAsync(task.id) },
+      right:
+        urgency === 'overdue' || urgency === 'today'
+          ? undefined
+          : {
+              label: t('task.swipe.toBacklog'),
+              tone: 'neutral' as const,
+              onAction: () => updateStatus.mutateAsync({ id: task.id, status: 'backlog' }),
+            },
+    };
   };
 
   const finishReflecting = (task: Task, reflection: Reflection) => {
@@ -187,6 +213,7 @@ export default function Today() {
             onToggle={() => toggle(task, true)}
             onEdit={() => taskForm.openEdit(task)}
             // ponytail: recurring occurrences have no per-occurrence feeling/time field on the BE yet.
+            swipe={swipeFor(task)}
             onReflect={task.recurrence ? undefined : () => setReflecting(task)}
             rowRef={sortBy === 'manual' ? dragReorder.registerRow(task.id) : undefined}
             dragHandleProps={
