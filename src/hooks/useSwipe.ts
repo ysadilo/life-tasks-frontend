@@ -75,15 +75,17 @@ export function useSwipe(
     },
   };
 
+  const { direction, distance } = dominantDirection(offset);
+  const progress = allowed.includes(direction) ? Math.min(distance / THRESHOLD_PX, 1) : 0;
+
   const style: CSSProperties = {
     transform: horizontalOnly
       ? `translateX(${offset.x}px)`
       : `translate(${offset.x}px, ${offset.y}px) rotate(${offset.x / 20}deg)`,
-    transition: mode === 'drag' ? 'none' : `transform ${FLY_MS}ms var(--ease-out)`,
+    // A row fades as it's dragged toward the commit distance and out entirely as it flies off.
+    ...(horizontalOnly && { opacity: mode === 'fly' ? 0 : 1 - 0.4 * progress }),
+    transition: mode === 'drag' ? 'none' : `transform ${FLY_MS}ms var(--ease-out), opacity ${FLY_MS}ms var(--ease-out)`,
   };
-
-  const { direction, distance } = dominantDirection(offset);
-  const progress = allowed.includes(direction) ? Math.min(distance / THRESHOLD_PX, 1) : 0;
 
   return { bind, style, direction, progress };
 }

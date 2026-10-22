@@ -79,7 +79,9 @@
     "dueOverdue": "Overdue",
     "dueToday": "Due today",
     "dueTomorrow": "Due tomorrow",
-    "swipe": { "delete": "Delete", "toBacklog": "Move to backlog", "toToday": "Move to today" }
+    "swipe": { "delete": "Delete", "toBacklog": "Add to backlog", "toToday": "Add to today" },
+    "deletedToast": "Deleted \"{{title}}\"",
+    "undo": "Undo"
   },
   "richText": {
     "bold": "Bold",

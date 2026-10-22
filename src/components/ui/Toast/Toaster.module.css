@@ -24,6 +24,35 @@
   animation: var(--kf-fade-up) var(--dur-base) var(--ease-spring);
 }
 
+/* Toast carrying an action (e.g. Undo): message left, button right; only the button dismisses. */
+.withAction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: default;
+}
+
+.message {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.action {
+  flex: none;
+  padding: 6px 10px;
+  border: 1px solid var(--color-info-border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: inherit;
+  font: 600 13px/1 var(--font-sans);
+  cursor: pointer;
+}
+
+.action:hover {
+  background: var(--color-info-border);
+}
+
 @media (max-width: 768px) {
   .wrap {
     bottom: 88px;

@@ -19,13 +19,8 @@ import {
   type TaskFilters,
   type SortBy,
 } from '../../components/task';
-import {
-  useDeleteTask,
-  useTasksByStatus,
-  useUpdateTaskStatus,
-  useRecurringTasks,
-  useToggleOccurrence,
-} from '../../hooks/useTasks';
+import { useTasksByStatus, useUpdateTaskStatus, useRecurringTasks, useToggleOccurrence } from '../../hooks/useTasks';
+import { useDeleteTaskWithUndo } from '../../hooks/useDeleteTaskWithUndo';
 import { useManualOrder } from '../../hooks/useManualOrder';
 import { useDragReorder } from '../../hooks/useDragReorder';
 import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recurrence';
@@ -42,7 +37,7 @@ export default function Today() {
   const { data: triageTasks } = useTasksByStatus('needs_triage');
   const { data: recurringTasks } = useRecurringTasks();
   const updateStatus = useUpdateTaskStatus();
-  const deleteTask = useDeleteTask();
+  const deleteTask = useDeleteTaskWithUndo();
   const toggleOccurrence = useToggleOccurrence();
   const manualOrder = useManualOrder();
 
@@ -72,7 +67,7 @@ export default function Today() {
     if (task.recurrence) return undefined;
     const urgency = dueUrgency(task);
     return {
-      left: { label: t('task.swipe.delete'), tone: 'danger' as const, onAction: () => deleteTask.mutateAsync(task.id) },
+      left: { label: t('task.swipe.delete'), tone: 'danger' as const, onAction: () => deleteTask(task) },
       right:
         urgency === 'overdue' || urgency === 'today'
           ? undefined

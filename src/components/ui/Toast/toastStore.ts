@@ -1,8 +1,14 @@
 import { useSyncExternalStore } from 'react';
 
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 interface Toast {
   id: number;
   message: string;
+  action?: ToastAction;
 }
 
 let toasts: Toast[] = [];
@@ -14,9 +20,9 @@ function emit() {
 }
 
 export const toast = {
-  show(message: string) {
+  show(message: string, action?: ToastAction) {
     const id = nextId++;
-    toasts = [...toasts, { id, message }];
+    toasts = [...toasts, { id, message, action }];
     emit();
     setTimeout(() => toast.dismiss(id), 4500);
   },
