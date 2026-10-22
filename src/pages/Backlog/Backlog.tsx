@@ -7,6 +7,7 @@ import {
   taskForm,
   leaveThen,
   AppliedFilters,
+  TaskGroupPopover,
   TaskFilterPopover,
   EMPTY_TASK_FILTERS,
   activeFilterCount,
@@ -15,32 +16,9 @@ import {
 } from '../../components/task';
 import { useDeleteTask, useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
-import { lifeAreaColorVar } from '../../lib/lifeAreas';
-import type { LifeArea, Task } from '../../models';
+import { usePreferences } from '../../hooks/usePreferences';
+import { groupTasks } from '../../lib/taskGrouping';
 import styles from './Backlog.module.css';
-
-interface Group {
-  area: LifeArea | null;
-  tasks: Task[];
-}
-
-function groupByArea(tasks: Task[], areas: LifeArea[]): Group[] {
-  const groups = new Map<string, Task[]>();
-  for (const task of tasks) {
-    const key = task.areaId ?? 'other';
-    groups.set(key, [...(groups.get(key) ?? []), task]);
-  }
-
-  const ordered: Group[] = [];
-  for (const area of areas) {
-    const areaTasks = groups.get(area.id);
-    if (areaTasks?.length) ordered.push({ area, tasks: areaTasks });
-  }
-  const other = groups.get('other');
-  if (other?.length) ordered.push({ area: null, tasks: other });
-
-  return ordered;
-}
 
 export default function Backlog() {
   const { t } = useTranslation();
@@ -51,6 +29,9 @@ export default function Backlog() {
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
   const [filterOpen, setFilterOpen] = useState(false);
+  const { preferences, update: updatePreferences } = usePreferences();
+  const groupBy = preferences.backlogGroupBy;
+  const [groupOpen, setGroupOpen] = useState(false);
 
   const filteredTasks = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -58,7 +39,7 @@ export default function Backlog() {
   }, [tasks, search, filters]);
   const filterCount = activeFilterCount(filters);
 
-  const groups = useMemo(() => groupByArea(filteredTasks, areas ?? []), [filteredTasks, areas]);
+  const groups = useMemo(() => groupTasks(filteredTasks, groupBy, areas ?? []), [filteredTasks, groupBy, areas]);
 
   if (isLoading) return <PageState>{t('backlog.loading')}</PageState>;
   if (error) return <PageState>{t('backlog.error')}</PageState>;
@@ -67,7 +48,10 @@ export default function Backlog() {
     <div className={styles.page}>
       <PageHeader
         title={t('backlog.title')}
-        subtitle={t('backlog.subtitle', { count: filteredTasks.length })}
+        subtitle={t('backlog.subtitle', {
+          count: filteredTasks.length,
+          grouping: t(`backlog.group.subtitle.${groupBy}`),
+        })}
         actions={
           <>
             <Input
@@ -75,7 +59,18 @@ export default function Backlog() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <Button variant="ghost">{t('backlog.groupByArea')}</Button>
+            <div className={styles.filterWrap}>
+              <Button variant="ghost" onClick={() => setGroupOpen((v) => !v)}>
+                {t('backlog.group.label', { mode: t(`backlog.group.${groupBy}`) })}
+              </Button>
+              {groupOpen && (
+                <TaskGroupPopover
+                  groupBy={groupBy}
+                  onChange={(backlogGroupBy) => updatePreferences({ backlogGroupBy })}
+                  onClose={() => setGroupOpen(false)}
+                />
+              )}
+            </div>
             <div className={styles.filterWrap}>
               <Button variant="ghost" onClick={() => setFilterOpen((v) => !v)}>
                 {filterCount > 0 ? `${t('today.filter')} · ${filterCount}` : t('today.filter')}
@@ -112,14 +107,14 @@ export default function Backlog() {
         )}
 
         {groups.map((group) => (
-          <div key={group.area?.id ?? 'other'} className={styles.group}>
-            <div className={styles.groupHeader}>
-              {group.area && (
-                <span className={styles.groupDot} style={{ background: lifeAreaColorVar(group.area.order) }} />
-              )}
-              <span className={styles.groupLabel}>{group.area ? group.area.name : t('backlog.otherGroup')}</span>
-              <span className={styles.groupCount}>{group.tasks.length}</span>
-            </div>
+          <div key={group.key} className={styles.group}>
+            {group.labelKey !== null || group.areaName ? (
+              <div className={styles.groupHeader}>
+                {group.dot && <span className={styles.groupDot} style={{ background: group.dot }} />}
+                <span className={styles.groupLabel}>{group.areaName ?? t(group.labelKey!, group.labelValues)}</span>
+                <span className={styles.groupCount}>{group.tasks.length}</span>
+              </div>
+            ) : null}
             {group.tasks.map((task) => (
               <TaskRow
                 key={task.id}
