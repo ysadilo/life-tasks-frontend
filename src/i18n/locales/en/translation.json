@@ -85,6 +85,7 @@
     "italic": "Italic",
     "underline": "Underline",
     "bulletList": "Bullet list",
+    "checklist": "Checklist",
     "orderedList": "Numbered list",
     "link": "Link",
     "unlink": "Remove link",
