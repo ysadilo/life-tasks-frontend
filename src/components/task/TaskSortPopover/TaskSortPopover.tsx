@@ -1,10 +1,7 @@
-import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useOutsideClick } from '../../../hooks/useOutsideClick';
-import { useAnchoredPopoverPosition } from '../../../hooks/useAnchoredPopoverPosition';
+import { OptionPopover } from '../OptionPopover';
 import { PRIORITY_RANK } from '../../../lib/priority';
 import type { Task } from '../../../models';
-import styles from './TaskSortPopover.module.css';
 
 export type SortBy = 'priority' | 'dueDate' | 'effort' | 'manual';
 
@@ -26,40 +23,18 @@ interface TaskSortPopoverProps {
 
 export function TaskSortPopover({ sortBy, onChange, onClose }: TaskSortPopoverProps) {
   const { t } = useTranslation();
-  const ref = useRef<HTMLDivElement>(null);
-  useOutsideClick(ref, onClose);
-  const position = useAnchoredPopoverPosition(ref);
-
+  const options = SORT_OPTIONS.map((value) => ({
+    value,
+    label: t(`today.sort.${value}`),
+    description: t(`today.sort.${value}Description`),
+  }));
   return (
-    <div
-      ref={ref}
-      className={styles.popover}
-      style={position ?? undefined}
-      role="radiogroup"
-      aria-label={t('today.sort.title')}
-    >
-      {SORT_OPTIONS.map((option) => {
-        const selected = option === sortBy;
-        return (
-          <button
-            key={option}
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            className={[styles.option, selected ? styles.optionSelected : ''].filter(Boolean).join(' ')}
-            onClick={() => {
-              onChange(option);
-              onClose();
-            }}
-          >
-            <span className={[styles.radio, selected ? styles.radioSelected : ''].filter(Boolean).join(' ')} />
-            <span className={styles.optionText}>
-              <span className={styles.optionLabel}>{t(`today.sort.${option}`)}</span>
-              <span className={styles.optionDescription}>{t(`today.sort.${option}Description`)}</span>
-            </span>
-          </button>
-        );
-      })}
-    </div>
+    <OptionPopover
+      options={options}
+      value={sortBy}
+      onChange={onChange}
+      onClose={onClose}
+      ariaLabel={t('today.sort.title')}
+    />
   );
 }

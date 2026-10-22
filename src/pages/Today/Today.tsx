@@ -17,10 +17,10 @@ import {
   TaskSortPopover,
   SORT_COMPARATORS,
   type TaskFilters,
-  type SortBy,
 } from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus, useRecurringTasks, useToggleOccurrence } from '../../hooks/useTasks';
 import { useDeleteTaskWithUndo } from '../../hooks/useDeleteTaskWithUndo';
+import { usePreferences } from '../../hooks/usePreferences';
 import { useManualOrder } from '../../hooks/useManualOrder';
 import { useDragReorder } from '../../hooks/useDragReorder';
 import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recurrence';
@@ -42,7 +42,8 @@ export default function Today() {
   const manualOrder = useManualOrder();
 
   const [hideDone, setHideDone] = useState(false);
-  const [sortBy, setSortBy] = useState<SortBy>('priority');
+  const { preferences, update: updatePreferences } = usePreferences();
+  const sortBy = preferences.todaySortBy;
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
@@ -162,7 +163,13 @@ export default function Today() {
               <Button variant="ghost" onClick={() => setSortOpen((v) => !v)}>
                 {t('today.sort.label', { mode: t(`today.sort.${sortBy}`) })}
               </Button>
-              {sortOpen && <TaskSortPopover sortBy={sortBy} onChange={setSortBy} onClose={() => setSortOpen(false)} />}
+              {sortOpen && (
+                <TaskSortPopover
+                  sortBy={sortBy}
+                  onChange={(todaySortBy) => updatePreferences({ todaySortBy })}
+                  onClose={() => setSortOpen(false)}
+                />
+              )}
             </div>
             <Button variant="ghost" onClick={() => setHideDone((v) => !v)}>
               {hideDone ? t('today.showDone') : t('today.hideDone')}
