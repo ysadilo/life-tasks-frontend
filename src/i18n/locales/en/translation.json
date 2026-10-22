@@ -164,8 +164,9 @@
     "emptyTitle": "Nothing on today's board",
     "emptyDescription": "Pull something in from the backlog, or enjoy the rare calm.",
     "doneToday": "Done today",
-    "triageBannerText_one": "{{count}} task from yesterday never got closed out.",
-    "triageBannerText_other": "{{count}} tasks from yesterday never got closed out.",
+    "triageBannerText_one": "{{count}} task left over from yesterday",
+    "triageBannerText_other": "{{count}} tasks left over from yesterday",
+    "triageBannerHint": "Sort them before you start · about {{minutes}} min",
     "startTriage": "Start triage"
   },
   "triage": {
