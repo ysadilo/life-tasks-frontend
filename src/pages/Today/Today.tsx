@@ -139,10 +139,19 @@ export default function Today() {
 
       {!!triageCount && (
         <div className={styles.triageBanner}>
-          <span>{t('today.triageBannerText', { count: triageCount })}</span>
-          <Button variant="primary" className={styles.triageBannerAction} onClick={() => navigate('/triage')}>
+          <span className={styles.triageIcon} aria-hidden>
+            <span className={styles.triageIconBack} />
+            <span className={styles.triageIconFront} />
+          </span>
+          <div className={styles.triageText}>
+            <span className={styles.triageTitle}>{t('today.triageBannerText', { count: triageCount })}</span>
+            <span className={styles.triageSubtitle}>
+              {t('today.triageBannerHint', { minutes: Math.max(1, Math.round(triageCount / 2)) })}
+            </span>
+          </div>
+          <button type="button" className={styles.triageBannerAction} onClick={() => navigate('/triage')}>
             {t('today.startTriage')}
-          </Button>
+          </button>
         </div>
       )}
 
