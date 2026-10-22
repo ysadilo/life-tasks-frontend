@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 export function startOfDay(date: Date): Date {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
@@ -71,4 +73,24 @@ export function buildMonthGrid(monthDate: Date): MonthCell[] {
     cells.push({ date: d, isCurrentMonth: d.getMonth() === monthDate.getMonth() });
   }
   return cells;
+}
+
+/** Local `YYYY-MM-DD`, re-evaluated when the tab regains focus so a page left open past midnight rolls over. */
+export function useLocalToday(): string {
+  const [today, setToday] = useState(localISODate);
+  useEffect(() => {
+    const refresh = () => setToday(localISODate());
+    document.addEventListener('visibilitychange', refresh);
+    window.addEventListener('focus', refresh);
+    return () => {
+      document.removeEventListener('visibilitychange', refresh);
+      window.removeEventListener('focus', refresh);
+    };
+  }, []);
+  return today;
+}
+
+/** The user's local calendar day as a UTC-midnight ISO instant — the form dates are stored in. */
+export function localDayAsUTC(date = new Date()): string {
+  return new Date(localISODate(date)).toISOString();
 }
