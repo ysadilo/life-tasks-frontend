@@ -9,6 +9,7 @@
   --kf-fade-in: fade-in;
   --kf-fade-up: fade-up;
   --kf-pop-in: pop-in;
+  --kf-sheet-up: sheet-up;
   --kf-check-pop: check-pop;
   --kf-curdle-away: curdle-away;
 }
@@ -23,6 +24,12 @@
   from {
     opacity: 0;
     transform: translateY(8px);
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
   }
 }
 

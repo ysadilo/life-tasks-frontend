@@ -8,22 +8,24 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 6px;
+    gap: 4px;
     flex: none;
-    padding: 16px 20px;
-    padding-bottom: calc(24px + env(safe-area-inset-bottom));
-    padding-left: calc(20px + env(safe-area-inset-left));
-    padding-right: calc(20px + env(safe-area-inset-right));
-    border-top: 1px solid var(--color-border-subtle);
-    background: var(--color-sidebar-bg);
+    margin: 0 14px calc(16px + env(safe-area-inset-bottom));
+    padding: 8px;
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    box-shadow: 0 14px 30px -14px rgb(43 42 40 / 0.3);
   }
 
   .item {
+    flex: 1;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    padding: 9px 11px;
-    border-radius: var(--radius-nav-item);
+    padding: 12px 0;
+    border-radius: 16px;
     border: 1px solid transparent;
     font: 500 12px/1 var(--font-sans);
     color: var(--color-text-secondary);
@@ -31,8 +33,8 @@
   }
 
   .itemActive {
-    background: var(--color-surface);
-    border-color: var(--color-border);
+    background: var(--color-bg);
+    border-color: transparent;
     color: var(--color-text);
     font-weight: 600;
   }
@@ -53,25 +55,26 @@
   .actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
+    margin-left: 4px;
   }
 
   .menuButton,
   .add {
-    width: 36px;
-    height: 36px;
+    width: 46px;
+    height: 46px;
     flex: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-input);
+    border-radius: 16px;
     cursor: pointer;
   }
 
   .menuButton {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    font: 500 15px/1 var(--font-sans);
+    background: transparent;
+    border: none;
+    font: 500 18px/1 var(--font-sans);
     color: var(--color-text-secondary);
   }
 
@@ -93,7 +96,7 @@
 
   .menu {
     position: absolute;
-    right: calc(20px + env(safe-area-inset-right));
+    right: 0;
     bottom: calc(100% + 8px);
     z-index: 21;
     width: 240px;
