@@ -12,4 +12,6 @@ export { ThemeToggle } from './ThemeToggle';
 export { EmptyState } from './EmptyState';
 export { EmptyStateIcon } from './EmptyStateIcon';
 export { Toaster, toast } from './Toast';
+export { SwipeActions } from './SwipeActions';
+export type { SwipeAction } from './SwipeActions';
 export { SamoyedCheer } from './SamoyedCheer';

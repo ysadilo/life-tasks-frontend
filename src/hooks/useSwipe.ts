@@ -18,9 +18,16 @@ type Mode = 'idle' | 'drag' | 'fly';
 /**
  * Touch-only (mouse keeps using buttons/keys) swipe gesture for a card: drags with the finger,
  * and on release past THRESHOLD_PX along the dominant axis flies off and reports the direction.
+ * Pass `{ horizontalOnly: true }` for a list row: it slides without tilting or following vertical movement, and if
+ * `onSwipe` returns a promise the row stays off-screen until it settles. Touches that start on a button, input or
+ * link are ignored so their clicks aren't swallowed by pointer capture.
  * Spread `bind` on the card and `style` onto it (`direction` + `progress` 0..1 drive a colour fill); give it `touch-action: none` in CSS.
  */
-export function useSwipe(onSwipe: (direction: SwipeDirection) => void, allowed: SwipeDirection[]) {
+export function useSwipe(
+  onSwipe: (direction: SwipeDirection) => void | Promise<unknown>,
+  allowed: SwipeDirection[],
+  { horizontalOnly = false }: { horizontalOnly?: boolean } = {}
+) {
   const [start, setStart] = useState<{ x: number; y: number } | null>(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [mode, setMode] = useState<Mode>('idle');
@@ -28,6 +35,7 @@ export function useSwipe(onSwipe: (direction: SwipeDirection) => void, allowed: 
   const bind = {
     onPointerDown: (e: PointerEvent) => {
       if (e.pointerType === 'mouse' || mode === 'fly') return;
+      if ((e.target as Element).closest('button, input, a')) return;
       e.currentTarget.setPointerCapture(e.pointerId);
       setStart({ x: e.clientX, y: e.clientY });
       setMode('drag');
@@ -52,9 +60,12 @@ export function useSwipe(onSwipe: (direction: SwipeDirection) => void, allowed: 
         y: horizontal ? offset.y : Math.sign(offset.y) * window.innerHeight,
       });
       window.setTimeout(() => {
-        onSwipe(direction);
-        setMode('drag'); // no transition while the next card snaps into place
-        setOffset({ x: 0, y: 0 });
+        const reset = () => {
+          setMode('drag'); // no transition while the next card snaps into place
+          setOffset({ x: 0, y: 0 });
+        };
+        // Rejections are surfaced by the caller's mutation state; here we only need to settle.
+        Promise.resolve(onSwipe(direction)).then(reset, reset);
       }, FLY_MS);
     },
     onPointerCancel: () => {
@@ -65,7 +76,9 @@ export function useSwipe(onSwipe: (direction: SwipeDirection) => void, allowed: 
   };
 
   const style: CSSProperties = {
-    transform: `translate(${offset.x}px, ${offset.y}px) rotate(${offset.x / 20}deg)`,
+    transform: horizontalOnly
+      ? `translateX(${offset.x}px)`
+      : `translate(${offset.x}px, ${offset.y}px) rotate(${offset.x / 20}deg)`,
     transition: mode === 'drag' ? 'none' : `transform ${FLY_MS}ms var(--ease-out)`,
   };
 
