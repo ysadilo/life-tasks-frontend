@@ -1,4 +1,5 @@
 import type { Energy } from './Energy';
+import type { Feeling } from './Feeling';
 import type { LifeAreaId } from './LifeAreaId';
 import type { Priority } from './Priority';
 import type { Recurrence } from './Recurrence';
@@ -24,4 +25,7 @@ export interface Task {
   /** Occurrence day(s) (ISO) forced onto Today outside the normal cadence. */
   extraTodayDates?: string[];
   completedAt?: string | null;
+  /** Optional check-in captured when finishing the task ("Done + reflect"). */
+  feeling?: Feeling | null;
+  actualMinutes?: number | null;
 }

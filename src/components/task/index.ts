@@ -2,6 +2,8 @@ export { TaskRow } from './TaskRow';
 export { DoneTaskRow } from './DoneTaskRow';
 export { MetaChip } from './MetaChip';
 export { TaskChip } from './TaskChip';
+export { ReflectModal } from './ReflectModal';
+export type { Reflection } from './ReflectModal';
 export { TaskFormPanel } from './TaskFormPanel';
 export { TaskPreviewPanel } from './TaskPreviewPanel';
 export { AppliedFilters } from './AppliedFilters';

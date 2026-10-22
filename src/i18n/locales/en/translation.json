@@ -94,6 +94,17 @@
     "linkApply": "Apply",
     "linkCancel": "Cancel"
   },
+  "reflect": {
+    "action": "Done + reflect",
+    "title": "Nice work",
+    "feelLabel": "How did it feel?",
+    "optional": "optional",
+    "feeling": { "drained": "Drained", "heavy": "Heavy", "neutral": "Neutral", "good": "Good", "great": "Great" },
+    "took": "Took",
+    "planned": "planned {{time}}",
+    "justDone": "Just mark done",
+    "saveDone": "Save & done"
+  },
   "taskForm": {
     "newTitle": "New task",
     "editTitle": "Edit task",
