@@ -6,6 +6,8 @@ import { Button, EmptyState, SamoyedCheer } from '../../components/ui';
 import {
   TaskRow,
   DoneTaskRow,
+  ReflectModal,
+  type Reflection,
   taskForm,
   AppliedFilters,
   TaskFilterPopover,
@@ -42,17 +44,23 @@ export default function Today() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
+  const [reflecting, setReflecting] = useState<Task | null>(null);
 
   const today = useMemo(() => new Date(), []);
 
-  const toggle = (task: Task, done: boolean) => {
+  const toggle = (task: Task, done: boolean, reflection: Reflection = {}) => {
     // Finishing the only remaining open task (recurring occurrences included) earns a cheer.
     if (done && sortedOpenTasks.length === 1) setCelebrating(true);
     if (task.recurrence) {
       toggleOccurrence.mutate({ id: task.id, date: occurrenceISO(today), done });
     } else {
-      updateStatus.mutate({ id: task.id, status: done ? 'done' : 'today' });
+      updateStatus.mutate({ id: task.id, status: done ? 'done' : 'today', ...reflection });
     }
+  };
+
+  const finishReflecting = (task: Task, reflection: Reflection) => {
+    setReflecting(null);
+    toggle(task, true, reflection);
   };
 
   const recurringToday = useMemo(
@@ -155,6 +163,8 @@ export default function Today() {
         </div>
       )}
 
+      <ReflectModal task={reflecting} onClose={() => setReflecting(null)} onSubmit={finishReflecting} />
+
       <AppliedFilters filters={filters} onChange={setFilters} />
 
       <div className={styles.list}>
@@ -176,6 +186,8 @@ export default function Today() {
             task={task}
             onToggle={() => toggle(task, true)}
             onEdit={() => taskForm.openEdit(task)}
+            // ponytail: recurring occurrences have no per-occurrence feeling/time field on the BE yet.
+            onReflect={task.recurrence ? undefined : () => setReflecting(task)}
             rowRef={sortBy === 'manual' ? dragReorder.registerRow(task.id) : undefined}
             dragHandleProps={
               sortBy === 'manual'

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { localDayAsUTC, localISODate, useLocalToday } from '../lib/dateUtils';
-import type { Energy, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../models';
+import type { Energy, Feeling, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../models';
 
 export type ResolveMissedAction = 'done' | 'dismiss' | 'addToday';
 
@@ -69,7 +69,16 @@ export function useUpdateTaskStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, ...patch }: { id: string; status: TaskStatus; dueDate?: string | null }) =>
+    mutationFn: ({
+      id,
+      ...patch
+    }: {
+      id: string;
+      status: TaskStatus;
+      dueDate?: string | null;
+      feeling?: Feeling;
+      actualMinutes?: number;
+    }) =>
       // Stamp the user's local day, not the server's UTC day, when entering Today.
       api.patch<Task>(
         `/tasks/${id}?today=${localISODate()}`,

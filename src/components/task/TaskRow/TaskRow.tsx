@@ -24,6 +24,8 @@ interface TaskRowProps {
   done?: boolean;
   onToggle?: () => void;
   onEdit?: () => void;
+  /** Shows the "Done + reflect" pill, which opens the check-in instead of ticking straight to done. */
+  onReflect?: () => void;
   trailing?: ReactNode;
   showChips?: boolean;
   rowRef?: (el: HTMLDivElement | null) => void;
@@ -46,6 +48,7 @@ export function TaskRow({
   done = false,
   onToggle,
   onEdit,
+  onReflect,
   trailing,
   showChips = true,
   rowRef,
@@ -97,6 +100,11 @@ export function TaskRow({
           )}
         </div>
       </div>
+      {onReflect && (
+        <button type="button" className={styles.reflect} onClick={onReflect}>
+          {t('reflect.action')}
+        </button>
+      )}
       {onEdit && <EditButton title={task.title} onClick={onEdit} />}
       {trailing}
     </div>
