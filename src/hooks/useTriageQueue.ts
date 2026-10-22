@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
+  taskToInput,
   useCreateTask,
   useDeleteTask,
   useRecurringTasks,
@@ -97,16 +98,7 @@ export function useTriageQueue() {
       // stale one — acting on it again has to hit an id that still exists.
       case 'drop':
         createTask.mutate(
-          {
-            title: last.task.title,
-            description: last.task.description,
-            dueDate: last.task.dueDate,
-            areaId: last.task.areaId ?? null,
-            priority: last.task.priority ?? null,
-            energy: last.task.energy ?? null,
-            estimatedMinutes: last.task.estimatedMinutes ?? null,
-            status: 'needs_triage',
-          },
+          { ...taskToInput(last.task), status: 'needs_triage' },
           { onSuccess: (restored) => setQueue((q) => [{ kind: 'task', task: restored }, ...(q ?? [])]) }
         );
         break;

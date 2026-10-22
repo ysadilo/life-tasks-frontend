@@ -19,6 +19,21 @@ export interface TaskInput {
   recurrenceEndDate?: string | null;
 }
 
+/** Every user-editable field of a task, for re-creating it (undo-delete, copy). Callers set `status`. */
+export function taskToInput(task: Task): TaskInput {
+  return {
+    title: task.title,
+    description: task.description,
+    dueDate: task.dueDate,
+    areaId: task.areaId ?? null,
+    priority: task.priority ?? null,
+    energy: task.energy ?? null,
+    estimatedMinutes: task.estimatedMinutes ?? null,
+    recurrence: task.recurrence ?? null,
+    recurrenceEndDate: task.recurrenceEndDate ?? null,
+  };
+}
+
 /** Passing the local calendar day drives the BE's lazy today→triage rollover
  *  and recurring missed-occurrence detection (see the tasks-backend repo). */
 export function useTasksByStatus(status: TaskStatus) {

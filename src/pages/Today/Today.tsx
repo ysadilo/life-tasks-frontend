@@ -18,13 +18,8 @@ import {
   SORT_COMPARATORS,
   type TaskFilters,
 } from '../../components/task';
-import {
-  useDeleteTask,
-  useTasksByStatus,
-  useUpdateTaskStatus,
-  useRecurringTasks,
-  useToggleOccurrence,
-} from '../../hooks/useTasks';
+import { useTasksByStatus, useUpdateTaskStatus, useRecurringTasks, useToggleOccurrence } from '../../hooks/useTasks';
+import { useDeleteTaskWithUndo } from '../../hooks/useDeleteTaskWithUndo';
 import { usePreferences } from '../../hooks/usePreferences';
 import { useManualOrder } from '../../hooks/useManualOrder';
 import { useDragReorder } from '../../hooks/useDragReorder';
@@ -42,7 +37,7 @@ export default function Today() {
   const { data: triageTasks } = useTasksByStatus('needs_triage');
   const { data: recurringTasks } = useRecurringTasks();
   const updateStatus = useUpdateTaskStatus();
-  const deleteTask = useDeleteTask();
+  const deleteTask = useDeleteTaskWithUndo();
   const toggleOccurrence = useToggleOccurrence();
   const manualOrder = useManualOrder();
 
@@ -67,13 +62,18 @@ export default function Today() {
     }
   };
 
-  // Recurring rows are virtual occurrences, so there's nothing to delete or move per day. The BE would
+  // Recurring rows are virtual occurrences, so they can't be deleted or moved per day (swiping explains that). The BE would
   // promote a due-today task straight back to Today, so those can't be sent to the backlog either.
   const swipeFor = (task: Task) => {
-    if (task.recurrence) return undefined;
+    if (task.recurrence) {
+      return {
+        left: { label: t('task.swipe.cantDelete'), tone: 'blocked' as const },
+        right: { label: t('task.swipe.cantMove'), tone: 'blocked' as const },
+      };
+    }
     const urgency = dueUrgency(task);
     return {
-      left: { label: t('task.swipe.delete'), tone: 'danger' as const, onAction: () => deleteTask.mutateAsync(task.id) },
+      left: { label: t('task.swipe.delete'), tone: 'danger' as const, onAction: () => deleteTask(task) },
       right:
         urgency === 'overdue' || urgency === 'today'
           ? undefined
