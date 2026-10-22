@@ -16,7 +16,8 @@ import {
 } from '../../components/task';
 import { useDeleteTask, useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
-import { groupTasks, type GroupBy } from '../../lib/taskGrouping';
+import { usePreferences } from '../../hooks/usePreferences';
+import { groupTasks } from '../../lib/taskGrouping';
 import styles from './Backlog.module.css';
 
 export default function Backlog() {
@@ -28,7 +29,8 @@ export default function Backlog() {
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [groupBy, setGroupBy] = useState<GroupBy>('area');
+  const { preferences, update: updatePreferences } = usePreferences();
+  const groupBy = preferences.backlogGroupBy;
   const [groupOpen, setGroupOpen] = useState(false);
 
   const filteredTasks = useMemo(() => {
@@ -62,7 +64,11 @@ export default function Backlog() {
                 {t('backlog.group.label', { mode: t(`backlog.group.${groupBy}`) })}
               </Button>
               {groupOpen && (
-                <TaskGroupPopover groupBy={groupBy} onChange={setGroupBy} onClose={() => setGroupOpen(false)} />
+                <TaskGroupPopover
+                  groupBy={groupBy}
+                  onChange={(backlogGroupBy) => updatePreferences({ backlogGroupBy })}
+                  onClose={() => setGroupOpen(false)}
+                />
               )}
             </div>
             <div className={styles.filterWrap}>
