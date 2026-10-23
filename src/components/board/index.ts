@@ -6,3 +6,4 @@ export { newBoardModal } from './newBoardModalStore';
 export { AssigneeChip } from './AssigneeChip';
 export { memberLabel } from './memberLabel';
 export { BoardsManager } from './BoardsManager';
+export { BoardTile, MemberAvatar } from './BoardTile';

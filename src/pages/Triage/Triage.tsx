@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { PageState } from '../../components/layout';
 import { Button, Chip, RichText } from '../../components/ui';
 import { MetaChip } from '../../components/task';
+import { MemberAvatar, memberLabel } from '../../components/board';
 import { useSwipe, type SwipeDirection } from '../../hooks/useSwipe';
 import { useTriageQueue, type TriageAction, type TriageQueueItem } from '../../hooks/useTriageQueue';
 import type { ResolveMissedAction } from '../../hooks/useTasks';
@@ -35,8 +36,26 @@ const MISSED_ACTION_KEYS: Record<string, ResolveMissedAction> = {
 export default function Triage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { current, upcoming, index, total, act, actMissed, undo, canUndo, history, isLoading, error, done } =
-    useTriageQueue();
+  const {
+    current,
+    upcoming,
+    index,
+    total,
+    act,
+    handTo,
+    handTargets,
+    others,
+    sortAsOwner,
+    isOwner,
+    shared,
+    actMissed,
+    undo,
+    canUndo,
+    history,
+    isLoading,
+    error,
+    done,
+  } = useTriageQueue();
   const isMissed = current?.kind === 'missed';
   const swipe = useSwipe(
     (direction) => {
@@ -121,7 +140,9 @@ export default function Triage() {
                 <div key={`${entry.task.id}-${i}`} className={styles.sideItem}>
                   <span className={styles.sideTitle}>{entry.task.title}</span>
                   <span className={`${styles.sideBadge} ${styles[entry.action]}`}>
-                    {t(`triage.short.${entry.action}`)}
+                    {entry.handedTo
+                      ? t('triage.handedTo', { name: memberLabel(entry.handedTo, t) })
+                      : t(`triage.short.${entry.action}`)}
                   </span>
                 </div>
               ))}
@@ -220,6 +241,23 @@ export default function Triage() {
               </div>
             )}
 
+            {shared && !isMissed && handTargets.length > 0 && (
+              <div className={styles.handTo}>
+                <span className={styles.sideLabel}>{t('triage.handTo')}</span>
+                {handTargets.map((member) => (
+                  <button
+                    key={member.userId}
+                    type="button"
+                    className={styles.handButton}
+                    onClick={() => handTo(member)}
+                  >
+                    <MemberAvatar email={member.email} />
+                    {memberLabel(member, t)}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <span className={styles.hint}>
               {t('triage.hint')}{' '}
               {!isMissed && canUndo && (
@@ -239,6 +277,26 @@ export default function Triage() {
                   <span className={styles.sideTitle}>{item.task.title}</span>
                 </div>
               ))}
+            </>
+          )}
+          {others.some(({ tasks }) => tasks.length > 0) && (
+            <>
+              <span className={styles.sideLabel}>{t('triage.inOthers')}</span>
+              {others
+                .filter(({ tasks }) => tasks.length > 0)
+                .map(({ member, tasks }) => (
+                  <div key={member.userId} className={styles.sideItem}>
+                    <MemberAvatar email={member.email} />
+                    <span className={styles.sideTitle}>
+                      {memberLabel(member, t)} · {t('triage.waiting', { count: tasks.length })}
+                    </span>
+                    {isOwner && (
+                      <button type="button" className={styles.ownerSort} onClick={() => sortAsOwner(member.userId)}>
+                        {t('triage.sortAsOwner')}
+                      </button>
+                    )}
+                  </div>
+                ))}
             </>
           )}
         </aside>
