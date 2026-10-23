@@ -325,3 +325,70 @@
 .assignee:hover {
   border-color: var(--color-accent-border);
 }
+
+.manager {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.manageCardCurrent {
+  background: var(--color-sidebar-bg);
+  border-color: transparent;
+}
+
+.currentPill {
+  font: 600 11px/1 var(--font-sans);
+  color: var(--color-success-text);
+  background: var(--color-success-bg);
+  border-radius: var(--radius-pill);
+  padding: 4px 8px;
+}
+
+.manageActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-left: 43px;
+}
+
+.manageActions .inviteForm {
+  flex: 1;
+}
+
+.manageCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+}
+
+.manageHeader {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.manageMembers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 43px;
+}
+
+.dangerButton {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-danger-text, #a4544a);
+  cursor: pointer;
+}
+
+.dangerButton:hover {
+  text-decoration: underline;
+}
