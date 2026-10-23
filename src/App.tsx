@@ -9,6 +9,7 @@ import Today from './pages/Today';
 import Triage from './pages/Triage';
 import CalendarPage from './pages/Calendar';
 import Settings from './pages/Settings';
+import InvitePage from './pages/Invite';
 
 export default function App() {
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ export default function App() {
       <Route path="/sign-in" element={<AuthLandingPage mode="login" />} />
       <Route path="/sign-up" element={<AuthLandingPage mode="signup" />} />
       <Route element={<RequireAuth />}>
+        <Route path="/join/:code" element={<InvitePage />} />
         <Route element={<AppShell />}>
           <Route path="/" element={<Navigate to="/today" replace />} />
           <Route path="/today" element={<Today />} />

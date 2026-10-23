@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useAcceptInvite,
@@ -15,7 +16,7 @@ import styles from './board.module.css';
 const MAX_AVATARS = 3;
 
 /** Board picker body, shared by the sidebar popover and the mobile menu. `onDone` fires after any choice. */
-export function BoardList({ onDone }: { onDone: () => void }) {
+export function BoardList({ onDone, searchable = false }: { onDone: () => void; searchable?: boolean }) {
   const { t } = useTranslation();
   const { data: boards } = useBoards();
   const { data: invites } = useBoardInvites();
@@ -24,8 +25,17 @@ export function BoardList({ onDone }: { onDone: () => void }) {
   const accept = useAcceptInvite();
   const decline = useDeclineInvite();
 
-  const personal = boards?.filter((b) => !b.shared) ?? [];
-  const shared = boards?.filter((b) => b.shared) ?? [];
+  const [query, setQuery] = useState('');
+  const matches = (name: string) => name.toLowerCase().includes(query.trim().toLowerCase());
+  const visible = boards?.filter((b) => matches(b.name)) ?? [];
+  const visibleInvites = invites?.filter((i) => matches(i.boardName));
+  const personal = visible.filter((b) => !b.shared);
+  const shared = visible.filter((b) => b.shared);
+
+  const pick = (board: Board) => {
+    if (board.id !== active?.id) switchBoard(board.id);
+    onDone();
+  };
 
   const renderBoard = (board: Board) => (
     <button
@@ -33,16 +43,15 @@ export function BoardList({ onDone }: { onDone: () => void }) {
       type="button"
       className={[styles.row, board.id === active?.id ? styles.rowActive : ''].filter(Boolean).join(' ')}
       aria-current={board.id === active?.id}
-      onClick={() => {
-        if (board.id !== active?.id) switchBoard(board.id);
-        onDone();
-      }}
+      onClick={() => pick(board)}
     >
       <BoardTile id={board.id} name={board.name} />
       <span className={styles.rowText}>
         <span className={styles.rowName}>{board.name}</span>
         <span className={styles.rowMeta}>
-          {board.shared ? t('board.sharedMeta', { count: board.members.length }) : t('board.personal')}
+          {board.shared
+            ? t('board.sharedCounts', { today: board.counts?.today ?? 0, forYou: board.counts?.forYou ?? 0 })
+            : t('board.personalCounts', { today: board.counts?.today ?? 0, backlog: board.counts?.backlog ?? 0 })}
         </span>
       </span>
       {board.shared && (
@@ -58,11 +67,31 @@ export function BoardList({ onDone }: { onDone: () => void }) {
 
   return (
     <div className={styles.list}>
+      {searchable && (
+        <div className={styles.search}>
+          <input
+            autoFocus
+            className={styles.searchInput}
+            type="search"
+            value={query}
+            placeholder={t('board.find')}
+            aria-label={t('board.find')}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              const first = visible[0];
+              if (e.key === 'Enter' && first) pick(first);
+            }}
+          />
+          <kbd className={styles.kbd}>⌘B</kbd>
+        </div>
+      )}
       {personal.length > 0 && <span className={styles.groupLabel}>{t('board.personal')}</span>}
       {personal.map(renderBoard)}
-      {(shared.length > 0 || !!invites?.length) && <span className={styles.groupLabel}>{t('board.shared')}</span>}
+      {(shared.length > 0 || !!visibleInvites?.length) && (
+        <span className={styles.groupLabel}>{t('board.shared')}</span>
+      )}
       {shared.map(renderBoard)}
-      {invites?.map((invite) => (
+      {visibleInvites?.map((invite) => (
         <div key={invite.id} className={styles.row}>
           <BoardTile id={invite.boardId} name={invite.boardName} />
           <span className={styles.rowText}>
@@ -88,6 +117,9 @@ export function BoardList({ onDone }: { onDone: () => void }) {
           </button>
         </div>
       ))}
+      {query && visible.length === 0 && !visibleInvites?.length && (
+        <span className={styles.groupLabel}>{t('board.noMatches')}</span>
+      )}
       <button
         type="button"
         className={styles.newBoard}

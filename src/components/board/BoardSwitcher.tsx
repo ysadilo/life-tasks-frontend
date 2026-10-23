@@ -15,7 +15,7 @@ function SwitcherPopover({ onClose }: { onClose: () => void }) {
 
   return (
     <div ref={ref} className={styles.popover} style={position ?? undefined}>
-      <BoardList onDone={onClose} />
+      <BoardList onDone={onClose} searchable />
     </div>
   );
 }

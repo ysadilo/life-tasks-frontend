@@ -2,12 +2,38 @@ import { useEffect, useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { setActiveBoardId, useActiveBoardId } from '../lib/activeBoard';
-import type { Board, BoardInvite, NewBoardInput } from '../models';
+import { localISODate } from '../lib/dateUtils';
+import type { Board, BoardInvite, BoardJoinPreview, NewBoardInput } from '../models';
 
 export function useBoards() {
   return useQuery({
     queryKey: ['boards'],
-    queryFn: () => api.get<Board[]>('/boards'),
+    queryFn: () => api.get<Board[]>(`/boards?today=${localISODate()}`),
+    // The switcher shows live task counts, so refresh whenever a board list is (re)mounted.
+    staleTime: 0,
+  });
+}
+
+export function useJoinPreview(code: string) {
+  return useQuery({
+    queryKey: ['board-join', code],
+    queryFn: () => api.get<BoardJoinPreview>(`/boards/join/${code}`),
+    retry: false,
+  });
+}
+
+export function useJoinBoard() {
+  const queryClient = useQueryClient();
+  const switchBoard = useSwitchBoard();
+  return useMutation({
+    mutationFn: (code: string) => api.post<{ boardId: string }>(`/boards/join/${code}`, {}),
+    onSuccess: async ({ boardId }) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['boards'] }),
+        queryClient.invalidateQueries({ queryKey: ['board-invites'] }),
+      ]);
+      switchBoard(boardId);
+    },
   });
 }
 
@@ -87,7 +113,7 @@ export function useInviteToBoard() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ boardId, email }: { boardId: string; email: string }) =>
-      api.post<void>(`/boards/${boardId}/invites`, { email }),
+      api.post<{ id: string } | null>(`/boards/${boardId}/invites`, { email }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['boards'] }),
   });
 }
@@ -116,7 +142,7 @@ export function useDeclineInvite() {
 }
 
 /** Board mutations that change the boards list (and, when a board goes away, whatever was scoped to it). */
-function useBoardMutation<V>(mutationFn: (variables: V) => Promise<unknown>) {
+function useBoardMutation<V, R = unknown>(mutationFn: (variables: V) => Promise<R>) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn,
@@ -140,3 +166,11 @@ export const useRevokeInvite = () =>
   useBoardMutation(({ boardId, inviteId }: { boardId: string; inviteId: string }) =>
     api.delete<void>(`/boards/${boardId}/invites/${inviteId}`)
   );
+
+/** Creates the board's join link (or returns the existing one). */
+export const useCreateInviteLink = () =>
+  useBoardMutation((boardId: string) => api.post<{ code: string }>(`/boards/${boardId}/invite-link`, {}));
+
+/** Turns the link off; creating it again gives a new code. */
+export const useDisableInviteLink = () =>
+  useBoardMutation((boardId: string) => api.delete<void>(`/boards/${boardId}/invite-link`));

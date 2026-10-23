@@ -15,6 +15,7 @@ import { Input } from '../ui/Input';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { toast } from '../ui/Toast';
 import { BoardTile, MemberAvatar } from './BoardTile';
+import { inviteModal } from './inviteModalStore';
 import { newBoardModal } from './newBoardModalStore';
 import type { Board } from '../../models';
 import styles from './board.module.css';
@@ -107,6 +108,11 @@ function BoardCard({ board, canDelete }: { board: Board; canDelete: boolean }) {
                 {t('board.rename')}
               </button>
             )
+          )}
+          {owner && board.shared && (
+            <button type="button" className={styles.linkButton} onClick={() => inviteModal.open(board.id)}>
+              {t('board.invitePeople')}
+            </button>
           )}
           {owner && canDelete && (
             <button
