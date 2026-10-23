@@ -3,6 +3,7 @@ import { Sidebar } from '../Sidebar';
 import { BottomNav } from '../BottomNav';
 import { TaskFormPanel, TaskPreviewPanel } from '../../task';
 import { LifeAreasModal } from '../../lifeAreas';
+import { NewBoardModal } from '../../board';
 import { Toaster } from '../../ui';
 import styles from './AppShell.module.css';
 
@@ -19,6 +20,7 @@ export function AppShell() {
       </div>
       <BottomNav />
       <LifeAreasModal />
+      <NewBoardModal />
       <Toaster />
     </div>
   );

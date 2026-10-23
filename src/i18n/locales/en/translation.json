@@ -306,5 +306,40 @@
       "Tail wag for you!",
       "Best human ever!"
     ]
+  },
+  "board": {
+    "personal": "Personal",
+    "shared": "Shared",
+    "sharedMeta": "Shared · {{count}} people",
+    "switchHint": "Switch board",
+    "invitePending": "Invite pending",
+    "join": "Join",
+    "decline": "Decline invite",
+    "newBoard": "+ New board",
+    "newBoardTitle": "New board",
+    "close": "Close",
+    "name": "Name",
+    "namePlaceholder": "e.g. Family home",
+    "whoFor": "Who is it for?",
+    "justMe": "Just me",
+    "justMeHint": "Private. Only you see these tasks.",
+    "sharedHint": "Everyone invited sees and edits the board.",
+    "invitePeople": "Invite people",
+    "emailPlaceholder": "name@email.com",
+    "add": "Add",
+    "removeInvite": "Remove invite for {{email}}",
+    "visibilityHint": "Members see all tasks on this board. Personal check-ins (\"how did it feel\") stay private to each person.",
+    "cancel": "Cancel",
+    "create": "Create board",
+    "createFailed": "Couldn't create the board. Try again.",
+    "members": "Members",
+    "invite": "Invite",
+    "inviteSent": "Invite sent to {{email}}",
+    "inviteFailed": "Couldn't send the invite.",
+    "role": {
+      "owner": "owner",
+      "member": "editor"
+    },
+    "boards": "Boards"
   }
 }

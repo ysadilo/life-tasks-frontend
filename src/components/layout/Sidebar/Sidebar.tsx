@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Button } from '../../ui';
 import { taskForm } from '../../task';
 import { lifeAreasModal } from '../../lifeAreas';
+import { BoardSwitcher, MembersSection } from '../../board';
 import { lifeAreaColorVar } from '../../../lib/lifeAreas';
 import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
@@ -28,10 +29,7 @@ export function Sidebar() {
 
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <div className={styles.logoMark} />
-        <span className={styles.logoText}>{t('app.name')}</span>
-      </div>
+      <BoardSwitcher />
 
       <Button variant="primary" className={styles.newTaskButton} onClick={() => taskForm.openNew()}>
         {t('sidebar.newTask')}
@@ -50,6 +48,8 @@ export function Sidebar() {
           <span>{t('nav.calendar')}</span>
         </NavLink>
       </nav>
+
+      <MembersSection />
 
       <div className={styles.section}>
         <div className={styles.sectionHeader}>

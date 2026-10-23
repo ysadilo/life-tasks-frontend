@@ -1,14 +1,17 @@
 import { getAuthToken } from '../auth/authToken';
+import { getActiveBoardId } from './activeBoard';
 
 const API_BASE = '/api';
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = await getAuthToken();
+  const boardId = getActiveBoardId();
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(boardId ? { 'X-Board-Id': boardId } : {}),
       ...init?.headers,
     },
   });
