@@ -1,7 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { localDayAsUTC, localISODate, useLocalToday } from '../lib/dateUtils';
 import type { Energy, Feeling, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../models';
+
+/** Task changes also add entries to a shared board's activity feed. */
+function invalidateTasks(queryClient: QueryClient) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    queryClient.invalidateQueries({ queryKey: ['activity'] }),
+  ]);
+}
 
 export type ResolveMissedAction = 'done' | 'dismiss' | 'addToday';
 
@@ -68,7 +76,7 @@ export function useToggleOccurrence() {
   return useMutation({
     mutationFn: ({ id, date, done }: { id: string; date: string; done: boolean }) =>
       api.patch<Task>(`/tasks/${id}`, { occurrenceDate: date, occurrenceDone: done }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: () => invalidateTasks(queryClient),
   });
 }
 
@@ -78,7 +86,7 @@ export function useResolveMissedOccurrence() {
   return useMutation({
     mutationFn: ({ id, action }: { id: string; action: ResolveMissedAction }) =>
       api.patch<Task>(`/tasks/${id}`, { resolveMissedAction: action }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: () => invalidateTasks(queryClient),
   });
 }
 
@@ -102,7 +110,7 @@ export function useUpdateTaskStatus() {
         `/tasks/${id}?today=${localISODate()}`,
         patch.status === 'today' ? { ...patch, todayDate: localDayAsUTC() } : patch
       ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: () => invalidateTasks(queryClient),
   });
 }
 
@@ -111,7 +119,7 @@ export function useCreateTask() {
 
   return useMutation({
     mutationFn: (input: TaskInput) => api.post<Task>(`/tasks?today=${localISODate()}`, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: () => invalidateTasks(queryClient),
   });
 }
 
@@ -121,7 +129,7 @@ export function useUpdateTask() {
   return useMutation({
     mutationFn: ({ id, ...input }: TaskInput & { id: string }) =>
       api.patch<Task>(`/tasks/${id}?today=${localISODate()}`, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: () => invalidateTasks(queryClient),
   });
 }
 
@@ -130,6 +138,6 @@ export function useDeleteTask() {
 
   return useMutation({
     mutationFn: (id: string) => api.delete<void>(`/tasks/${id}`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: () => invalidateTasks(queryClient),
   });
 }

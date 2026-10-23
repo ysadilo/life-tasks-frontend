@@ -330,6 +330,16 @@
     ]
   },
   "board": {
+    "split": "Today's split",
+    "activityTitle": "Activity",
+    "activityEmpty": "Nothing yet today.",
+    "activity": {
+      "added": "{{actor}} added <b>{{task}}</b>",
+      "finished": "{{actor}} finished <b>{{task}}</b>",
+      "assignedToYou": "{{actor}} assigned <b>{{task}}</b> to you",
+      "assignedTo": "{{actor}} assigned <b>{{task}}</b> to {{target}}",
+      "unassigned": "{{actor}} unassigned <b>{{task}}</b>"
+    },
     "inviteByEmail": "Invite by email",
     "pendingInvites_one": "{{count}} invite pending",
     "pendingInvites_other": "{{count}} invites pending",
