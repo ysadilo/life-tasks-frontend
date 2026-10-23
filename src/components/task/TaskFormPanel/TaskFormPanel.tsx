@@ -10,6 +10,8 @@ import { useCreateTask, useUpdateTask, useDeleteTask, type TaskInput } from '../
 import { taskForm, useTaskFormState } from '../taskFormStore';
 import { leaveThen } from '../taskLeavingStore';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
+import { useBoardMembers } from '../../../hooks/useBoards';
+import { memberLabel } from '../../board';
 import { PRIORITIES } from '../../../lib/priority';
 import { RECURRENCES } from '../../../lib/recurrence';
 import { localDayAsUTC, localISODate } from '../../../lib/dateUtils';
@@ -19,6 +21,8 @@ import { OptionGroup } from '../OptionGroup';
 import styles from './TaskFormPanel.module.css';
 
 /** Mount once (see AppShell, beside <main>); opened from anywhere via `taskForm.openNew()` / `taskForm.openEdit()`. */
+const UNASSIGNED = 'unassigned';
+
 export function TaskFormPanel() {
   const { open, task, presetDate } = useTaskFormState();
   const { t } = useTranslation();
@@ -47,12 +51,15 @@ function TaskForm({
 }) {
   const { t } = useTranslation();
   const { data: lifeAreas } = useLifeAreas();
+  const board = useBoardMembers();
   const isEdit = task != null;
 
   const [title, setTitle] = useState(task?.title ?? '');
   const [description, setDescription] = useState(task?.description ?? '');
   const [dueDate, setDueDate] = useState(task?.dueDate ? task.dueDate.slice(0, 10) : (presetDate ?? ''));
   const [area, setArea] = useState<LifeAreaId | ''>(task?.areaId ?? '');
+  // New tasks on a shared board start on the creator's plate; clicking the chip again hands it to anyone.
+  const [assignee, setAssignee] = useState(task ? (task.assigneeId ?? '') : (board.me?.userId ?? ''));
   const [priority, setPriority] = useState<Priority | ''>(task?.priority ?? '');
   const [energy, setEnergy] = useState<Energy | ''>(task?.energy ?? '');
   const [effort, setEffort] = useState(task?.estimatedMinutes ? String(task.estimatedMinutes) : '');
@@ -79,6 +86,7 @@ function TaskForm({
     description: isBlankHtml(description) ? null : description,
     dueDate: dueDate ? new Date(dueDate).toISOString() : null,
     areaId: area || null,
+    ...(board.shared ? { assigneeId: assignee || null } : {}),
     priority: priority || null,
     energy: energy || null,
     estimatedMinutes: effort ? Number(effort) : null,
@@ -171,6 +179,19 @@ function TaskForm({
               ))}
             </select>
           </label>
+
+          {board.shared && (
+            <OptionGroup
+              row
+              label={t('board.assignee')}
+              value={assignee || UNASSIGNED}
+              onChange={(v) => setAssignee(v === UNASSIGNED ? '' : v)}
+              options={[
+                ...board.members.map((m) => ({ value: m.userId, label: memberLabel(m, t) })),
+                { value: UNASSIGNED, label: t('board.unassigned') },
+              ]}
+            />
+          )}
 
           <OptionGroup
             row

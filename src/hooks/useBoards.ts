@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { setActiveBoardId, useActiveBoardId } from '../lib/activeBoard';
@@ -52,6 +52,20 @@ export function useActiveBoard(): Board | undefined {
   }, [stale]);
 
   return active ?? boards?.[0];
+}
+
+/** Members of the active board, for assigning and filtering; `shared` is false on personal boards. */
+export function useBoardMembers() {
+  const board = useActiveBoard();
+  return useMemo(() => {
+    const members = board?.shared ? board.members : [];
+    return {
+      shared: !!board?.shared,
+      members,
+      me: members.find((m) => m.isMe),
+      byId: new Map(members.map((m) => [m.userId, m])),
+    };
+  }, [board]);
 }
 
 export function useCreateBoard() {

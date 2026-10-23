@@ -308,6 +308,17 @@
     ]
   },
   "board": {
+    "you": "You",
+    "assign": "+ Assign",
+    "assignTo": "Assign to",
+    "anyoneCanTake": "Anyone can take it",
+    "assignee": "Assignee",
+    "filter": {
+      "mine": "Mine · {{count}}",
+      "everyone": "Everyone · {{count}}",
+      "unassigned": "Unassigned · {{count}}"
+    },
+    "unassigned": "Unassigned",
     "personal": "Personal",
     "shared": "Shared",
     "sharedMeta": "Shared · {{count}} people",

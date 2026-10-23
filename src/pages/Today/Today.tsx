@@ -2,7 +2,8 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader, PageState } from '../../components/layout';
-import { Button, EmptyState, SamoyedCheer } from '../../components/ui';
+import { useBoardMembers } from '../../hooks/useBoards';
+import { Button, EmptyState, SamoyedCheer, SegmentedTabs } from '../../components/ui';
 import {
   TaskRow,
   DoneTaskRow,
@@ -26,6 +27,7 @@ import { useDragReorder } from '../../hooks/useDragReorder';
 import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recurrence';
 import { isSameDay } from '../../lib/dateUtils';
 import { dueUrgency } from '../../lib/taskDates';
+import { ASSIGNEE_VIEWS, matchesAssigneeView, type AssigneeView } from '../../lib/assigneeView';
 import type { Task } from '../../models';
 import styles from './Today.module.css';
 
@@ -41,6 +43,8 @@ export default function Today() {
   const toggleOccurrence = useToggleOccurrence();
   const manualOrder = useManualOrder();
 
+  const { shared, me } = useBoardMembers();
+  const [assigneeView, setAssigneeView] = useState<AssigneeView>('mine');
   const [hideDone, setHideDone] = useState(false);
   const { preferences, update: updatePreferences } = usePreferences();
   const sortBy = preferences.todaySortBy;
@@ -114,14 +118,20 @@ export default function Today() {
     return [...oneOff, ...recurring];
   }, [doneTasks, recurringToday, today]);
 
+  // Mine / Everyone / Unassigned only exists on shared boards.
+  const inView = (task: Task) => !shared || matchesAssigneeView(task, assigneeView, me?.userId);
   const filteredOpenTasks = useMemo(
-    () => sortedOpenTasks.filter((task) => matchesFilters(task, filters)),
-    [sortedOpenTasks, filters]
+    () => sortedOpenTasks.filter((task) => matchesFilters(task, filters) && inView(task)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sortedOpenTasks, filters, shared, assigneeView, me?.userId]
   );
   const filteredDoneToday = useMemo(
-    () => doneToday.filter((task) => matchesFilters(task, filters)),
-    [doneToday, filters]
+    () => doneToday.filter((task) => matchesFilters(task, filters) && inView(task)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [doneToday, filters, shared, assigneeView, me?.userId]
   );
+  const viewCount = (view: AssigneeView) =>
+    sortedOpenTasks.filter((task) => matchesAssigneeView(task, view, me?.userId)).length;
   const filterCount = activeFilterCount(filters);
 
   const openTaskIds = useMemo(() => filteredOpenTasks.map((task) => task.id), [filteredOpenTasks]);
@@ -197,6 +207,19 @@ export default function Today() {
       )}
 
       <ReflectModal task={reflecting} onClose={() => setReflecting(null)} onSubmit={finishReflecting} />
+
+      {shared && (
+        <div className={styles.assigneeTabs}>
+          <SegmentedTabs
+            value={assigneeView}
+            onChange={(view) => setAssigneeView(view as AssigneeView)}
+            options={ASSIGNEE_VIEWS.map((view) => ({
+              value: view,
+              label: t(`board.filter.${view}`, { count: viewCount(view) }),
+            }))}
+          />
+        </div>
+      )}
 
       <AppliedFilters filters={filters} onChange={setFilters} />
 

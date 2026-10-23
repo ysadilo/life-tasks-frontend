@@ -200,6 +200,13 @@
 
 .inviteForm {
   display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inviteForm > input {
+  flex: 1;
+  min-width: 0;
 }
 
 .member {
@@ -285,4 +292,36 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+
+.assigneeWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.assignee {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 9px 2px 2px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.assignee .avatar {
+  border: none;
+}
+
+.assigneeEmpty {
+  padding: 6px 9px;
+  border-style: dashed;
+  color: var(--color-text-muted);
+}
+
+.assignee:hover {
+  border-color: var(--color-accent-border);
 }
