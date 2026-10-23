@@ -16,6 +16,11 @@ export function MembersSection() {
 
   if (!board?.shared) return null;
 
+  const closeInvite = () => {
+    setInviting(false);
+    setEmail('');
+  };
+
   const onInvite = (e: FormEvent) => {
     e.preventDefault();
     const value = email.trim();
@@ -39,7 +44,7 @@ export function MembersSection() {
         <span className={styles.groupLabel}>{t('board.members')}</span>
         {board.role === 'owner' && (
           <button type="button" className={styles.linkButton} onClick={() => setInviting((v) => !v)}>
-            {t('board.invite')}
+            {inviting ? t('board.cancel') : t('board.invite')}
           </button>
         )}
       </div>
@@ -51,7 +56,11 @@ export function MembersSection() {
             value={email}
             placeholder={t('board.emailPlaceholder')}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => e.key === 'Escape' && closeInvite()}
           />
+          <button type="button" className={styles.declineButton} aria-label={t('board.cancel')} onClick={closeInvite}>
+            ×
+          </button>
         </form>
       )}
       {board.members.map((m) => (

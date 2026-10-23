@@ -16,6 +16,8 @@ export interface Task {
   energy?: Energy;
   estimatedMinutes?: number;
   areaId?: LifeAreaId | null;
+  /** Board member the task is assigned to (shared boards); null/absent = anyone can take it. */
+  assigneeId?: string | null;
   recurrence?: Recurrence | null;
   recurrenceEndDate?: string | null;
   /** Occurrence days (ISO) that have been ticked off, for a recurring series. */

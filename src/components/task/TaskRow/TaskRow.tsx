@@ -7,6 +7,7 @@ import { DragHandle } from '../DragHandle';
 import { EditButton } from '../EditButton';
 import { MetaChip } from '../MetaChip';
 import { RecurrenceIcon } from '../RecurrenceIcon';
+import { AssigneeChip } from '../../board';
 import { dueUrgency, type DueUrgency } from '../../../lib/taskDates';
 import { htmlToText } from '../../../lib/richText';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
@@ -102,6 +103,7 @@ export function TaskRow({
               {areaName && <Chip>{areaName}</Chip>}
             </div>
           )}
+          <AssigneeChip task={task} />
         </div>
       </div>
       {onReflect && (

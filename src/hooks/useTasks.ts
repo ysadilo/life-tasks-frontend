@@ -12,6 +12,7 @@ export interface TaskInput {
   status?: TaskStatus;
   todayDate?: string | null;
   areaId?: LifeAreaId | null;
+  assigneeId?: string | null;
   priority?: Priority | null;
   energy?: Energy | null;
   estimatedMinutes?: number | null;

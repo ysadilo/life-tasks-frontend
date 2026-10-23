@@ -4,6 +4,8 @@ export interface BoardMember {
   userId: string;
   email: string;
   role: BoardRole;
+  /** True for the signed-in user's own membership. */
+  isMe: boolean;
 }
 
 export interface Board {
