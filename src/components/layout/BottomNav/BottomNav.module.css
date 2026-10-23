@@ -155,6 +155,7 @@
     font: 500 14px/1 var(--font-sans);
     color: var(--color-text);
     text-align: left;
+    text-decoration: none;
     cursor: pointer;
   }
 
