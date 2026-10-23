@@ -8,6 +8,7 @@ import Backlog from './pages/Backlog';
 import Today from './pages/Today';
 import Triage from './pages/Triage';
 import CalendarPage from './pages/Calendar';
+import Settings from './pages/Settings';
 
 export default function App() {
   const { t } = useTranslation();
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/backlog" element={<Backlog />} />
           <Route path="/calendar" element={<Navigate to="/calendar/week" replace />} />
           <Route path="/calendar/:view" element={<CalendarPage />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
     </Routes>

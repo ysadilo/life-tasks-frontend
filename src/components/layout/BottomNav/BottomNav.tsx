@@ -4,9 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
 import { openRecurringOn } from '../../../lib/recurrence';
-import { useTheme } from '../../../theme/ThemeProvider';
 import { taskForm } from '../../task';
-import { lifeAreasModal } from '../../lifeAreas';
 import styles from './BottomNav.module.css';
 
 function navClassName({ isActive }: { isActive: boolean }) {
@@ -16,14 +14,12 @@ function navClassName({ isActive }: { isActive: boolean }) {
 export function BottomNav() {
   const { t } = useTranslation();
   const { user, logout } = useAuth0();
-  const { theme, toggleTheme } = useTheme();
   const { data: todayTasks } = useTasksByStatus('today');
   const { data: backlogTasks } = useTasksByStatus('backlog');
   const { data: recurringTasks } = useRecurringTasks();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const todayCount = (todayTasks?.length ?? 0) + openRecurringOn(recurringTasks, new Date()).length;
-  const isGlamour = theme === 'glamour';
   const displayName = user?.given_name ?? user?.nickname ?? user?.name ?? user?.email ?? t('user.defaultName');
 
   useEffect(() => {
@@ -87,30 +83,10 @@ export function BottomNav() {
                 <span className={styles.profileSubtitle}>{t('sidebar.soloBoard')}</span>
               </div>
             </div>
-            <button
-              type="button"
-              role="menuitem"
-              className={styles.menuItem}
-              onClick={() => {
-                toggleTheme();
-                setMenuOpen(false);
-              }}
-            >
-              <span className={styles.menuIcon}>{isGlamour ? '✦' : '☾'}</span>
-              {t('sidebar.switchThemeShort')}
-            </button>
-            <button
-              type="button"
-              role="menuitem"
-              className={styles.menuItem}
-              onClick={() => {
-                lifeAreasModal.openManage();
-                setMenuOpen(false);
-              }}
-            >
-              <span className={styles.menuIcon}>◧</span>
-              {t('sidebar.manageLifeAreas')}
-            </button>
+            <NavLink to="/settings" role="menuitem" className={styles.menuItem} onClick={() => setMenuOpen(false)}>
+              <span className={styles.menuIcon}>⚙</span>
+              {t('nav.settings')}
+            </NavLink>
             <button
               type="button"
               role="menuitem"

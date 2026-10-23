@@ -9,7 +9,15 @@
     "calendar": "Calendar",
     "week": "Week",
     "month": "Month",
-    "menu": "Menu"
+    "menu": "Menu",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Life areas, theme and log out in one place.",
+    "appearance": "Appearance",
+    "appearanceHint": "Pick the theme you like best",
+    "profileHint": "Settings, theme, log out"
   },
   "sidebar": {
     "newTask": "New task",

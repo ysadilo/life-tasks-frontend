@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Button, ThemeToggle } from '../../ui';
+import { Button } from '../../ui';
 import { taskForm } from '../../task';
 import { lifeAreasModal } from '../../lifeAreas';
 import { lifeAreaColorVar } from '../../../lib/lifeAreas';
@@ -16,7 +16,7 @@ function navClassName({ isActive }: { isActive: boolean }) {
 
 export function Sidebar() {
   const { t } = useTranslation();
-  const { user, logout } = useAuth0();
+  const { user } = useAuth0();
   const { data: todayTasks } = useTasksByStatus('today');
   const { data: backlogTasks } = useTasksByStatus('backlog');
   const { data: recurringTasks } = useRecurringTasks();
@@ -67,8 +67,7 @@ export function Sidebar() {
       </div>
 
       <div className={styles.footer}>
-        <ThemeToggle />
-        <div className={styles.profile}>
+        <NavLink to="/settings" className={styles.profile}>
           {user?.picture ? (
             <img className={styles.avatar} src={user.picture} alt="" />
           ) : (
@@ -76,17 +75,12 @@ export function Sidebar() {
           )}
           <div className={styles.profileText}>
             <span className={styles.profileName}>{displayName}</span>
-            <span className={styles.profileSubtitle}>{t('sidebar.soloBoard')}</span>
+            <span className={styles.profileSubtitle}>{t('settings.profileHint')}</span>
           </div>
-          <button
-            type="button"
-            className={styles.signOutButton}
-            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-            title={t('auth.signOut')}
-          >
-            ⇥
-          </button>
-        </div>
+          <span className={styles.settingsIcon} aria-label={t('nav.settings')}>
+            ⚙
+          </span>
+        </NavLink>
       </div>
     </aside>
   );
