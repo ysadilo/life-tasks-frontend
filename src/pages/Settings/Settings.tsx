@@ -6,6 +6,8 @@ import { LifeAreasManager } from '../../components/lifeAreas';
 import { BoardsManager } from '../../components/board';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { useBoards } from '../../hooks/useBoards';
+import { SegmentedTabs } from '../../components/ui';
+import { getSamoyedMode, SAMOYED_MODES, setSamoyedMode, type SamoyedMode } from '../../lib/samoyed';
 import { MAX_LIFE_AREAS } from '../../lib/lifeAreas';
 import { useTheme, type ThemeName } from '../../theme/ThemeProvider';
 import styles from './Settings.module.css';
@@ -20,6 +22,7 @@ export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { data: areas } = useLifeAreas();
   const { data: boards } = useBoards();
+  const [samoyedMode, setSamoyedModeState] = useState(getSamoyedMode);
   const [active, setActive] = useState<SectionId>('lifeAreas');
 
   const displayName = user?.given_name ?? user?.nickname ?? user?.name ?? user?.email ?? t('user.defaultName');
@@ -115,6 +118,18 @@ export default function Settings() {
                   {t(`theme.${name}`)}
                 </button>
               ))}
+            </div>
+            <div className={styles.samoyed}>
+              <span className={styles.cardTitle}>{t('samoyed.setting')}</span>
+              <SegmentedTabs
+                value={samoyedMode}
+                onChange={(mode) => {
+                  setSamoyedMode(mode as SamoyedMode);
+                  setSamoyedModeState(mode as SamoyedMode);
+                }}
+                options={SAMOYED_MODES.map((mode) => ({ value: mode, label: t(`samoyed.mode.${mode}`) }))}
+              />
+              <p className={styles.cardHint}>{t('samoyed.settingHint')}</p>
             </div>
           </section>
         </div>

@@ -313,21 +313,34 @@
     "daySummary_other": "{{count}} tasks · {{done}} done",
     "addTask": "Add task"
   },
-  "cheer": {
-    "phrases": [
-      "Nice!",
-      "Yay!",
-      "All done!",
-      "You did it!",
-      "Great job!",
-      "Clean slate!",
-      "Good human!",
-      "Woof, well done!",
-      "Paw-some!",
-      "Treat time? You earned it!",
-      "Tail wag for you!",
-      "Best human ever!"
-    ]
+  "samoyed": {
+    "setting": "Samoyed",
+    "settingHint": "Big wins only: All done, Triage cleared, Streak.",
+    "dismiss": "Dismiss",
+    "mode": {
+      "off": "Off",
+      "bigWins": "Big wins only",
+      "chatty": "Chatty"
+    },
+    "phrases": {
+      "allDone": "Good human!",
+      "triageCleared": "Yesterday's sorted. Fresh day!",
+      "streak": "7 days in a row! Treat?",
+      "overdue": "This one keeps waiting for you.",
+      "heavyDay": "That's a lot. Move one to tomorrow?",
+      "roughCheckin": "Rough one. You still did it.",
+      "emptyBacklog": "Nothing to chase. Nap time.",
+      "lateNight": "Bed's calling. Tasks can wait.",
+      "handed": "Max threw you one!",
+      "welcomeBack": "You came back! Missed you.",
+      "added3": "Writing it all down.",
+      "added6": "That's a list! Pick 3 for today?",
+      "added10": "Big brain dump. Park some in Backlog?",
+      "done3": "Three down. Good pace.",
+      "done6": "Six! Earned a bone.",
+      "done10": "10 today. Personal best!"
+    },
+    "allDoneSummary": "{{done}} done today"
   },
   "board": {
     "split": "Today's split",

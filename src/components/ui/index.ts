@@ -14,5 +14,5 @@ export { EmptyStateIcon } from './EmptyStateIcon';
 export { Toaster, toast } from './Toast';
 export { SwipeActions } from './SwipeActions';
 export type { SwipeAction } from './SwipeActions';
-export { SamoyedCheer } from './SamoyedCheer';
+export { SamoyedAvatar, SamoyedMoment, SamoyedPeek, peek } from './Samoyed';
 export { ConfirmDialog } from './ConfirmDialog';

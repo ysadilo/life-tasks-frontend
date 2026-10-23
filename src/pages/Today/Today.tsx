@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { PageHeader, PageState } from '../../components/layout';
 import { useBoardMembers } from '../../hooks/useBoards';
 import { TodayRail } from '../../components/board';
-import { Button, EmptyState, SamoyedCheer, SegmentedTabs } from '../../components/ui';
+import { Button, EmptyState, peek, SamoyedAvatar, SamoyedMoment, SegmentedTabs } from '../../components/ui';
 import {
   TaskRow,
   DoneTaskRow,
@@ -30,6 +30,7 @@ import { isSameDay } from '../../lib/dateUtils';
 import { dueUrgency } from '../../lib/taskDates';
 import { inMyTriage } from '../../lib/triageScope';
 import { ASSIGNEE_VIEWS, matchesAssigneeView, type AssigneeView } from '../../lib/assigneeView';
+import { bump, getSamoyedMode, tryAppear, welcomeBack, type MomentId } from '../../lib/samoyed';
 import type { Task } from '../../models';
 import styles from './Today.module.css';
 
@@ -53,14 +54,22 @@ export default function Today() {
   const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
-  const [celebrating, setCelebrating] = useState(false);
+  const [greetingOpen, setGreetingOpen] = useState(true);
+  const samoyedMode = getSamoyedMode();
+  // tryAppear/welcomeBack are idempotent within a page load, so StrictMode and remounts keep the same answer.
+  const [greeting] = useState<MomentId | null>(() => {
+    if (welcomeBack()) return 'welcomeBack';
+    return new Date().getHours() >= 23 && tryAppear('lateNight') ? 'lateNight' : null;
+  });
   const [reflecting, setReflecting] = useState<Task | null>(null);
 
   const today = useMemo(() => new Date(), []);
 
   const toggle = (task: Task, done: boolean, reflection: Reflection = {}) => {
-    // Finishing the only remaining open task (recurring occurrences included) earns a cheer.
-    if (done && sortedOpenTasks.length === 1) setCelebrating(true);
+    if (done) {
+      const milestone = bump('done');
+      if (milestone) peek.show(milestone);
+    }
     if (task.recurrence) {
       toggleOccurrence.mutate({ id: task.id, date: occurrenceISO(today), done });
     } else {
@@ -157,7 +166,6 @@ export default function Today() {
   return (
     <div className={styles.layout}>
       <div className={styles.page}>
-        {celebrating && <SamoyedCheer onDone={() => setCelebrating(false)} />}
         <PageHeader
           title={t('today.title')}
           subtitle={t('today.subtitle', { date: dateLabel, done: doneToday.length, total: totalCount })}
@@ -194,6 +202,21 @@ export default function Today() {
             </>
           }
         />
+
+        {greeting && greetingOpen && (
+          <div className={styles.greeting}>
+            <SamoyedAvatar moment={greeting} size={56} />
+            <span className={styles.greetingText}>{t(`samoyed.phrases.${greeting}`)}</span>
+            <button
+              type="button"
+              className={styles.greetingClose}
+              aria-label={t('samoyed.dismiss')}
+              onClick={() => setGreetingOpen(false)}
+            >
+              ×
+            </button>
+          </div>
+        )}
 
         {!!triageCount && (
           <div className={styles.triageBanner}>
@@ -241,6 +264,13 @@ export default function Today() {
                 </Button>
               }
             />
+          )}
+
+          {sortedOpenTasks.length === 0 && doneToday.length > 0 && samoyedMode !== 'off' && (
+            <div className={styles.allDone}>
+              <SamoyedMoment moment="allDone" />
+              <span className={styles.allDoneSummary}>{t('samoyed.allDoneSummary', { done: doneToday.length })}</span>
+            </div>
           )}
 
           {displayedOpenTasks.map((task) => (

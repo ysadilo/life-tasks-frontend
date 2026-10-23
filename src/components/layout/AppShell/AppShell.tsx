@@ -4,7 +4,7 @@ import { BottomNav } from '../BottomNav';
 import { TaskFormPanel, TaskPreviewPanel } from '../../task';
 import { LifeAreasModal } from '../../lifeAreas';
 import { InviteModal, NewBoardModal } from '../../board';
-import { Toaster } from '../../ui';
+import { SamoyedPeek, Toaster } from '../../ui';
 import styles from './AppShell.module.css';
 
 export function AppShell() {
@@ -23,6 +23,7 @@ export function AppShell() {
       <NewBoardModal />
       <InviteModal />
       <Toaster />
+      <SamoyedPeek />
     </div>
   );
 }

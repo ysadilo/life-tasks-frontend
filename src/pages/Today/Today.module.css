@@ -145,3 +145,60 @@
 .layout > .page {
   min-width: 0;
 }
+
+.greeting {
+  margin: 20px 30px 0;
+  padding: 10px 14px 10px 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+}
+
+.greetingText {
+  flex: 1;
+  font: 600 15px/1.3 var(--font-sans);
+  color: var(--color-text);
+}
+
+.greetingClose {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.greetingClose:hover {
+  background: var(--color-surface-muted);
+}
+
+.allDone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 30px 24px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  text-align: center;
+}
+
+.allDoneSummary {
+  font: 400 14px/1.5 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 768px) {
+  .greeting {
+    margin: 16px 16px 0;
+  }
+}
