@@ -15,3 +15,4 @@ export { Toaster, toast } from './Toast';
 export { SwipeActions } from './SwipeActions';
 export type { SwipeAction } from './SwipeActions';
 export { SamoyedCheer } from './SamoyedCheer';
+export { ConfirmDialog } from './ConfirmDialog';

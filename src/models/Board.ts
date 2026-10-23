@@ -16,6 +16,8 @@ export interface Board {
   /** The caller's role on this board. */
   role: BoardRole;
   members: BoardMember[];
+  /** Pending invites; only populated for the owner. */
+  invites: { id: string; email: string }[];
 }
 
 /** An invite addressed to the signed-in user, not yet accepted. */

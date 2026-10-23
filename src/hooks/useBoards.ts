@@ -111,3 +111,29 @@ export function useDeclineInvite() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['board-invites'] }),
   });
 }
+
+/** Board mutations that change the boards list (and, when a board goes away, whatever was scoped to it). */
+function useBoardMutation<V>(mutationFn: (variables: V) => Promise<unknown>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['boards'] }),
+  });
+}
+
+export const useRenameBoard = () =>
+  useBoardMutation(({ id, name }: { id: string; name: string }) => api.patch<Board>(`/boards/${id}`, { name }));
+
+export const useDeleteBoard = () => useBoardMutation((id: string) => api.delete<void>(`/boards/${id}`));
+
+export const useLeaveBoard = () => useBoardMutation((id: string) => api.delete<void>(`/boards/${id}/members/me`));
+
+export const useRemoveMember = () =>
+  useBoardMutation(({ boardId, userId }: { boardId: string; userId: string }) =>
+    api.delete<void>(`/boards/${boardId}/members/${userId}`)
+  );
+
+export const useRevokeInvite = () =>
+  useBoardMutation(({ boardId, inviteId }: { boardId: string; inviteId: string }) =>
+    api.delete<void>(`/boards/${boardId}/invites/${inviteId}`)
+  );
