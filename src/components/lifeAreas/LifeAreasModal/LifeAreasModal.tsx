@@ -21,7 +21,7 @@ export function LifeAreasModal() {
   );
 }
 
-function LifeAreasManager() {
+export function LifeAreasManager() {
   const { t } = useTranslation();
   const { data: areas } = useLifeAreas();
   const createArea = useCreateLifeArea();

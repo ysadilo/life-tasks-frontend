@@ -1,0 +1,152 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.sections {
+  flex: 1;
+  width: 100%;
+  max-width: 720px;
+  padding: 22px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .sections {
+    padding: 16px;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 18px;
+}
+
+.cardTitle {
+  margin: 0;
+  font: 700 17px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.cardHint {
+  margin: -8px 0 0;
+  font: 400 13px/1.4 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.themes {
+  display: flex;
+  gap: 10px;
+}
+
+.theme {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  background: transparent;
+  border: 2px solid var(--color-border-subtle);
+  border-radius: 16px;
+  font: 600 13px/1 var(--font-sans);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.themeActive {
+  border-color: var(--color-text);
+}
+
+/* Fixed swatches per theme: the live tokens only reflect the active theme. */
+.preview {
+  --swatch-bg: #fbfaf7;
+  --swatch-1: #f3e3b3;
+  --swatch-2: #d3deec;
+  --swatch-3: #cfddd2;
+  height: 70px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-radius: 10px;
+  background: var(--swatch-bg);
+}
+
+.preview[data-theme='glamour'] {
+  --swatch-bg: #211b29;
+  --swatch-1: #2e2536;
+  --swatch-2: #232b3c;
+  --swatch-3: #24382e;
+}
+
+.preview > span {
+  height: 12px;
+  border-radius: 4px;
+}
+
+.preview > span:nth-child(1) {
+  width: 60%;
+  background: var(--swatch-1);
+}
+
+.preview > span:nth-child(2) {
+  width: 80%;
+  background: var(--swatch-2);
+}
+
+.preview > span:nth-child(3) {
+  width: 40%;
+  background: var(--swatch-3);
+}
+
+.account {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+}
+
+.accountInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-area-3);
+  object-fit: cover;
+  flex: none;
+}
+
+.accountText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.accountName {
+  font: 600 14px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.accountEmail {
+  font: 400 12px/1 var(--font-sans);
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

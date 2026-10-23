@@ -156,9 +156,15 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-input);
   font: inherit;
+  text-decoration: none;
+  transition: border-color var(--dur-base);
 }
 
-.signOutButton {
+.profile:hover {
+  border-color: var(--color-accent-border);
+}
+
+.settingsIcon {
   flex: none;
   width: 28px;
   height: 28px;
@@ -171,13 +177,12 @@
   border-radius: var(--radius-sm);
   font-size: 14px;
   color: var(--color-text-secondary);
-  cursor: pointer;
   transition:
     border-color var(--dur-base),
     color var(--dur-base);
 }
 
-.signOutButton:hover {
+.profile:hover .settingsIcon {
   border-color: var(--color-accent-border);
   color: var(--color-text);
 }

@@ -1,2 +1,2 @@
-export { LifeAreasModal } from './LifeAreasModal';
+export { LifeAreasModal, LifeAreasManager } from './LifeAreasModal';
 export { lifeAreasModal } from './lifeAreasModalStore';
