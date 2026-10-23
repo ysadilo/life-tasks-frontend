@@ -1,0 +1,288 @@
+.tile {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font: 700 13px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.avatar {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+  font: 700 9px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.avatars {
+  display: flex;
+}
+
+.avatars .avatar + .avatar {
+  margin-left: -7px;
+}
+
+.switcher {
+  position: relative;
+}
+
+.trigger,
+.row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.trigger:hover,
+.triggerOpen,
+.row:hover {
+  background: var(--color-surface-muted);
+}
+
+.triggerOpen {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+.rowActive {
+  background: var(--color-surface-muted);
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rowName {
+  font: 600 14px/1 var(--font-sans);
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowMeta {
+  font: 400 12px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.badge,
+.joinButton {
+  font: 600 11px/1 var(--font-sans);
+  color: var(--color-accent-light-text);
+  background: var(--color-accent-light-bg);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 5px 9px;
+}
+
+.joinButton {
+  cursor: pointer;
+}
+
+.declineButton {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.popover {
+  position: fixed;
+  z-index: 20;
+  width: min(330px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-shell);
+  padding: 8px;
+  animation: var(--kf-pop-in) var(--dur-fast) var(--ease-out);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.groupLabel {
+  padding: 8px 10px 4px;
+  font: 600 11px/1 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.newBoard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 11px 12px;
+  border: none;
+  border-top: 1px solid var(--color-border-subtle);
+  border-radius: 0 0 10px 10px;
+  background: transparent;
+  font: 600 14px/1 var(--font-sans);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.kbd {
+  font: 500 11px/1 var(--font-sans);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+
+@media (max-width: 768px) {
+  .kbd {
+    display: none;
+  }
+}
+
+.members {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 0 6px;
+}
+
+.membersHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.membersHeader .groupLabel {
+  padding: 0;
+}
+
+.linkButton {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.inviteForm {
+  display: flex;
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.memberName {
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldLabel {
+  font: 600 13px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.choices {
+  display: flex;
+  gap: 10px;
+}
+
+.choice {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choiceActive {
+  border-color: var(--color-accent-border);
+  background: var(--color-accent-light-bg);
+}
+
+.inviteRow {
+  display: flex;
+  gap: 8px;
+}
+
+.inviteRow > :first-child {
+  flex: 1;
+}
+
+.invited {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+}
+
+.hint {
+  margin: 0;
+  font: 400 13px/1.5 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

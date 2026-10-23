@@ -14,25 +14,6 @@
   }
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 0 6px;
-}
-
-.logoMark {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-sm);
-  background: var(--color-accent);
-}
-
-.logoText {
-  font: 600 16px/1 var(--font-sans);
-  color: var(--color-text);
-}
-
 .newTaskButton {
   width: 100%;
   padding: 11px 14px;
