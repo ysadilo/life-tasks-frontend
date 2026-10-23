@@ -2,12 +2,13 @@ import { useEffect, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageState } from '../../components/layout';
-import { Button, Chip, RichText } from '../../components/ui';
+import { Button, Chip, RichText, SamoyedAvatar } from '../../components/ui';
 import { MetaChip } from '../../components/task';
 import { MemberAvatar, memberLabel } from '../../components/board';
 import { useSwipe, type SwipeDirection } from '../../hooks/useSwipe';
 import { useTriageQueue, type TriageAction, type TriageQueueItem } from '../../hooks/useTriageQueue';
 import type { ResolveMissedAction } from '../../hooks/useTasks';
+import { tryAppear } from '../../lib/samoyed';
 import { daysOverdue } from '../../lib/taskDates';
 import { lifeAreaColorVar } from '../../lib/lifeAreas';
 import { useLifeAreaLookup } from '../../hooks/useLifeAreas';
@@ -152,19 +153,23 @@ export default function Triage() {
         {done || !current ? (
           <div className={styles.complete}>
             <div className={styles.completeIcon}>
-              <svg
-                width="26"
-                height="26"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 13l4 4L19 7" />
-              </svg>
+              {tryAppear('triageCleared') ? (
+                <SamoyedAvatar moment="triageCleared" size={64} />
+              ) : (
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+              )}
             </div>
             <div className={styles.completeCopy}>
               <span className={styles.completeTitle}>{t('triage.emptyTitle')}</span>

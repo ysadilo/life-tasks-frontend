@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
+import { peek } from '../components/ui';
+import { bump } from '../lib/samoyed';
 import { localDayAsUTC, localISODate, useLocalToday } from '../lib/dateUtils';
 import type { Energy, Feeling, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../models';
 
@@ -119,7 +121,17 @@ export function useCreateTask() {
 
   return useMutation({
     mutationFn: (input: TaskInput) => api.post<Task>(`/tasks?today=${localISODate()}`, input),
-    onSuccess: () => invalidateTasks(queryClient),
+    onSuccess: () => {
+      invalidateTasks(queryClient);
+      // The 10th-add nudge ("park some in Backlog?") only makes sense when Today is already crowded.
+      const todayCount = queryClient
+        .getQueriesData<Task[]>({
+          predicate: (q) => (q.queryKey[1] as { status?: TaskStatus } | undefined)?.status === 'today',
+        })
+        .reduce((sum, [, tasks]) => sum + (tasks?.length ?? 0), 0);
+      const milestone = bump('added', (id) => id !== 'added10' || todayCount >= 6);
+      if (milestone) peek.show(milestone);
+    },
   });
 }
 
