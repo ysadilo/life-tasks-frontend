@@ -27,6 +27,7 @@ import { useDragReorder } from '../../hooks/useDragReorder';
 import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recurrence';
 import { isSameDay } from '../../lib/dateUtils';
 import { dueUrgency } from '../../lib/taskDates';
+import { inMyTriage } from '../../lib/triageScope';
 import { ASSIGNEE_VIEWS, matchesAssigneeView, type AssigneeView } from '../../lib/assigneeView';
 import type { Task } from '../../models';
 import styles from './Today.module.css';
@@ -99,10 +100,14 @@ export default function Today() {
     [recurringTasks, today]
   );
   const missedOccurrenceCount = useMemo(
-    () => (recurringTasks ?? []).filter((task) => (task.missedDates ?? []).length > 0).length,
-    [recurringTasks]
+    () =>
+      (recurringTasks ?? []).filter(
+        (task) => (task.missedDates ?? []).length > 0 && (!shared || inMyTriage(task, me?.userId))
+      ).length,
+    [recurringTasks, shared, me?.userId]
   );
-  const triageCount = (triageTasks?.length ?? 0) + missedOccurrenceCount;
+  const myTriageCount = (triageTasks ?? []).filter((task) => !shared || inMyTriage(task, me?.userId)).length;
+  const triageCount = myTriageCount + missedOccurrenceCount;
 
   const sortedOpenTasks = useMemo(() => {
     const tasks = [...(openTasks ?? []), ...recurringToday.filter((task) => !isOccurrenceDone(task, today))];

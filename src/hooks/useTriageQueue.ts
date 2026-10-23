@@ -9,7 +9,9 @@ import {
   useUpdateTaskStatus,
   type ResolveMissedAction,
 } from './useTasks';
-import type { Task } from '../models';
+import { useBoardMembers } from './useBoards';
+import { inMyTriage } from '../lib/triageScope';
+import type { BoardMember, Task } from '../models';
 
 export type TriageAction = 'today' | 'backlog' | 'done' | 'drop';
 
@@ -18,6 +20,8 @@ export type TriageQueueItem = { kind: 'task'; task: Task } | { kind: 'missed'; t
 interface HistoryEntry {
   task: Task;
   action: TriageAction;
+  /** Set when the card was handed to another member rather than taken. */
+  handedTo?: BoardMember;
 }
 
 /**
@@ -36,24 +40,53 @@ export function useTriageQueue() {
   const deleteTask = useDeleteTask();
   const createTask = useCreateTask();
   const resolveMissed = useResolveMissedOccurrence();
+  const { ready, shared, me, members, isOwner } = useBoardMembers();
 
   const [queue, setQueue] = useState<TriageQueueItem[] | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const total = useRef(0);
 
   useEffect(() => {
-    if (needsTriage && recurring && queue === null) {
-      const missed = recurring.filter((task) => (task.missedDates ?? []).length > 0);
+    // Wait for the board so a shared board's per-member scoping applies to the snapshot.
+    if (ready && needsTriage && recurring && queue === null) {
+      const mine = (task: Task) => !shared || inMyTriage(task, me?.userId);
+      const missed = recurring.filter((task) => (task.missedDates ?? []).length > 0 && mine(task));
       const items: TriageQueueItem[] = [
-        ...needsTriage.map((task): TriageQueueItem => ({ kind: 'task', task })),
+        ...needsTriage.filter(mine).map((task): TriageQueueItem => ({ kind: 'task', task })),
         ...missed.map((task): TriageQueueItem => ({ kind: 'missed', task })),
       ];
       setQueue(items);
       total.current = items.length;
     }
-  }, [needsTriage, recurring, queue]);
+  }, [ready, shared, me?.userId, needsTriage, recurring, queue]);
 
   const current = queue?.[0] ?? null;
+
+  // Leftovers waiting in other members' triage, grouped by member (shared boards only).
+  const queuedIds = new Set((queue ?? []).map((item) => item.task.id));
+  const others = shared
+    ? members
+        .filter((m) => !m.isMe)
+        .map((member) => ({
+          member,
+          tasks: (needsTriage ?? []).filter((task) => task.assigneeId === member.userId && !queuedIds.has(task.id)),
+        }))
+    : [];
+
+  // Hand-over targets: never the card's current assignee, and not yourself unless the card is someone else's
+  // (an owner sorting a member's leftover can take it; for your own or unassigned cards "Today" already does).
+  const assigneeId = current?.task.assigneeId ?? null;
+  const handTargets = members.filter(
+    (m) => m.userId !== assigneeId && (!m.isMe || (!!assigneeId && assigneeId !== me?.userId))
+  );
+
+  /** Owner only: pull one member's leftovers into this session. */
+  function sortAsOwner(userId: string) {
+    const tasks = others.find((o) => o.member.userId === userId)?.tasks ?? [];
+    if (!isOwner || tasks.length === 0) return;
+    setQueue((q) => [...(q ?? []), ...tasks.map((task): TriageQueueItem => ({ kind: 'task', task }))]);
+    total.current += tasks.length;
+  }
 
   function act(action: TriageAction) {
     if (!current || current.kind !== 'task') return;
@@ -63,7 +96,12 @@ export function useTriageQueue() {
 
     switch (action) {
       case 'today':
-        updateStatus.mutate({ id: task.id, status: 'today' });
+        // Taking an unassigned card on a shared board puts it on your plate.
+        updateStatus.mutate({
+          id: task.id,
+          status: 'today',
+          ...(shared && !task.assigneeId ? { assigneeId: me?.userId } : {}),
+        });
         break;
       case 'backlog':
         // Clear the due date, or the BE would promote the overdue task straight back to Today.
@@ -76,6 +114,15 @@ export function useTriageQueue() {
         deleteTask.mutate(task.id);
         break;
     }
+  }
+
+  /** Passes the card to another member's Today. */
+  function handTo(member: BoardMember) {
+    if (!current || current.kind !== 'task') return;
+    const task = current.task;
+    setQueue((q) => (q ?? []).slice(1));
+    setHistory((h) => [...h, { task, action: 'today', handedTo: member }]);
+    updateStatus.mutate({ id: task.id, status: 'today', assigneeId: member.userId });
   }
 
   function actMissed(action: ResolveMissedAction) {
@@ -104,7 +151,12 @@ export function useTriageQueue() {
         break;
       default:
         setQueue((q) => [{ kind: 'task', task: last.task }, ...(q ?? [])]);
-        updateStatus.mutate({ id: last.task.id, status: 'needs_triage', dueDate: last.task.dueDate });
+        updateStatus.mutate({
+          id: last.task.id,
+          status: 'needs_triage',
+          dueDate: last.task.dueDate,
+          ...(shared ? { assigneeId: last.task.assigneeId ?? null } : {}),
+        });
         break;
     }
   }
@@ -119,6 +171,12 @@ export function useTriageQueue() {
     index: total.current - (queue?.length ?? 0) + 1,
     total: total.current,
     act,
+    handTo,
+    handTargets,
+    others,
+    sortAsOwner,
+    isOwner,
+    shared,
     actMissed,
     undo,
     canUndo: history.length > 0,

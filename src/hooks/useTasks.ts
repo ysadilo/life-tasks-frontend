@@ -27,6 +27,7 @@ export function taskToInput(task: Task): TaskInput {
     description: task.description,
     dueDate: task.dueDate,
     areaId: task.areaId ?? null,
+    assigneeId: task.assigneeId ?? null,
     priority: task.priority ?? null,
     energy: task.energy ?? null,
     estimatedMinutes: task.estimatedMinutes ?? null,
@@ -94,6 +95,7 @@ export function useUpdateTaskStatus() {
       dueDate?: string | null;
       feeling?: Feeling;
       actualMinutes?: number;
+      assigneeId?: string | null;
     }) =>
       // Stamp the user's local day, not the server's UTC day, when entering Today.
       api.patch<Task>(

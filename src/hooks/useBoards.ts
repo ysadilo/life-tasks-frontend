@@ -60,7 +60,10 @@ export function useBoardMembers() {
   return useMemo(() => {
     const members = board?.shared ? board.members : [];
     return {
+      /** False until the boards list has loaded (`shared` is false meanwhile). */
+      ready: !!board,
       shared: !!board?.shared,
+      isOwner: board?.role === 'owner',
       members,
       me: members.find((m) => m.isMe),
       byId: new Map(members.map((m) => [m.userId, m])),
