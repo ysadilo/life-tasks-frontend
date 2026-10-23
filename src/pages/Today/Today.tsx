@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader, PageState } from '../../components/layout';
 import { useBoardMembers } from '../../hooks/useBoards';
+import { TodayRail } from '../../components/board';
 import { Button, EmptyState, SamoyedCheer, SegmentedTabs } from '../../components/ui';
 import {
   TaskRow,
@@ -154,129 +155,132 @@ export default function Today() {
   const dateLabel = new Date().toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' });
 
   return (
-    <div className={styles.page}>
-      {celebrating && <SamoyedCheer onDone={() => setCelebrating(false)} />}
-      <PageHeader
-        title={t('today.title')}
-        subtitle={t('today.subtitle', { date: dateLabel, done: doneToday.length, total: totalCount })}
-        actions={
-          <>
-            <div className={styles.filterWrap}>
-              <Button variant="ghost" onClick={() => setFilterOpen((v) => !v)}>
-                {filterCount > 0 ? `${t('today.filter')} · ${filterCount}` : t('today.filter')}
+    <div className={styles.layout}>
+      <div className={styles.page}>
+        {celebrating && <SamoyedCheer onDone={() => setCelebrating(false)} />}
+        <PageHeader
+          title={t('today.title')}
+          subtitle={t('today.subtitle', { date: dateLabel, done: doneToday.length, total: totalCount })}
+          actions={
+            <>
+              <div className={styles.filterWrap}>
+                <Button variant="ghost" onClick={() => setFilterOpen((v) => !v)}>
+                  {filterCount > 0 ? `${t('today.filter')} · ${filterCount}` : t('today.filter')}
+                </Button>
+                {filterOpen && (
+                  <TaskFilterPopover
+                    filters={filters}
+                    onChange={setFilters}
+                    matchCount={filteredOpenTasks.length + filteredDoneToday.length}
+                    onClose={() => setFilterOpen(false)}
+                  />
+                )}
+              </div>
+              <div className={styles.sortWrap}>
+                <Button variant="ghost" onClick={() => setSortOpen((v) => !v)}>
+                  {t('today.sort.label', { mode: t(`today.sort.${sortBy}`) })}
+                </Button>
+                {sortOpen && (
+                  <TaskSortPopover
+                    sortBy={sortBy}
+                    onChange={(todaySortBy) => updatePreferences({ todaySortBy })}
+                    onClose={() => setSortOpen(false)}
+                  />
+                )}
+              </div>
+              <Button variant="ghost" onClick={() => setHideDone((v) => !v)}>
+                {hideDone ? t('today.showDone') : t('today.hideDone')}
               </Button>
-              {filterOpen && (
-                <TaskFilterPopover
-                  filters={filters}
-                  onChange={setFilters}
-                  matchCount={filteredOpenTasks.length + filteredDoneToday.length}
-                  onClose={() => setFilterOpen(false)}
-                />
-              )}
-            </div>
-            <div className={styles.sortWrap}>
-              <Button variant="ghost" onClick={() => setSortOpen((v) => !v)}>
-                {t('today.sort.label', { mode: t(`today.sort.${sortBy}`) })}
-              </Button>
-              {sortOpen && (
-                <TaskSortPopover
-                  sortBy={sortBy}
-                  onChange={(todaySortBy) => updatePreferences({ todaySortBy })}
-                  onClose={() => setSortOpen(false)}
-                />
-              )}
-            </div>
-            <Button variant="ghost" onClick={() => setHideDone((v) => !v)}>
-              {hideDone ? t('today.showDone') : t('today.hideDone')}
-            </Button>
-          </>
-        }
-      />
+            </>
+          }
+        />
 
-      {!!triageCount && (
-        <div className={styles.triageBanner}>
-          <span className={styles.triageIcon} aria-hidden>
-            <span className={styles.triageIconBack} />
-            <span className={styles.triageIconFront} />
-          </span>
-          <div className={styles.triageText}>
-            <span className={styles.triageTitle}>{t('today.triageBannerText', { count: triageCount })}</span>
-            <span className={styles.triageSubtitle}>
-              {t('today.triageBannerHint', { minutes: Math.max(1, Math.round(triageCount / 2)) })}
+        {!!triageCount && (
+          <div className={styles.triageBanner}>
+            <span className={styles.triageIcon} aria-hidden>
+              <span className={styles.triageIconBack} />
+              <span className={styles.triageIconFront} />
             </span>
-          </div>
-          <button type="button" className={styles.triageBannerAction} onClick={() => navigate('/triage')}>
-            {t('today.startTriage')}
-          </button>
-        </div>
-      )}
-
-      <ReflectModal task={reflecting} onClose={() => setReflecting(null)} onSubmit={finishReflecting} />
-
-      {shared && (
-        <div className={styles.assigneeTabs}>
-          <SegmentedTabs
-            value={assigneeView}
-            onChange={(view) => setAssigneeView(view as AssigneeView)}
-            options={ASSIGNEE_VIEWS.map((view) => ({
-              value: view,
-              label: t(`board.filter.${view}`, { count: viewCount(view) }),
-            }))}
-          />
-        </div>
-      )}
-
-      <AppliedFilters filters={filters} onChange={setFilters} />
-
-      <div className={styles.list}>
-        {displayedOpenTasks.length === 0 && filteredDoneToday.length === 0 && (
-          <EmptyState
-            title={t('today.emptyTitle')}
-            description={t('today.emptyDescription')}
-            action={
-              <Button variant="primary" onClick={() => taskForm.openNew()}>
-                {t('sidebar.newTask')}
-              </Button>
-            }
-          />
-        )}
-
-        {displayedOpenTasks.map((task) => (
-          <TaskRow
-            key={task.id}
-            task={task}
-            onToggle={() => toggle(task, true)}
-            onEdit={() => taskForm.openEdit(task)}
-            // ponytail: recurring occurrences have no per-occurrence feeling/time field on the BE yet.
-            swipe={swipeFor(task)}
-            onReflect={task.recurrence ? undefined : () => setReflecting(task)}
-            rowRef={sortBy === 'manual' ? dragReorder.registerRow(task.id) : undefined}
-            dragHandleProps={
-              sortBy === 'manual'
-                ? { dragging: dragReorder.draggingId === task.id, ...dragReorder.dragHandleProps(task.id) }
-                : undefined
-            }
-          />
-        ))}
-
-        {!hideDone && filteredDoneToday.length > 0 && (
-          <>
-            <div className={styles.doneDivider}>
-              <span className={styles.doneDividerLabel}>{t('today.doneToday')}</span>
-              <span className={styles.doneDividerRule} />
-              <span className={styles.doneDividerCount}>{filteredDoneToday.length}</span>
+            <div className={styles.triageText}>
+              <span className={styles.triageTitle}>{t('today.triageBannerText', { count: triageCount })}</span>
+              <span className={styles.triageSubtitle}>
+                {t('today.triageBannerHint', { minutes: Math.max(1, Math.round(triageCount / 2)) })}
+              </span>
             </div>
-            {filteredDoneToday.map((task) => (
-              <DoneTaskRow
-                key={task.id}
-                task={task}
-                onToggle={() => toggle(task, false)}
-                onEdit={() => taskForm.openEdit(task)}
-              />
-            ))}
-          </>
+            <button type="button" className={styles.triageBannerAction} onClick={() => navigate('/triage')}>
+              {t('today.startTriage')}
+            </button>
+          </div>
         )}
+
+        <ReflectModal task={reflecting} onClose={() => setReflecting(null)} onSubmit={finishReflecting} />
+
+        {shared && (
+          <div className={styles.assigneeTabs}>
+            <SegmentedTabs
+              value={assigneeView}
+              onChange={(view) => setAssigneeView(view as AssigneeView)}
+              options={ASSIGNEE_VIEWS.map((view) => ({
+                value: view,
+                label: t(`board.filter.${view}`, { count: viewCount(view) }),
+              }))}
+            />
+          </div>
+        )}
+
+        <AppliedFilters filters={filters} onChange={setFilters} />
+
+        <div className={styles.list}>
+          {displayedOpenTasks.length === 0 && filteredDoneToday.length === 0 && (
+            <EmptyState
+              title={t('today.emptyTitle')}
+              description={t('today.emptyDescription')}
+              action={
+                <Button variant="primary" onClick={() => taskForm.openNew()}>
+                  {t('sidebar.newTask')}
+                </Button>
+              }
+            />
+          )}
+
+          {displayedOpenTasks.map((task) => (
+            <TaskRow
+              key={task.id}
+              task={task}
+              onToggle={() => toggle(task, true)}
+              onEdit={() => taskForm.openEdit(task)}
+              // ponytail: recurring occurrences have no per-occurrence feeling/time field on the BE yet.
+              swipe={swipeFor(task)}
+              onReflect={task.recurrence ? undefined : () => setReflecting(task)}
+              rowRef={sortBy === 'manual' ? dragReorder.registerRow(task.id) : undefined}
+              dragHandleProps={
+                sortBy === 'manual'
+                  ? { dragging: dragReorder.draggingId === task.id, ...dragReorder.dragHandleProps(task.id) }
+                  : undefined
+              }
+            />
+          ))}
+
+          {!hideDone && filteredDoneToday.length > 0 && (
+            <>
+              <div className={styles.doneDivider}>
+                <span className={styles.doneDividerLabel}>{t('today.doneToday')}</span>
+                <span className={styles.doneDividerRule} />
+                <span className={styles.doneDividerCount}>{filteredDoneToday.length}</span>
+              </div>
+              {filteredDoneToday.map((task) => (
+                <DoneTaskRow
+                  key={task.id}
+                  task={task}
+                  onToggle={() => toggle(task, false)}
+                  onEdit={() => taskForm.openEdit(task)}
+                />
+              ))}
+            </>
+          )}
+        </div>
       </div>
+      <TodayRail openTasks={sortedOpenTasks} />
     </div>
   );
 }
