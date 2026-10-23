@@ -14,6 +14,8 @@ function dominantDirection({ x, y }: { x: number; y: number }): { direction: Swi
   };
 }
 const FLY_MS = 200;
+/** A list row collapses its height after flying off (see SwipeActions.module.css), before the action runs. */
+const COLLAPSE_MS = 220;
 
 type Mode = 'idle' | 'drag' | 'fly';
 
@@ -67,14 +69,17 @@ export function useSwipe(
         x: horizontal ? Math.sign(offset.x) * window.innerWidth : 0,
         y: horizontal ? offset.y : Math.sign(offset.y) * window.innerHeight,
       });
-      window.setTimeout(() => {
-        const reset = () => {
-          setMode('drag'); // no transition while the next card snaps into place
-          setOffset({ x: 0, y: 0 });
-        };
-        // Rejections are surfaced by the caller's mutation state; here we only need to settle.
-        Promise.resolve(onSwipe(direction)).then(reset, reset);
-      }, FLY_MS);
+      window.setTimeout(
+        () => {
+          const reset = () => {
+            setMode('drag'); // no transition while the next card snaps into place
+            setOffset({ x: 0, y: 0 });
+          };
+          // Rejections are surfaced by the caller's mutation state; here we only need to settle.
+          Promise.resolve(onSwipe(direction)).then(reset, reset);
+        },
+        horizontalOnly ? FLY_MS + COLLAPSE_MS : FLY_MS
+      );
     },
     onPointerCancel: () => {
       setStart(null);
@@ -91,9 +96,9 @@ export function useSwipe(
       ? `translateX(${offset.x}px)`
       : `translate(${offset.x}px, ${offset.y}px) rotate(${offset.x / 20}deg)`,
     // A row fades as it's dragged toward the commit distance and out entirely as it flies off.
-    ...(horizontalOnly && { opacity: mode === 'fly' ? 0 : 1 - 0.4 * progress }),
+    ...(horizontalOnly && { opacity: mode === 'fly' ? 0.6 : 1 - 0.4 * progress }),
     transition: mode === 'drag' ? 'none' : `transform ${FLY_MS}ms var(--ease-out), opacity ${FLY_MS}ms var(--ease-out)`,
   };
 
-  return { bind, style, direction, progress };
+  return { bind, style, direction, progress, flying: mode === 'fly' };
 }

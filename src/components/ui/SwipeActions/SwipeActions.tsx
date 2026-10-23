@@ -40,18 +40,20 @@ export function SwipeActions({ left, right, children }: SwipeActionsProps) {
   const active = swipe.direction === 'left' ? left : swipe.direction === 'right' ? right : undefined;
 
   return (
-    <div className={styles.wrap}>
-      {active && (
-        <div
-          className={`${styles.backdrop} ${styles[active.tone]} ${swipe.direction === 'left' ? styles.alignEnd : ''}`}
-          style={{ '--swipe-progress': swipe.progress } as CSSProperties}
-          aria-hidden
-        >
-          {active.label}
+    <div className={`${styles.wrap} ${swipe.flying ? styles.collapsed : ''}`}>
+      <div className={styles.inner}>
+        {active && (
+          <div
+            className={`${styles.backdrop} ${styles[active.tone]} ${swipe.direction === 'left' ? styles.alignEnd : ''}`}
+            style={{ '--swipe-progress': swipe.progress } as CSSProperties}
+            aria-hidden
+          >
+            {active.label}
+          </div>
+        )}
+        <div {...swipe.bind} style={swipe.style} className={styles.content}>
+          {children}
         </div>
-      )}
-      <div {...swipe.bind} style={swipe.style} className={styles.content}>
-        {children}
       </div>
     </div>
   );

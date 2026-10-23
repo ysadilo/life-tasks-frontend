@@ -1,7 +1,23 @@
 .wrap {
-  position: relative;
+  display: grid;
+  grid-template-rows: 1fr;
   /* The row flies past the edge; clip sideways only so lift shadows still show. */
   overflow-x: clip;
+}
+
+/* After the row has flown off (useSwipe's FLY_MS) its slot closes, so the rows below glide up instead of jumping. */
+.collapsed {
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 220ms var(--ease-out) 200ms;
+}
+
+.inner {
+  position: relative;
+  min-height: 0;
+}
+
+.collapsed .inner {
+  overflow: hidden;
 }
 
 .content {
