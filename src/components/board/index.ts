@@ -1,6 +1,7 @@
 export { BoardSwitcher } from './BoardSwitcher';
 export { BoardList } from './BoardList';
 export { MembersSection } from './MembersSection';
+export { InviteModal } from './InviteModal';
 export { NewBoardModal } from './NewBoardModal';
 export { newBoardModal } from './newBoardModalStore';
 export { AssigneeChip } from './AssigneeChip';

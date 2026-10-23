@@ -202,6 +202,18 @@
     "triageBannerHint": "Sort them before you start · about {{minutes}} min",
     "startTriage": "Start triage"
   },
+  "invite": {
+    "loading": "Opening invite…",
+    "invitedYou": "{{name}} invited you to",
+    "alreadyHere_one": "{{count}} person is already here · {{tasks}} tasks",
+    "alreadyHere_other": "{{count}} people are already here · {{tasks}} tasks",
+    "roleTitle": "You'll be an editor",
+    "roleHint": "Add, edit and finish tasks. Your own boards and check-ins stay private.",
+    "notNow": "Not now",
+    "notFoundTitle": "This invite isn't available",
+    "notFoundHint": "It may have been revoked, already used, or sent to a different email than the one you're signed in with.",
+    "goToToday": "Go to Today"
+  },
   "triage": {
     "handTo": "Hand to",
     "handedTo": "→ {{name}}",
@@ -318,6 +330,21 @@
     ]
   },
   "board": {
+    "inviteByEmail": "Invite by email",
+    "pendingInvites_one": "{{count}} invite pending",
+    "pendingInvites_other": "{{count}} invites pending",
+    "inviteLink": "Invite link",
+    "inviteLinkHint": "Anyone signed in who has this link can join as an editor.",
+    "createLink": "Create invite link",
+    "disableLink": "Turn off link",
+    "disableLinkConfirm": "The current link will stop working. You can create a new one afterwards.",
+    "linkDisabled": "Invite link turned off",
+    "find": "Find a board",
+    "noMatches": "No boards match",
+    "sharedCounts": "{{today}} today · {{forYou}} for you",
+    "personalCounts": "{{today}} today · {{backlog}} in backlog",
+    "copyLink": "Copy link",
+    "linkCopied": "Invite link copied",
     "current": "Current",
     "switch": "Switch",
     "manage": "Manage",
