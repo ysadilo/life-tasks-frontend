@@ -14,6 +14,8 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { toast } from '../ui/Toast';
+import { useBoardMuted } from '../../hooks/useBoardMutes';
+import { usePushPermission } from '../../hooks/usePushNotifications';
 import { BoardTile, MemberAvatar } from './BoardTile';
 import { inviteModal } from './inviteModalStore';
 import { newBoardModal } from './newBoardModalStore';
@@ -34,6 +36,7 @@ function BoardCard({ board, canDelete }: { board: Board; canDelete: boolean }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(board.name);
   const owner = board.role === 'owner';
+  const { muted, setMuted } = useBoardMuted(board.id);
 
   const saveName = () => {
     const trimmed = name.trim();
@@ -108,6 +111,11 @@ function BoardCard({ board, canDelete }: { board: Board; canDelete: boolean }) {
                 {t('board.rename')}
               </button>
             )
+          )}
+          {board.shared && (
+            <button type="button" className={styles.linkButton} onClick={() => setMuted(!muted)}>
+              {t(muted ? 'board.notify.unmute' : 'board.notify.mute')}
+            </button>
           )}
           {owner && board.shared && (
             <button type="button" className={styles.linkButton} onClick={() => inviteModal.open(board.id)}>
@@ -215,9 +223,15 @@ export function BoardsManager() {
   const { t } = useTranslation();
   const { data: boards } = useBoards();
   const ownedCount = boards?.filter((b) => b.role === 'owner').length ?? 0;
+  const push = usePushPermission();
 
   return (
     <div className={styles.manager}>
+      {push.available && push.permission !== 'granted' && (
+        <Button onClick={push.enable} disabled={push.permission === 'denied'}>
+          {t(push.permission === 'denied' ? 'board.notify.blocked' : 'board.notify.enable')}
+        </Button>
+      )}
       {boards?.map((board) => (
         <BoardCard key={board.id} board={board} canDelete={ownedCount > 1} />
       ))}

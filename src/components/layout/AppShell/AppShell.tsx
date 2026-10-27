@@ -5,9 +5,11 @@ import { TaskFormPanel, TaskPreviewPanel } from '../../task';
 import { LifeAreasModal } from '../../lifeAreas';
 import { BoardBar, InviteModal, NewBoardModal } from '../../board';
 import { SamoyedPeek, Toaster } from '../../ui';
+import { useSyncPushSubscription } from '../../../hooks/usePushNotifications';
 import styles from './AppShell.module.css';
 
 export function AppShell() {
+  useSyncPushSubscription();
   return (
     <div className={styles.shell}>
       <Sidebar />
