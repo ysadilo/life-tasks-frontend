@@ -5,7 +5,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
 import { openRecurringOn } from '../../../lib/recurrence';
 import { taskForm } from '../../task';
-import { BoardList } from '../../board';
 import { useActiveBoard } from '../../../hooks/useBoards';
 import styles from './BottomNav.module.css';
 
@@ -86,7 +85,6 @@ export function BottomNav() {
                 <span className={styles.profileSubtitle}>{activeBoard?.name ?? t('sidebar.soloBoard')}</span>
               </div>
             </div>
-            <BoardList onDone={() => setMenuOpen(false)} />
             <NavLink to="/settings" role="menuitem" className={styles.menuItem} onClick={() => setMenuOpen(false)}>
               <span className={styles.menuIcon}>⚙</span>
               {t('nav.settings')}

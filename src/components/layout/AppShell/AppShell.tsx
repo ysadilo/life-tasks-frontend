@@ -3,7 +3,7 @@ import { Sidebar } from '../Sidebar';
 import { BottomNav } from '../BottomNav';
 import { TaskFormPanel, TaskPreviewPanel } from '../../task';
 import { LifeAreasModal } from '../../lifeAreas';
-import { InviteModal, NewBoardModal } from '../../board';
+import { BoardBar, InviteModal, NewBoardModal } from '../../board';
 import { SamoyedPeek, Toaster } from '../../ui';
 import styles from './AppShell.module.css';
 
@@ -11,6 +11,7 @@ export function AppShell() {
   return (
     <div className={styles.shell}>
       <Sidebar />
+      <BoardBar />
       <div className={styles.canvas}>
         <main className={styles.main}>
           <Outlet />

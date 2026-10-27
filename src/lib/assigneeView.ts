@@ -1,6 +1,6 @@
 import type { Task } from '../models';
 
-export const ASSIGNEE_VIEWS = ['mine', 'everyone', 'unassigned'] as const;
+export const ASSIGNEE_VIEWS = ['everyone', 'mine', 'unassigned'] as const;
 export type AssigneeView = (typeof ASSIGNEE_VIEWS)[number];
 
 export function matchesAssigneeView(task: Task, view: AssigneeView, myId?: string): boolean {
