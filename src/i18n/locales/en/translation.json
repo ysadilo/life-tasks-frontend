@@ -23,6 +23,15 @@
     "appearanceHint": "Pick the theme you like best",
     "profileHint": "Settings, theme, log out"
   },
+  "feedback": {
+    "button": "Send feedback",
+    "title": "Send feedback",
+    "placeholder": "What's working, what's broken, what's missing?",
+    "send": "Send",
+    "cancel": "Cancel",
+    "thanks": "Thanks for the feedback!",
+    "error": "Couldn't send feedback. Please try again."
+  },
   "sidebar": {
     "newTask": "New task",
     "lifeAreas": "Life areas",
@@ -85,7 +94,9 @@
     "markDone": "Mark \"{{title}}\" done",
     "markNotDone": "Mark \"{{title}}\" not done",
     "addToToday": "Add to today",
-    "edit": "Edit \"{{title}}\"",
+    "toToday": "→ Today",
+    "reflect": "Reflect",
+    "energyLabel": { "low": "Low energy", "medium": "Medium energy", "high": "High energy" },
     "reorder": "Reorder \"{{title}}\"",
     "recurs": "Repeats · {{schedule}}",
     "dueOverdue": "Overdue",
@@ -116,7 +127,6 @@
     "linkCancel": "Cancel"
   },
   "reflect": {
-    "action": "Done + reflect",
     "title": "Nice work",
     "feelLabel": "How did it feel?",
     "optional": "optional",
@@ -124,7 +134,9 @@
     "took": "Took",
     "planned": "planned {{time}}",
     "justDone": "Just mark done",
-    "saveDone": "Save & done"
+    "saveDone": "Save & done",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "taskForm": {
     "newTitle": "New task",
@@ -147,8 +159,27 @@
       "weekdays": "Weekdays",
       "weekly": "Every week",
       "biweekly": "Every 2 weeks",
-      "monthly": "Every month"
+      "monthly": "Every month",
+      "custom": "Custom"
     },
+    "customEvery": "Every",
+    "customUnit": {
+      "day_one": "day",
+      "day_other": "days",
+      "week_one": "week",
+      "week_other": "weeks",
+      "month_one": "month",
+      "month_other": "months"
+    },
+    "customSchedule": {
+      "day_one": "Every day",
+      "day_other": "Every {{count}} days",
+      "week_one": "Every week",
+      "week_other": "Every {{count}} weeks",
+      "month_one": "Every month",
+      "month_other": "Every {{count}} months"
+    },
+    "customIntervalInvalid": "Pick a whole number from 1 to {{max}}.",
     "recurrenceEnd": "Repeat until",
     "addToToday": "Add to today",
     "parkInBacklog": "Park in backlog",
@@ -160,6 +191,12 @@
     "delete": "Delete",
     "error": "Something went wrong. Try again.",
     "close": "Close"
+  },
+  "taskView": {
+    "title": "Task details",
+    "edit": "Edit",
+    "feeling": "Felt",
+    "took": "Took"
   },
   "taskPreview": {
     "title": "Task",

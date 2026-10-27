@@ -13,18 +13,22 @@ import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { useBoardMembers } from '../../../hooks/useBoards';
 import { memberLabel } from '../../board';
 import { PRIORITIES } from '../../../lib/priority';
-import { RECURRENCES } from '../../../lib/recurrence';
+import { RECURRENCES, RECURRENCE_UNITS, MAX_CUSTOM_INTERVAL, isValidCustomInterval } from '../../../lib/recurrence';
 import { localDayAsUTC, localISODate } from '../../../lib/dateUtils';
 import { ENERGIES, EFFORT_MINUTES, energyRampKey, effortRampKey, priorityRampKey } from '../../../lib/taskMeta';
-import type { Energy, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../../../models';
+import type { Energy, LifeAreaId, Priority, Recurrence, RecurrenceUnit, Task, TaskStatus } from '../../../models';
 import { OptionGroup } from '../OptionGroup';
+import { TaskDetails } from '../TaskDetails';
 import styles from './TaskFormPanel.module.css';
 
-/** Mount once (see AppShell, beside <main>); opened from anywhere via `taskForm.openNew()` / `taskForm.openEdit()`. */
+/**
+ * Mount once (see AppShell, beside <main>); opened from anywhere via `taskForm.openNew()` / `openView()` / `openEdit()`.
+ * `openView` shows the read-only details first, with an Edit button that switches to the form.
+ */
 const UNASSIGNED = 'unassigned';
 
 export function TaskFormPanel() {
-  const { open, task, presetDate } = useTaskFormState();
+  const { open, task, presetDate, mode } = useTaskFormState();
   const { t } = useTranslation();
   const onClose = taskForm.close;
 
@@ -33,9 +37,13 @@ export function TaskFormPanel() {
       open={open}
       onClose={onClose}
       closeLabel={t('taskForm.close')}
-      title={task ? t('taskForm.editTitle') : t('taskForm.newTitle')}
+      title={task ? t(mode === 'view' ? 'taskView.title' : 'taskForm.editTitle') : t('taskForm.newTitle')}
     >
-      <TaskForm key={task?.id ?? presetDate ?? 'new'} task={task} presetDate={presetDate} onClose={onClose} />
+      {task && mode === 'view' ? (
+        <TaskDetails key={task.id} task={task} onEdit={() => taskForm.openEdit(task)} />
+      ) : (
+        <TaskForm key={task?.id ?? presetDate ?? 'new'} task={task} presetDate={presetDate} onClose={onClose} />
+      )}
     </SidePanel>
   );
 }
@@ -64,6 +72,8 @@ function TaskForm({
   const [energy, setEnergy] = useState<Energy | ''>(task?.energy ?? '');
   const [effort, setEffort] = useState(task?.estimatedMinutes ? String(task.estimatedMinutes) : '');
   const [recurrence, setRecurrence] = useState<Recurrence | ''>(task?.recurrence ?? '');
+  const [interval, setInterval] = useState(task?.recurrenceInterval ? String(task.recurrenceInterval) : '1');
+  const [unit, setUnit] = useState<RecurrenceUnit>(task?.recurrenceUnit ?? 'week');
   const [recurrenceEnd, setRecurrenceEnd] = useState(
     task?.recurrenceEndDate ? task.recurrenceEndDate.slice(0, 10) : ''
   );
@@ -77,7 +87,9 @@ function TaskForm({
   const trimmedTitle = title.trim();
   // A recurring task needs a start date to anchor the cadence (enforced by the BE too).
   const missingStart = !!recurrence && !dueDate;
-  const blocked = pending || !trimmedTitle || missingStart;
+  const custom = recurrence === 'custom';
+  const badInterval = custom && !isValidCustomInterval(Number(interval));
+  const blocked = pending || !trimmedTitle || missingStart || badInterval;
   // A one-off task due today (or earlier) belongs on Today — the backlog option is off.
   const dueToday = !recurrence && !!dueDate && dueDate <= localISODate();
 
@@ -91,6 +103,8 @@ function TaskForm({
     energy: energy || null,
     estimatedMinutes: effort ? Number(effort) : null,
     recurrence: recurrence || null,
+    recurrenceInterval: custom ? Number(interval) : null,
+    recurrenceUnit: custom ? unit : null,
     recurrenceEndDate: recurrence && recurrenceEnd ? new Date(recurrenceEnd).toISOString() : null,
     status,
     todayDate: status === 'today' ? localDayAsUTC() : null,
@@ -200,6 +214,35 @@ function TaskForm({
             onChange={(v) => setRecurrence(v as Recurrence | '')}
             options={RECURRENCES.map((r) => ({ value: r, label: t(`taskForm.recurrenceOption.${r}`) }))}
           />
+          {custom && (
+            <div className={styles.row}>
+              <span className={styles.label}>{t('taskForm.customEvery')}</span>
+              <div className={styles.custom}>
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={MAX_CUSTOM_INTERVAL}
+                  className={styles.interval}
+                  aria-label={t('taskForm.customEvery')}
+                  value={interval}
+                  onChange={(e) => setInterval(e.target.value)}
+                />
+                <select
+                  className={styles.select}
+                  aria-label={t('taskForm.customEvery')}
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value as RecurrenceUnit)}
+                >
+                  {RECURRENCE_UNITS.map((u) => (
+                    <option key={u} value={u}>
+                      {t(`taskForm.customUnit.${u}`, { count: Number(interval) || 1 })}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
           {recurrence && (
             <label className={styles.row}>
               <span className={styles.label}>{t('taskForm.recurrenceEnd')}</span>
@@ -213,6 +256,9 @@ function TaskForm({
           )}
         </div>
         {missingStart && <p className={styles.error}>{t('taskForm.startsOnRequired')}</p>}
+        {badInterval && (
+          <p className={styles.error}>{t('taskForm.customIntervalInvalid', { max: MAX_CUSTOM_INTERVAL })}</p>
+        )}
 
         <RichTextEditor
           value={description}

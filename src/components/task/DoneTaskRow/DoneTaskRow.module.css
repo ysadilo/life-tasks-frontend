@@ -8,6 +8,24 @@
   border-radius: var(--radius-card);
 }
 
+.clickable {
+  cursor: pointer;
+}
+
+.titleButton {
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.titleButton:focus-visible {
+  outline: none;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px var(--color-focus-halo);
+}
+
 .titleWrap {
   flex: 1;
   min-width: 0;

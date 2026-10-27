@@ -20,7 +20,7 @@ export function MetaChip(props: MetaChipProps) {
       break;
     case 'energy':
       rampKey = energyRampKey(props.value);
-      label = t(`taskForm.energyOption.${props.value}`);
+      label = t(`task.energyLabel.${props.value}`);
       break;
     case 'effort':
       rampKey = effortRampKey(props.minutes);

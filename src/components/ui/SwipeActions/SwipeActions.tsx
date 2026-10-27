@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { useRef, type CSSProperties, type MouseEvent, type PointerEvent, type ReactNode } from 'react';
 import { useSwipe } from '../../../hooks/useSwipe';
 import styles from './SwipeActions.module.css';
 
@@ -17,11 +17,16 @@ interface SwipeActionsProps {
   left?: SwipeAction;
   /** Revealed by swiping right, on the left edge. */
   right?: SwipeAction;
+  /** A tap on the row. Pointer capture retargets touch clicks here, so the handler gets them; drags don't count. */
+  onClick?: (e: MouseEvent) => void;
   children: ReactNode;
 }
 
+const TAP_SLOP_PX = 8;
+
 /** Touch-only: drag the row sideways past the threshold to trigger an action; mouse users keep their buttons. */
-export function SwipeActions({ left, right, children }: SwipeActionsProps) {
+export function SwipeActions({ left, right, onClick, children }: SwipeActionsProps) {
+  const downX = useRef(0);
   const sides = [
     { direction: 'left' as const, action: left },
     { direction: 'right' as const, action: right },
@@ -51,7 +56,16 @@ export function SwipeActions({ left, right, children }: SwipeActionsProps) {
             {active.label}
           </div>
         )}
-        <div {...swipe.bind} style={swipe.style} className={styles.content}>
+        <div
+          {...swipe.bind}
+          onPointerDown={(e: PointerEvent) => {
+            downX.current = e.clientX;
+            swipe.bind.onPointerDown(e);
+          }}
+          onClick={onClick && ((e) => Math.abs(e.clientX - downX.current) < TAP_SLOP_PX && onClick(e))}
+          style={swipe.style}
+          className={styles.content}
+        >
           {children}
         </div>
       </div>
