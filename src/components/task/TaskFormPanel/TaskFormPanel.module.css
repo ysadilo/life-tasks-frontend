@@ -48,6 +48,16 @@
   color: var(--color-text-muted);
 }
 
+.custom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.interval {
+  width: 80px;
+}
+
 .select {
   appearance: none;
   padding: 8px 40px 8px 12px;

@@ -12,8 +12,10 @@ export interface Reflection {
 }
 
 interface ReflectModalProps {
-  /** The task being finished; the modal is closed while null. */
+  /** The task being finished (or, with `done`, already finished); the modal is closed while null. */
   task: Task | null;
+  /** Reflecting on a finished task: starts from its saved check-in and offers Save instead of the done buttons. */
+  done?: boolean;
   onClose: () => void;
   /** Called with an empty reflection for "Just mark done". */
   onSubmit: (task: Task, reflection: Reflection) => void;
@@ -22,20 +24,30 @@ interface ReflectModalProps {
 const FEELINGS: Feeling[] = ['drained', 'heavy', 'neutral', 'good', 'great'];
 const TOOK_MINUTES = [30, 60, 120, 180];
 
-/** "Done + reflect" check-in: how it felt and how long it took, both optional (mockup 03). */
-export function ReflectModal({ task, onClose, onSubmit }: ReflectModalProps) {
+/** Check-in for a task: how it felt and how long it took, both optional (mockup 03). */
+export function ReflectModal({ task, done = false, onClose, onSubmit }: ReflectModalProps) {
   const { t } = useTranslation();
   return (
     <Modal open={task != null} onClose={onClose} title={t('reflect.title')} closeLabel={t('taskForm.close')}>
-      {task && <ReflectForm key={task.id} task={task} onSubmit={onSubmit} />}
+      {task && <ReflectForm key={task.id} task={task} done={done} onClose={onClose} onSubmit={onSubmit} />}
     </Modal>
   );
 }
 
-function ReflectForm({ task, onSubmit }: { task: Task; onSubmit: ReflectModalProps['onSubmit'] }) {
+function ReflectForm({
+  task,
+  done,
+  onClose,
+  onSubmit,
+}: {
+  task: Task;
+  done: boolean;
+  onClose: () => void;
+  onSubmit: ReflectModalProps['onSubmit'];
+}) {
   const { t } = useTranslation();
-  const [feeling, setFeeling] = useState<Feeling>();
-  const [minutes, setMinutes] = useState<number>();
+  const [feeling, setFeeling] = useState<Feeling | undefined>(done ? (task.feeling ?? undefined) : undefined);
+  const [minutes, setMinutes] = useState<number | undefined>(done ? (task.actualMinutes ?? undefined) : undefined);
 
   // Re-click clears, like OptionGroup's single-select.
   const pick = <T,>(current: T | undefined, value: T) => (current === value ? undefined : value);
@@ -85,8 +97,13 @@ function ReflectForm({ task, onSubmit }: { task: Task; onSubmit: ReflectModalPro
       </div>
 
       <div className={styles.actions}>
-        <Button type="button" variant="secondary" className={styles.action} onClick={() => onSubmit(task, {})}>
-          {t('reflect.justDone')}
+        <Button
+          type="button"
+          variant="secondary"
+          className={styles.action}
+          onClick={done ? onClose : () => onSubmit(task, {})}
+        >
+          {done ? t('reflect.cancel') : t('reflect.justDone')}
         </Button>
         <Button
           type="button"
@@ -94,7 +111,7 @@ function ReflectForm({ task, onSubmit }: { task: Task; onSubmit: ReflectModalPro
           className={styles.action}
           onClick={() => onSubmit(task, { feeling, actualMinutes: minutes })}
         >
-          {t('reflect.saveDone')}
+          {done ? t('reflect.save') : t('reflect.saveDone')}
         </Button>
       </div>
     </div>
