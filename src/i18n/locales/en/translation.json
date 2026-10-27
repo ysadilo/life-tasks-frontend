@@ -397,6 +397,12 @@
       "assignedTo": "{{actor}} assigned <b>{{task}}</b> to {{target}}",
       "unassigned": "{{actor}} unassigned <b>{{task}}</b>"
     },
+    "notify": {
+      "enable": "Turn on notifications",
+      "blocked": "Notifications are blocked in browser settings",
+      "mute": "Mute notifications",
+      "unmute": "Unmute notifications"
+    },
     "inviteByEmail": "Invite by email",
     "pendingInvites_one": "{{count}} invite pending",
     "pendingInvites_other": "{{count}} invites pending",
