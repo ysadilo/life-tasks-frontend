@@ -4,7 +4,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { PageHeader } from '../../components/layout';
 import { LifeAreasManager } from '../../components/lifeAreas';
 import { BoardsManager } from '../../components/board';
-import { FeedbackButton } from '../../components/feedback';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { useBoards } from '../../hooks/useBoards';
 import { SegmentedTabs } from '../../components/ui';
@@ -147,16 +146,13 @@ export default function Settings() {
               {user?.email && <span className={styles.accountEmail}>{user.email}</span>}
             </div>
           </div>
-          <div className={styles.accountActions}>
-            <FeedbackButton />
-            <button
-              type="button"
-              className={styles.logout}
-              onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-            >
-              {t('auth.signOut')}
-            </button>
-          </div>
+          <button
+            type="button"
+            className={styles.logout}
+            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+          >
+            {t('auth.signOut')}
+          </button>
         </section>
       </div>
     </div>
