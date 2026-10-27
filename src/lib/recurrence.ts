@@ -1,8 +1,29 @@
+import type { TFunction } from 'i18next';
 import type { Task } from '../models';
-import type { Recurrence } from '../models/Recurrence';
+import type { Recurrence, RecurrenceUnit } from '../models/Recurrence';
 
-/** Recurrence presets offered in the task form, in the order shown. */
-export const RECURRENCES: Recurrence[] = ['daily', 'weekdays', 'weekly', 'biweekly', 'monthly'];
+/** Recurrence options offered in the task form, in the order shown. `custom` opens the interval + unit fields. */
+export const RECURRENCES: Recurrence[] = ['daily', 'weekdays', 'weekly', 'biweekly', 'monthly', 'custom'];
+
+export const RECURRENCE_UNITS: RecurrenceUnit[] = ['day', 'week', 'month'];
+
+/** Largest custom interval; the BE rejects anything above it. */
+export const MAX_CUSTOM_INTERVAL = 365;
+
+export function isValidCustomInterval(interval: number): boolean {
+  return Number.isInteger(interval) && interval >= 1 && interval <= MAX_CUSTOM_INTERVAL;
+}
+
+/** "Every week", "Every 3 days" — the cadence of a recurring task, in words. */
+export function recurrenceLabel(
+  t: TFunction,
+  task: Pick<Task, 'recurrence' | 'recurrenceInterval' | 'recurrenceUnit'>
+): string {
+  if (task.recurrence === 'custom') {
+    return t(`taskForm.customSchedule.${task.recurrenceUnit ?? 'day'}`, { count: task.recurrenceInterval ?? 1 });
+  }
+  return t(`taskForm.recurrenceOption.${task.recurrence}`);
+}
 
 const DAY = 86_400_000;
 
@@ -16,7 +37,22 @@ function fromLocal(d: Date): Date {
   return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
 }
 
-function matchesRule(day: Date, start: Date, r: Recurrence): boolean {
+function matchesCustom(day: Date, start: Date, interval: number, unit: RecurrenceUnit): boolean {
+  const diffDays = Math.round((day.getTime() - start.getTime()) / DAY);
+  switch (unit) {
+    case 'day':
+      return diffDays % interval === 0;
+    case 'week':
+      return diffDays % (7 * interval) === 0;
+    case 'month': {
+      const months = (day.getUTCFullYear() - start.getUTCFullYear()) * 12 + day.getUTCMonth() - start.getUTCMonth();
+      // ponytail: like `monthly`, a series anchored on the 29th–31st skips months that are shorter.
+      return day.getUTCDate() === start.getUTCDate() && months % interval === 0;
+    }
+  }
+}
+
+function matchesRule(day: Date, start: Date, task: Task, r: Recurrence): boolean {
   const diffDays = Math.round((day.getTime() - start.getTime()) / DAY);
   switch (r) {
     case 'daily':
@@ -30,6 +66,8 @@ function matchesRule(day: Date, start: Date, r: Recurrence): boolean {
     case 'monthly':
       // ponytail: a series anchored on the 29th–31st skips months that are shorter.
       return day.getUTCDate() === start.getUTCDate();
+    case 'custom':
+      return matchesCustom(day, start, task.recurrenceInterval ?? 1, task.recurrenceUnit ?? 'day');
   }
 }
 
@@ -39,7 +77,7 @@ function occursOn(task: Task, d: Date): boolean {
   const start = fromStored(task.dueDate);
   if (d < start) return false;
   if (task.recurrenceEndDate && d > fromStored(task.recurrenceEndDate)) return false;
-  return matchesRule(d, start, task.recurrence);
+  return matchesRule(d, start, task, task.recurrence);
 }
 
 /** Does the recurring series have an occurrence on `day` (a local wall-clock day) —

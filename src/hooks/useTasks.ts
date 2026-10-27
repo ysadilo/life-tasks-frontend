@@ -3,7 +3,7 @@ import { api } from '../lib/api';
 import { peek } from '../components/ui';
 import { bump } from '../lib/samoyed';
 import { localDayAsUTC, localISODate, useLocalToday } from '../lib/dateUtils';
-import type { Energy, Feeling, LifeAreaId, Priority, Recurrence, Task, TaskStatus } from '../models';
+import type { Energy, Feeling, LifeAreaId, Priority, Recurrence, RecurrenceUnit, Task, TaskStatus } from '../models';
 
 /** Task changes also add entries to a shared board's activity feed. */
 function invalidateTasks(queryClient: QueryClient) {
@@ -27,6 +27,8 @@ export interface TaskInput {
   energy?: Energy | null;
   estimatedMinutes?: number | null;
   recurrence?: Recurrence | null;
+  recurrenceInterval?: number | null;
+  recurrenceUnit?: RecurrenceUnit | null;
   recurrenceEndDate?: string | null;
 }
 
@@ -103,8 +105,8 @@ export function useUpdateTaskStatus() {
       id: string;
       status: TaskStatus;
       dueDate?: string | null;
-      feeling?: Feeling;
-      actualMinutes?: number;
+      feeling?: Feeling | null;
+      actualMinutes?: number | null;
       assigneeId?: string | null;
     }) =>
       // Stamp the user's local day, not the server's UTC day, when entering Today.

@@ -65,7 +65,7 @@ export default function Today() {
 
   const today = useMemo(() => new Date(), []);
 
-  const toggle = (task: Task, done: boolean, reflection: Reflection = {}) => {
+  const toggle = (task: Task, done: boolean) => {
     if (done) {
       const milestone = bump('done');
       if (milestone) peek.show(milestone);
@@ -73,7 +73,7 @@ export default function Today() {
     if (task.recurrence) {
       toggleOccurrence.mutate({ id: task.id, date: occurrenceISO(today), done });
     } else {
-      updateStatus.mutate({ id: task.id, status: done ? 'done' : 'today', ...reflection });
+      updateStatus.mutate({ id: task.id, status: done ? 'done' : 'today' });
     }
   };
 
@@ -100,9 +100,15 @@ export default function Today() {
     };
   };
 
-  const finishReflecting = (task: Task, reflection: Reflection) => {
+  // Reflecting only happens on finished tasks; unchecking a pill clears that part of the check-in.
+  const saveReflection = (task: Task, { feeling, actualMinutes }: Reflection) => {
     setReflecting(null);
-    toggle(task, true, reflection);
+    updateStatus.mutate({
+      id: task.id,
+      status: 'done',
+      feeling: feeling ?? null,
+      actualMinutes: actualMinutes ?? null,
+    });
   };
 
   const recurringToday = useMemo(
@@ -236,7 +242,7 @@ export default function Today() {
           </div>
         )}
 
-        <ReflectModal task={reflecting} onClose={() => setReflecting(null)} onSubmit={finishReflecting} />
+        <ReflectModal task={reflecting} done onClose={() => setReflecting(null)} onSubmit={saveReflection} />
 
         {shared && (
           <div className={styles.assigneeTabs}>
@@ -278,10 +284,8 @@ export default function Today() {
               key={task.id}
               task={task}
               onToggle={() => toggle(task, true)}
-              onEdit={() => taskForm.openEdit(task)}
-              // ponytail: recurring occurrences have no per-occurrence feeling/time field on the BE yet.
+              onOpen={() => taskForm.openView(task)}
               swipe={swipeFor(task)}
-              onReflect={task.recurrence ? undefined : () => setReflecting(task)}
               rowRef={sortBy === 'manual' ? dragReorder.registerRow(task.id) : undefined}
               dragHandleProps={
                 sortBy === 'manual'
@@ -303,7 +307,9 @@ export default function Today() {
                   key={task.id}
                   task={task}
                   onToggle={() => toggle(task, false)}
-                  onEdit={() => taskForm.openEdit(task)}
+                  onOpen={() => taskForm.openView(task)}
+                  // ponytail: recurring occurrences have no per-occurrence feeling/time field on the BE yet.
+                  onReflect={task.recurrence ? undefined : () => setReflecting(task)}
                 />
               ))}
             </>

@@ -3,7 +3,7 @@ export type { TaskStatus } from './TaskStatus';
 export type { Priority } from './Priority';
 export type { Energy } from './Energy';
 export type { Feeling } from './Feeling';
-export type { Recurrence } from './Recurrence';
+export type { Recurrence, RecurrenceUnit } from './Recurrence';
 export type { LifeAreaId } from './LifeAreaId';
 export type { LifeArea } from './LifeArea';
 export type { Board, BoardMember, BoardRole, BoardInvite, BoardJoinPreview, NewBoardInput } from './Board';

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
-import { Button, Input, EmptyState } from '../../components/ui';
+import { Button, Input, EmptyState, PillButton } from '../../components/ui';
 import {
   TaskRow,
   taskForm,
@@ -120,7 +120,8 @@ export default function Backlog() {
               <TaskRow
                 key={task.id}
                 task={task}
-                onEdit={() => taskForm.openEdit(task)}
+                inline
+                onOpen={() => taskForm.openView(task)}
                 swipe={{
                   left: {
                     label: t('task.swipe.delete'),
@@ -137,12 +138,12 @@ export default function Backlog() {
                       },
                 }}
                 trailing={
-                  <Button
-                    variant="secondary"
+                  <PillButton
+                    aria-label={t('task.addToToday')}
                     onClick={() => leaveThen(task.id, () => updateStatus.mutateAsync({ id: task.id, status: 'today' }))}
                   >
-                    {t('task.addToToday')}
-                  </Button>
+                    {t('task.toToday')}
+                  </PillButton>
                 }
               />
             ))}

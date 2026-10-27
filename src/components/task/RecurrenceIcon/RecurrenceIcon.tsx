@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import type { Recurrence } from '../../../models';
+import { recurrenceLabel } from '../../../lib/recurrence';
+import type { Task } from '../../../models';
 import styles from './RecurrenceIcon.module.css';
 
 /**
@@ -7,11 +8,11 @@ import styles from './RecurrenceIcon.module.css';
  * icon's presence never shifts the row's action buttons; renders the glyph only
  * when the task actually recurs.
  */
-export function RecurrenceIcon({ recurrence }: { recurrence?: Recurrence | null }) {
+export function RecurrenceIcon({ task }: { task: Pick<Task, 'recurrence' | 'recurrenceInterval' | 'recurrenceUnit'> }) {
   const { t } = useTranslation();
-  if (!recurrence) return <span className={styles.icon} aria-hidden="true" />;
+  if (!task.recurrence) return <span className={styles.icon} aria-hidden="true" />;
 
-  const label = t('task.recurs', { schedule: t(`taskForm.recurrenceOption.${recurrence}`) });
+  const label = t('task.recurs', { schedule: recurrenceLabel(t, task) });
   return (
     <span className={styles.icon} title={label} aria-label={label} role="img">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
