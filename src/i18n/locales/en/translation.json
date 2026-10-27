@@ -23,6 +23,15 @@
     "appearanceHint": "Pick the theme you like best",
     "profileHint": "Settings, theme, log out"
   },
+  "feedback": {
+    "button": "Send feedback",
+    "title": "Send feedback",
+    "placeholder": "What's working, what's broken, what's missing?",
+    "send": "Send",
+    "cancel": "Cancel",
+    "thanks": "Thanks for the feedback!",
+    "error": "Couldn't send feedback. Please try again."
+  },
   "sidebar": {
     "newTask": "New task",
     "lifeAreas": "Life areas",
