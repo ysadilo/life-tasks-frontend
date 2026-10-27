@@ -1,24 +1,41 @@
+/* Pill track with equal-width segments, as in the mockups. */
 .track {
-  display: inline-flex;
-  background: var(--color-sidebar-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-input);
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-pill);
   padding: 3px;
 }
 
 .tab {
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
   padding: 9px 18px;
-  border-radius: var(--radius-sm);
-  font: 500 14px/1 var(--font-sans);
-  color: var(--color-text-muted);
+  border-radius: var(--radius-pill);
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
   cursor: pointer;
 }
 
 .active {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border-color: var(--color-border);
   color: var(--color-text);
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .track {
+    display: grid;
+    width: 100%;
+  }
+
+  .tab {
+    padding-inline: 0;
+  }
 }

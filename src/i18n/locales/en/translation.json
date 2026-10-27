@@ -383,6 +383,13 @@
     "split": "Today's split",
     "activityTitle": "Activity",
     "activityEmpty": "Nothing yet today.",
+    "activityToday": "Today",
+    "activityEarlier": "Earlier",
+    "activityAll": "All",
+    "activityForMe": "For me · {{count}}",
+    "markAllRead": "Mark all read",
+    "splitTotal_one": "{{count}} task",
+    "splitTotal_other": "{{count}} tasks",
     "activity": {
       "added": "{{actor}} added <b>{{task}}</b>",
       "finished": "{{actor}} finished <b>{{task}}</b>",
@@ -430,9 +437,9 @@
     "anyoneCanTake": "Anyone can take it",
     "assignee": "Assignee",
     "filter": {
-      "mine": "Mine · {{count}}",
-      "everyone": "Everyone · {{count}}",
-      "unassigned": "Unassigned · {{count}}"
+      "mine": "Mine",
+      "everyone": "Everyone",
+      "unassigned": "Unassigned"
     },
     "unassigned": "Unassigned",
     "personal": "Personal",

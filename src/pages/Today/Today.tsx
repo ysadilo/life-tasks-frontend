@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader, PageState } from '../../components/layout';
 import { useBoardMembers } from '../../hooks/useBoards';
-import { TodayRail } from '../../components/board';
+import { TodayRail, TodaySplit } from '../../components/board';
 import { Button, EmptyState, peek, SamoyedAvatar, SamoyedMoment, SegmentedTabs } from '../../components/ui';
 import {
   TaskRow,
@@ -151,8 +151,6 @@ export default function Today() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [doneToday, filters, shared, assigneeView, me?.userId]
   );
-  const viewCount = (view: AssigneeView) =>
-    sortedOpenTasks.filter((task) => matchesAssigneeView(task, view, me?.userId)).length;
   const filterCount = activeFilterCount(filters);
 
   const openTaskIds = useMemo(() => filteredOpenTasks.map((task) => task.id), [filteredOpenTasks]);
@@ -244,6 +242,8 @@ export default function Today() {
 
         <ReflectModal task={reflecting} done onClose={() => setReflecting(null)} onSubmit={saveReflection} />
 
+        <TodaySplit openTasks={sortedOpenTasks} />
+
         {shared && (
           <div className={styles.assigneeTabs}>
             <SegmentedTabs
@@ -251,7 +251,7 @@ export default function Today() {
               onChange={(view) => setAssigneeView(view as AssigneeView)}
               options={ASSIGNEE_VIEWS.map((view) => ({
                 value: view,
-                label: t(`board.filter.${view}`, { count: viewCount(view) }),
+                label: t(`board.filter.${view}`),
               }))}
             />
           </div>
