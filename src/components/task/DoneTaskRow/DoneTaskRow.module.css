@@ -1,7 +1,8 @@
 .row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 8px 14px;
   padding: 8px 16px;
   background: var(--color-surface-muted);
   border: 1px solid var(--color-border-subtle);
@@ -27,8 +28,8 @@
 }
 
 .titleWrap {
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 140px;
+  min-width: 140px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -44,4 +45,5 @@
 .time {
   font: 500 12px/1 var(--font-sans);
   color: var(--color-text-faint);
+  white-space: nowrap;
 }
