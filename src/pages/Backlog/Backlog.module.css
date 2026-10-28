@@ -30,6 +30,25 @@
   display: flex;
   align-items: center;
   gap: 9px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.chevron {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-right: 1.5px solid var(--color-text-muted);
+  border-bottom: 1.5px solid var(--color-text-muted);
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+
+.chevronCollapsed {
+  transform: rotate(-45deg);
 }
 
 .groupDot {
@@ -51,4 +70,50 @@
 
 .filterWrap {
   display: inline-flex;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 30px 0;
+}
+
+@media (max-width: 768px) {
+  .toolbar {
+    padding: 0 16px;
+    flex-wrap: wrap;
+  }
+}
+
+.search {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-muted);
+}
+
+.search:focus-within {
+  border-color: var(--color-accent-border);
+  box-shadow: 0 0 0 4px var(--color-focus-halo);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: 400 14px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
 }
