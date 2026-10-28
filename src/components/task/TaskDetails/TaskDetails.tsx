@@ -1,15 +1,20 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../ui/Button';
+import { SamoyedNudge } from '../../ui/Samoyed';
 import { Chip } from '../../ui/Chip';
 import { RichText } from '../../ui/RichText';
 import { MetaChip } from '../MetaChip';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
 import { isBlankHtml } from '../../../lib/richText';
+import { tryAppear } from '../../../lib/samoyed';
+import { daysOverdue, isOverdue } from '../../../lib/taskDates';
 import { recurrenceLabel } from '../../../lib/recurrence';
 import { formatMinutes } from '../../../lib/taskMeta';
 import type { Task } from '../../../models';
 import styles from './TaskDetails.module.css';
+
+const NUDGE_AFTER_DAYS = 3;
 
 interface TaskDetailsProps {
   task: Task;
@@ -40,10 +45,22 @@ export function TaskDetails({ task, onEdit }: TaskDetailsProps) {
   const areas = useLifeAreaLookup();
   const areaName = task.areaId ? areas.get(task.areaId)?.name : undefined;
 
+  const nudge = isOverdue(task) && daysOverdue(task) >= NUDGE_AFTER_DAYS && tryAppear('overdue');
+
   return (
     <div className={styles.view}>
       <div className={styles.content}>
         <h3 className={styles.title}>{task.title}</h3>
+        {nudge && (
+          <SamoyedNudge
+            moment="overdue"
+            actions={
+              <Button type="button" variant="primary" onClick={onEdit}>
+                {t('samoyed.overdueAction')}
+              </Button>
+            }
+          />
+        )}
         <div className={styles.props}>
           {task.dueDate && (
             <Property label={task.recurrence ? t('taskForm.startsOn') : t('taskForm.dueDate')}>

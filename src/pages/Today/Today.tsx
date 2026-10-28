@@ -10,8 +10,10 @@ import {
   peek,
   SamoyedAvatar,
   SamoyedMoment,
+  SamoyedNudge,
   SegmentedTabs,
   ToolbarPill,
+  usePhrase,
 } from '../../components/ui';
 import {
   TaskRow,
@@ -38,7 +40,8 @@ import { isSameDay } from '../../lib/dateUtils';
 import { dueUrgency } from '../../lib/taskDates';
 import { inMyTriage } from '../../lib/triageScope';
 import { ASSIGNEE_VIEWS, matchesAssigneeView, type AssigneeView } from '../../lib/assigneeView';
-import { bump, getSamoyedMode, tryAppear, welcomeBack, type MomentId } from '../../lib/samoyed';
+import { bump, getSamoyedMode, isHeavyDay, tryAppear, welcomeBack, type MomentId } from '../../lib/samoyed';
+import { PRIORITY_RANK } from '../../lib/priority';
 import type { Task } from '../../models';
 import styles from './Today.module.css';
 
@@ -111,6 +114,7 @@ export default function Today() {
   // Reflecting only happens on finished tasks; unchecking a pill clears that part of the check-in.
   const saveReflection = (task: Task, { feeling, actualMinutes }: Reflection) => {
     setReflecting(null);
+    if (feeling === 'drained' && tryAppear('roughCheckin')) peek.show('roughCheckin');
     updateStatus.mutate({
       id: task.id,
       status: 'done',
@@ -132,6 +136,7 @@ export default function Today() {
   );
   const myTriageCount = (triageTasks ?? []).filter((task) => !shared || inMyTriage(task, me?.userId)).length;
   const triageCount = myTriageCount + missedOccurrenceCount;
+  const greetingPhrase = usePhrase(greeting ?? 'welcomeBack', undefined, triageCount > 0);
 
   const sortedOpenTasks = useMemo(() => {
     const tasks = [...(openTasks ?? []), ...recurringToday.filter((task) => !isOccurrenceDone(task, today))];
@@ -160,6 +165,17 @@ export default function Today() {
     [doneToday, filters, shared, assigneeView, me?.userId]
   );
   const filterCount = activeFilterCount(filters);
+
+  // The dog offers to move the least pressing one-off task out of a day that's an hour+ over the usual.
+  const heavyDayTask = useMemo(() => {
+    if (!openTasks || !doneTasks) return null;
+    const planned = [...sortedOpenTasks, ...doneToday].reduce((sum, task) => sum + (task.estimatedMinutes ?? 0), 0);
+    if (!isHeavyDay(planned) || !tryAppear('heavyDay')) return null;
+    const rank = (task: Task) => (task.priority ? PRIORITY_RANK[task.priority] : PRIORITY_RANK.P4 + 1);
+    const movable = sortedOpenTasks.filter((task) => !task.recurrence && !dueUrgency(task));
+    return movable.sort((a, b) => rank(b) - rank(a) || (b.dueDate ?? '9').localeCompare(a.dueDate ?? '9'))[0] ?? null;
+  }, [openTasks, doneTasks, sortedOpenTasks, doneToday]);
+  const [heavyDismissed, setHeavyDismissed] = useState(false);
 
   const openTaskIds = useMemo(() => filteredOpenTasks.map((task) => task.id), [filteredOpenTasks]);
   const dragReorder = useDragReorder(openTaskIds, manualOrder.reorder);
@@ -218,7 +234,7 @@ export default function Today() {
         {greeting && greetingOpen && (
           <div className={styles.greeting}>
             <SamoyedAvatar moment={greeting} size={56} />
-            <span className={styles.greetingText}>{t(`samoyed.phrases.${greeting}`)}</span>
+            <span className={styles.greetingText}>{greetingPhrase}</span>
             <button
               type="button"
               className={styles.greetingClose}
@@ -227,6 +243,27 @@ export default function Today() {
             >
               ×
             </button>
+          </div>
+        )}
+
+        {heavyDayTask && !heavyDismissed && (
+          <div className={styles.nudgeWrap}>
+            <SamoyedNudge
+              moment="heavyDay"
+              actions={
+                <>
+                  <Button
+                    variant="primary"
+                    onClick={() => updateStatus.mutate({ id: heavyDayTask.id, status: 'backlog' })}
+                  >
+                    {t('samoyed.heavyAction', { title: heavyDayTask.title })}
+                  </Button>
+                  <Button variant="ghost" onClick={() => setHeavyDismissed(true)}>
+                    {t('samoyed.notNow')}
+                  </Button>
+                </>
+              }
+            />
           </div>
         )}
 

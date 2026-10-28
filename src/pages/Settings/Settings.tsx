@@ -85,7 +85,7 @@ export default function Settings() {
               }}
               options={SAMOYED_MODES.map((mode) => ({ value: mode, label: t(`samoyed.mode.${mode}`) }))}
             />
-            <p className={styles.cardHint}>{t('samoyed.settingHint')}</p>
+            <p className={styles.cardHint}>{t(`samoyed.modeHint.${samoyedMode}`)}</p>
           </div>
         </section>
       </div>
