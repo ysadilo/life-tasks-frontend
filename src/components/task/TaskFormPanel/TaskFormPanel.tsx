@@ -12,6 +12,7 @@ import { leaveThen } from '../taskLeavingStore';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { useBoardMembers } from '../../../hooks/useBoards';
 import { memberLabel } from '../../board';
+import type { TaskDraft } from '../../../lib/quickAdd';
 import { PRIORITIES } from '../../../lib/priority';
 import { RECURRENCES, RECURRENCE_UNITS, MAX_CUSTOM_INTERVAL, isValidCustomInterval } from '../../../lib/recurrence';
 import { localDayAsUTC, localISODate } from '../../../lib/dateUtils';
@@ -28,7 +29,7 @@ import styles from './TaskFormPanel.module.css';
 const UNASSIGNED = 'unassigned';
 
 export function TaskFormPanel() {
-  const { open, task, presetDate, mode } = useTaskFormState();
+  const { open, task, presetDate, draft, mode } = useTaskFormState();
   const { t } = useTranslation();
   const onClose = taskForm.close;
 
@@ -42,7 +43,13 @@ export function TaskFormPanel() {
       {task && mode === 'view' ? (
         <TaskDetails key={task.id} task={task} onEdit={() => taskForm.openEdit(task)} />
       ) : (
-        <TaskForm key={task?.id ?? presetDate ?? 'new'} task={task} presetDate={presetDate} onClose={onClose} />
+        <TaskForm
+          key={task?.id ?? presetDate ?? draft?.title ?? 'new'}
+          task={task}
+          presetDate={presetDate}
+          draft={draft}
+          onClose={onClose}
+        />
       )}
     </SidePanel>
   );
@@ -51,10 +58,12 @@ export function TaskFormPanel() {
 function TaskForm({
   task,
   presetDate,
+  draft,
   onClose,
 }: {
   task: Task | null;
   presetDate: string | null;
+  draft: TaskDraft | null;
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -62,15 +71,19 @@ function TaskForm({
   const board = useBoardMembers();
   const isEdit = task != null;
 
-  const [title, setTitle] = useState(task?.title ?? '');
+  const [title, setTitle] = useState(task?.title ?? draft?.title ?? '');
   const [description, setDescription] = useState(task?.description ?? '');
-  const [dueDate, setDueDate] = useState(task?.dueDate ? task.dueDate.slice(0, 10) : (presetDate ?? ''));
-  const [area, setArea] = useState<LifeAreaId | ''>(task?.areaId ?? '');
+  const [dueDate, setDueDate] = useState(
+    task?.dueDate ? task.dueDate.slice(0, 10) : (presetDate ?? draft?.dueDate ?? '')
+  );
+  const [area, setArea] = useState<LifeAreaId | ''>(task?.areaId ?? draft?.areaId ?? '');
   // New tasks on a shared board start on the creator's plate; clicking the chip again hands it to anyone.
   const [assignee, setAssignee] = useState(task ? (task.assigneeId ?? '') : (board.me?.userId ?? ''));
-  const [priority, setPriority] = useState<Priority | ''>(task?.priority ?? '');
+  const [priority, setPriority] = useState<Priority | ''>(task?.priority ?? draft?.priority ?? '');
   const [energy, setEnergy] = useState<Energy | ''>(task?.energy ?? '');
-  const [effort, setEffort] = useState(task?.estimatedMinutes ? String(task.estimatedMinutes) : '');
+  const [effort, setEffort] = useState(
+    task?.estimatedMinutes ? String(task.estimatedMinutes) : draft?.minutes ? String(draft.minutes) : ''
+  );
   const [recurrence, setRecurrence] = useState<Recurrence | ''>(task?.recurrence ?? '');
   const [interval, setInterval] = useState(task?.recurrenceInterval ? String(task.recurrenceInterval) : '1');
   const [unit, setUnit] = useState<RecurrenceUnit>(task?.recurrenceUnit ?? 'week');

@@ -147,6 +147,16 @@
     "save": "Save",
     "cancel": "Cancel"
   },
+  "quickAdd": {
+    "title": "Quick add",
+    "bar": "Add a task — try “Call mum tomorrow p2 #Social 15m”",
+    "placeholder": "Call mum tomorrow p2 #Social 15m",
+    "willAdd": "Will add",
+    "addToday": "Add to Today",
+    "addBacklog": "Park in Backlog",
+    "openDetails": "Open full details",
+    "error": "Couldn't add the task. Try again."
+  },
   "taskForm": {
     "newTitle": "New task",
     "editTitle": "Edit task",

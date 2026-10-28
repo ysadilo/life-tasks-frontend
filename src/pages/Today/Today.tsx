@@ -21,6 +21,7 @@ import {
   ReflectModal,
   type Reflection,
   taskForm,
+  quickAdd,
   AppliedFilters,
   TaskFilterPopover,
   EMPTY_TASK_FILTERS,
@@ -303,6 +304,11 @@ export default function Today() {
         )}
 
         <AppliedFilters filters={filters} onChange={setFilters} />
+
+        <button type="button" className={styles.quickAddBar} onClick={quickAdd.open}>
+          <span className={styles.quickAddText}>{t('quickAdd.bar')}</span>
+          <kbd className={styles.quickAddKey}>⌘K</kbd>
+        </button>
 
         <div className={styles.list}>
           {displayedOpenTasks.length === 0 && filteredDoneToday.length === 0 && (

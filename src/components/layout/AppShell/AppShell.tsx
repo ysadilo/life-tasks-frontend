@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from '../Sidebar';
 import { BottomNav } from '../BottomNav';
-import { TaskFormPanel, TaskPreviewPanel } from '../../task';
+import { QuickAddModal, TaskFormPanel, TaskPreviewPanel } from '../../task';
 import { LifeAreasModal } from '../../lifeAreas';
 import { BoardBar, InviteModal, NewBoardModal } from '../../board';
 import { SamoyedPeek, Toaster } from '../../ui';
@@ -24,6 +24,7 @@ export function AppShell() {
         <TaskPreviewPanel />
       </div>
       <BottomNav />
+      <QuickAddModal />
       <LifeAreasModal />
       <NewBoardModal />
       <InviteModal />
