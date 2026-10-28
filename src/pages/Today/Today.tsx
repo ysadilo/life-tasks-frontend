@@ -72,7 +72,6 @@ export default function Today() {
     if (welcomeBack()) return 'welcomeBack';
     return new Date().getHours() >= 23 && tryAppear('lateNight') ? 'lateNight' : null;
   });
-  const greetingPhrase = usePhrase(greeting ?? 'welcomeBack');
   const [reflecting, setReflecting] = useState<Task | null>(null);
 
   const today = useMemo(() => new Date(), []);
@@ -137,6 +136,7 @@ export default function Today() {
   );
   const myTriageCount = (triageTasks ?? []).filter((task) => !shared || inMyTriage(task, me?.userId)).length;
   const triageCount = myTriageCount + missedOccurrenceCount;
+  const greetingPhrase = usePhrase(greeting ?? 'welcomeBack', undefined, triageCount > 0);
 
   const sortedOpenTasks = useMemo(() => {
     const tasks = [...(openTasks ?? []), ...recurringToday.filter((task) => !isOccurrenceDone(task, today))];

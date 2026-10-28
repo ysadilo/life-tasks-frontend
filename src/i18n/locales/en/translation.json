@@ -412,6 +412,7 @@
         "Lights out? The list will keep."
       ],
       "handed": ["{{name}} threw you one!", "Incoming from {{name}}!", "Catch! {{name}} passed you a task."],
+      "welcomeBackTriage": ["Long time! Triage first?"],
       "welcomeBack": [
         "You came back! Missed you.",
         "There you are!",
