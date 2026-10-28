@@ -37,3 +37,9 @@
   display: flex;
   gap: 8px;
 }
+
+.note {
+  margin: 0;
+  font: 400 12px/1.4 var(--font-sans);
+  color: var(--color-text-muted);
+}

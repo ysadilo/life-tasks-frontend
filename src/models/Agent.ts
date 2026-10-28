@@ -35,6 +35,8 @@ export interface AgentActivityEntry {
 /** An agent that is mid-sign-in and waiting for the user to approve it. */
 export interface AgentConnectRequest {
   name: string;
+  /** The host the assistant will be sent back to; it names itself, so this is what to check. */
+  redirectHost: string;
   /** It already has access (and permissions), so there is nothing to ask. */
   alreadyConnected: boolean;
 }

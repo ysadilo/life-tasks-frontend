@@ -40,12 +40,3 @@ export function agentTimeLabel(iso: string, locale: string, yesterdayLabel: stri
   if (daysAgo === 1) return `${yesterdayLabel} ${time}`;
   return `${dayMonthLabel(iso, locale)} ${time}`;
 }
-
-/**
- * Where Auth0 resumes a sign-in it paused to send the user to the approval page. `deny` is how
- * "Cancel" reaches the Auth0 Action, which then refuses the agent.
- */
-export function agentContinueUrl(state: string, decision?: 'deny'): string {
-  const query = new URLSearchParams({ state, ...(decision ? { decision } : {}) });
-  return `https://${import.meta.env.VITE_AUTH0_DOMAIN}/continue?${query}`;
-}
