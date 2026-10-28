@@ -8,7 +8,7 @@ import Backlog from './pages/Backlog';
 import Today from './pages/Today';
 import Triage from './pages/Triage';
 import CalendarPage from './pages/Calendar';
-import Settings from './pages/Settings';
+import Settings, { AgentsPage } from './pages/Settings';
 import InvitePage from './pages/Invite';
 
 export default function App() {
@@ -32,6 +32,7 @@ export default function App() {
           <Route path="/calendar" element={<Navigate to="/calendar/week" replace />} />
           <Route path="/calendar/:view" element={<CalendarPage />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/settings/agents" element={<AgentsPage />} />
         </Route>
       </Route>
     </Routes>

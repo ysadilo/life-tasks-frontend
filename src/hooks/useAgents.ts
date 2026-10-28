@@ -51,3 +51,19 @@ export function useRevokeAgent() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['agents'] }),
   });
 }
+
+/** The master "Allow agents" switch; flips instantly and rolls back if the server refuses. */
+export function useSetAgentsEnabled() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (enabled: boolean) => api.patch<{ enabled: boolean }>('/agents/settings', { enabled }),
+    onMutate: async (enabled) => {
+      await queryClient.cancelQueries({ queryKey: ['agents'] });
+      const previous = queryClient.getQueryData<AgentsResponse>(['agents']);
+      if (previous) queryClient.setQueryData<AgentsResponse>(['agents'], { ...previous, enabled });
+      return { previous };
+    },
+    onError: (_error, _vars, context) => queryClient.setQueryData(['agents'], context?.previous),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['agents'] }),
+  });
+}

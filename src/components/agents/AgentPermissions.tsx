@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Chip, ConfirmDialog, SegmentedTabs } from '../ui';
+import { ConfirmDialog, SegmentedTabs } from '../ui';
 import { useBoards } from '../../hooks/useBoards';
 import { useUpdateAgent } from '../../hooks/useAgents';
 import { AGENT_PERMISSIONS } from '../../lib/agents';
+import { colorFor, initialOf } from '../board/boardColors';
 import type { Agent, AgentPermission } from '../../models';
 import styles from './agents.module.css';
 
@@ -12,6 +13,7 @@ function AllowToggle({ on, onChange, label }: { on: boolean; onChange: (on: bool
   return (
     <div role="group" aria-label={label}>
       <SegmentedTabs
+        size="sm"
         value={on ? 'on' : 'off'}
         onChange={(value) => onChange(value === 'on')}
         options={[
@@ -24,7 +26,7 @@ function AllowToggle({ on, onChange, label }: { on: boolean; onChange: (on: bool
 }
 
 /** What one agent may do, and on which boards. Changes apply to its very next call. */
-export function AgentPermissions({ agent }: { agent: Agent }) {
+export function AgentPermissions({ agent, onRevoke }: { agent: Agent; onRevoke: (agent: Agent) => void }) {
   const { t } = useTranslation();
   const { data: boards } = useBoards();
   const update = useUpdateAgent();
@@ -43,7 +45,7 @@ export function AgentPermissions({ agent }: { agent: Agent }) {
     });
 
   return (
-    <section className={styles.card}>
+    <section id="permissions" className={styles.card}>
       <div className={styles.heading}>
         <h2 className={styles.title}>{t('agents.permissions.title', { name: agent.name })}</h2>
         <p className={styles.hint}>{t('agents.permissions.hint')}</p>
@@ -51,34 +53,41 @@ export function AgentPermissions({ agent }: { agent: Agent }) {
 
       <div className={styles.block}>
         <span className={styles.label}>{t('agents.permissions.boards')}</span>
-        {boards?.map((board) => (
-          <div key={board.id} className={styles.permRow}>
-            <div className={styles.permText}>
-              <span className={styles.permName}>
+        <div className={styles.boardChips}>
+          {boards?.map((board) => {
+            const on = agent.boardIds.includes(board.id);
+            return (
+              <button
+                key={board.id}
+                type="button"
+                aria-pressed={on}
+                className={[styles.boardChip, on ? styles.boardChipOn : ''].filter(Boolean).join(' ')}
+                onClick={() => setBoard(board.id, !on)}
+              >
+                <span className={styles.boardLetter} style={{ background: colorFor(board.id) }} aria-hidden>
+                  {initialOf(board.name)}
+                </span>
                 {board.name}
-                {board.shared && <Chip>{t('agents.permissions.shared')}</Chip>}
-              </span>
-            </div>
-            <AllowToggle
-              on={agent.boardIds.includes(board.id)}
-              onChange={(on) => setBoard(board.id, on)}
-              label={board.name}
-            />
-          </div>
-        ))}
+                {on ? (
+                  <span aria-hidden>✓</span>
+                ) : (
+                  board.shared && <span className={styles.meta}>{t('agents.permissions.sharedOff')}</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
         <p className={styles.note}>{t('agents.permissions.sharedNote')}</p>
       </div>
 
-      <div className={styles.block}>
+      <div className={styles.perms}>
         {AGENT_PERMISSIONS.map((permission) => (
           <div key={permission} className={styles.permRow}>
             <div className={styles.permText}>
-              <span className={styles.permName}>
-                {t(`agents.permissions.${permission}.name`)}
-                {permission === 'delete' && <Chip variant="danger">{t('agents.permissions.cantUndo')}</Chip>}
-              </span>
+              <span className={styles.permName}>{t(`agents.permissions.${permission}.name`)}</span>
               <span className={styles.meta}>{t(`agents.permissions.${permission}.hint`)}</span>
             </div>
+            {permission === 'delete' && <span className={styles.badgeDanger}>{t('agents.permissions.cantUndo')}</span>}
             <AllowToggle
               on={agent.permissions.includes(permission)}
               label={t(`agents.permissions.${permission}.name`)}
@@ -89,6 +98,10 @@ export function AgentPermissions({ agent }: { agent: Agent }) {
           </div>
         ))}
       </div>
+
+      <button type="button" className={styles.dangerLink} onClick={() => onRevoke(agent)}>
+        {t('agents.permissions.revokeAccess', { name: agent.name })}
+      </button>
 
       <ConfirmDialog
         open={confirmingDelete}

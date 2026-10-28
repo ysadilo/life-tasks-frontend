@@ -15,6 +15,9 @@
   "settings": {
     "onThisPage": "On this page",
     "autosave": "Changes save automatically.",
+    "agentsHint": "Let an assistant add and update tasks",
+    "pages": { "general": "General", "agents": "AI agents" },
+    "pageHints": { "general": "Areas, boards, theme", "agents": "Connect assistants" },
     "boardsHint": "Each board has its own tasks and life areas",
     "nav": {
       "lifeAreas": "Life areas",
@@ -528,25 +531,32 @@
           "2": "Use the server URL above",
           "3": "Sign in to Life Tasks when asked. It starts with read and add only; change that below."
         }
-      }
+      },
+      "allowAgents": "Allow agents",
+      "paused": "Agents are paused. Turn this on to let connected assistants work again."
     },
     "connected": {
       "title": "Connected agents",
       "empty": "No agents yet. Add Life Tasks to an assistant using the steps on the left.",
-      "managing": "Permissions below",
       "manage": "Manage",
       "revoke": "Revoke",
       "revokeConfirm": "{{name}} will lose access to Life Tasks right away. Connect it again from the assistant to bring it back.",
       "revoked": "Access revoked",
       "actions_one": "{{count}} action this week",
       "actions_other": "{{count}} actions this week",
-      "neverUsed": "Not used yet"
+      "neverUsed": "Not used yet",
+      "active": "Active",
+      "connect": "Connect",
+      "connectedOn": "Connected {{date}}",
+      "readOnly": "read only",
+      "idle_one": "Idle {{count}} day",
+      "idle_other": "Idle {{count}} days",
+      "showPermissions": "Show what {{name}} can do"
     },
     "permissions": {
       "title": "What {{name}} can do",
       "hint": "Agents act right away. Every change shows up in the activity feed.",
       "boards": "Boards",
-      "shared": "shared",
       "sharedNote": "On shared boards an agent acts as you and only sees what you can see.",
       "allow": "Allow",
       "off": "Off",
@@ -575,7 +585,9 @@
       "delete": {
         "name": "Delete tasks",
         "hint": "Removes tasks permanently"
-      }
+      },
+      "sharedOff": "shared · off",
+      "revokeAccess": "Revoke {{name}}’s access"
     },
     "tools": {
       "title": "Tools the server exposes",
@@ -611,9 +623,25 @@
       "edited_one": "edited",
       "edited_other": "edited {{count}} tasks",
       "read_one": "read",
-      "read_other": "read"
+      "read_other": "read",
+      "yesterday": "Yesterday"
     },
     "addedBy": "Added by {{name}}",
-    "doneBy": "Done by {{name}}"
+    "doneBy": "Done by {{name}}",
+    "subtitle": "Let Claude, ChatGPT or another assistant plan and update your board.",
+    "nav": {
+      "connect": "Connect",
+      "connected": "Connected agents",
+      "permissions": "Permissions",
+      "activity": "Activity"
+    },
+    "mobile": {
+      "serverUrl": "Server URL",
+      "connected": "Connected",
+      "connectAnAgent": "Connect an agent",
+      "readOnly": "Read only",
+      "idle_one": "idle {{count}} day",
+      "idle_other": "idle {{count}} days"
+    }
   }
 }

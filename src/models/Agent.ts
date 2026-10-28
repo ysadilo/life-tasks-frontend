@@ -15,6 +15,8 @@ export interface Agent {
 export interface AgentsResponse {
   /** The MCP server URL to paste into an assistant; null when the server isn't configured for it. */
   serverUrl: string | null;
+  /** The master "Allow agents" switch. */
+  enabled: boolean;
   agents: Agent[];
 }
 

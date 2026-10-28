@@ -19,20 +19,19 @@ const TOOLS = [
 export function AgentTools() {
   const { t } = useTranslation();
   return (
-    <section className={styles.card}>
-      <details className={styles.details}>
-        <summary>
-          {t('agents.tools.title')} <span className={styles.meta}>{t('agents.tools.forDevelopers')}</span>
-        </summary>
-        <dl className={styles.tools}>
-          {TOOLS.map((tool) => (
-            <div key={tool} className={styles.tool}>
-              <dt className={styles.toolName}>{tool}</dt>
-              <dd className={styles.meta}>{t(`agents.tools.${tool}`)}</dd>
-            </div>
-          ))}
-        </dl>
-      </details>
+    <section className={[styles.card, styles.cardMuted].join(' ')}>
+      <div className={styles.headingRow}>
+        <h2 className={styles.titleSmall}>{t('agents.tools.title')}</h2>
+        <span className={styles.meta}>{t('agents.tools.forDevelopers')}</span>
+      </div>
+      <dl className={styles.tools}>
+        {TOOLS.map((tool) => (
+          <div key={tool} className={styles.tool}>
+            <dt className={styles.toolName}>{tool}</dt>
+            <dd className={styles.meta}>{t(`agents.tools.${tool}`)}</dd>
+          </div>
+        ))}
+      </dl>
     </section>
   );
 }

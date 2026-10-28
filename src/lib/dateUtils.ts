@@ -103,3 +103,11 @@ export function activityTimeLabel(iso: string, locale: string): string {
     ? time
     : `${date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })} ${time}`;
 }
+
+/** "12 Oct": day first, as the mockups write it (English falls back to the day-first UK order). */
+export function dayMonthLabel(iso: string, locale: string): string {
+  return new Date(iso).toLocaleDateString(locale.startsWith('en') ? 'en-GB' : locale, {
+    day: 'numeric',
+    month: 'short',
+  });
+}

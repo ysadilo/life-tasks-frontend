@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, SegmentedTabs, toast } from '../ui';
+import { Switch, toast } from '../ui';
+import { useSetAgentsEnabled } from '../../hooks/useAgents';
 import { AGENT_CLIENTS, mcpConfigJson, type AgentClient } from '../../lib/agents';
 import styles from './agents.module.css';
 
 const STEP_COUNT = 3;
 
+interface ConnectAgentProps {
+  serverUrl: string | null;
+  enabled: boolean;
+}
+
 /** How to add the Life Tasks MCP server to an assistant; the sign-in itself is OAuth, so no secret is shown. */
-export function ConnectAgent({ serverUrl }: { serverUrl: string | null }) {
+export function ConnectAgent({ serverUrl, enabled }: ConnectAgentProps) {
   const { t } = useTranslation();
   const [client, setClient] = useState<AgentClient>('claude');
+  const setEnabled = useSetAgentsEnabled();
 
   const copy = async () => {
     if (!serverUrl) return;
@@ -22,10 +29,13 @@ export function ConnectAgent({ serverUrl }: { serverUrl: string | null }) {
   };
 
   return (
-    <section id="agents" className={styles.card}>
-      <div className={styles.heading}>
-        <h2 className={styles.title}>{t('agents.connect.title')}</h2>
-        <p className={styles.hint}>{t('agents.connect.intro')}</p>
+    <section id="connect" className={styles.card}>
+      <div className={styles.headingRow}>
+        <div className={styles.heading}>
+          <h2 className={styles.title}>{t('agents.connect.title')}</h2>
+          <p className={styles.hint}>{enabled ? t('agents.connect.intro') : t('agents.connect.paused')}</p>
+        </div>
+        <Switch checked={enabled} onChange={(on) => setEnabled.mutate(on)} label={t('agents.connect.allowAgents')} />
       </div>
 
       <div className={styles.block}>
@@ -39,7 +49,9 @@ export function ConnectAgent({ serverUrl }: { serverUrl: string | null }) {
               aria-label={t('agents.connect.serverLabel')}
               onFocus={(e) => e.currentTarget.select()}
             />
-            <Button onClick={copy}>{t('agents.connect.copy')}</Button>
+            <button type="button" className={styles.pillButton} onClick={copy}>
+              {t('agents.connect.copy')}
+            </button>
           </div>
         ) : (
           <p className={styles.hint}>{t('agents.connect.notConfigured')}</p>
@@ -49,11 +61,19 @@ export function ConnectAgent({ serverUrl }: { serverUrl: string | null }) {
 
       <div className={styles.block}>
         <span className={styles.label}>{t('agents.connect.connectAnAgent')}</span>
-        <SegmentedTabs
-          value={client}
-          onChange={(value) => setClient(value as AgentClient)}
-          options={AGENT_CLIENTS.map((c) => ({ value: c, label: t(`agents.connect.client.${c}`) }))}
-        />
+        <div className={styles.pills} role="group" aria-label={t('agents.connect.connectAnAgent')}>
+          {AGENT_CLIENTS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              aria-pressed={c === client}
+              className={[styles.pill, c === client ? styles.pillActive : ''].filter(Boolean).join(' ')}
+              onClick={() => setClient(c)}
+            >
+              {t(`agents.connect.client.${c}`)}
+            </button>
+          ))}
+        </div>
         <ol className={styles.steps}>
           {Array.from({ length: STEP_COUNT }, (_, i) => (
             <li key={i} className={styles.step}>

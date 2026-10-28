@@ -9,11 +9,13 @@ interface SegmentedTabsProps {
   options: SegmentedTabOption[];
   value: string;
   onChange: (value: string) => void;
+  /** `sm` is the compact control used inside list rows. */
+  size?: 'md' | 'sm';
 }
 
-export function SegmentedTabs({ options, value, onChange }: SegmentedTabsProps) {
+export function SegmentedTabs({ options, value, onChange, size = 'md' }: SegmentedTabsProps) {
   return (
-    <div className={styles.track}>
+    <div className={[styles.track, size === 'sm' ? styles.small : ''].filter(Boolean).join(' ')}>
       {options.map((option) => (
         <button
           key={option.value}

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react';
+import { MOBILE_QUERY } from '../../../hooks/useIsMobile';
 import styles from './SidePanel.module.css';
 
-const MOBILE_QUERY = '(max-width: 768px)';
 const EXIT_MS = 250;
 const DISMISS_DRAG_PX = 100;
 
