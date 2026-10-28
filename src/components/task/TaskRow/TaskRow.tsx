@@ -70,7 +70,13 @@ export function TaskRow({
   const areaName = task.areaId ? areas.get(task.areaId)?.name : undefined;
   const hasChips =
     showChips &&
-    (urgency || task.priority || task.energy || task.estimatedMinutes != null || areaName || task.recurrence);
+    (urgency ||
+      task.priority ||
+      task.energy ||
+      task.estimatedMinutes != null ||
+      areaName ||
+      task.recurrence ||
+      task.createdVia);
   const swiped = swipe && !dragHandleProps;
   const onClick = openOnRowClick(onOpen);
   const rowClassName = [
@@ -118,6 +124,7 @@ export function TaskRow({
           {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
           {areaName && <Chip>{areaName}</Chip>}
           {task.recurrence && <Chip>↻ {recurrenceLabel(t, task)}</Chip>}
+          {task.createdVia && <Chip variant="info">{t('agents.addedBy', { name: task.createdVia })}</Chip>}
         </div>
       )}
       <div className={styles.assignee}>

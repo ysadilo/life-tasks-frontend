@@ -1,0 +1,272 @@
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 18px;
+  min-width: 0;
+  scroll-margin-top: 12px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  margin: 0;
+  font: 700 17px/1.2 var(--font-sans);
+  color: var(--color-text);
+}
+
+.hint,
+.note {
+  margin: 0;
+  font: 400 13px/1.45 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.note {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font: 600 11px/1 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.meta {
+  font: 400 12px/1.3 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.urlRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.url {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background: var(--color-surface-muted);
+  font:
+    500 13px/1 ui-monospace,
+    'SF Mono',
+    Menlo,
+    monospace;
+  color: var(--color-text);
+  text-overflow: ellipsis;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font: 400 14px/1.4 var(--font-sans);
+  color: var(--color-text);
+}
+
+.stepNumber {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface-muted);
+  font: 600 11px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.details > summary {
+  cursor: pointer;
+  font: 600 13px/1.4 var(--font-sans);
+  color: var(--color-text);
+}
+
+.code {
+  margin: 10px 0 0;
+  padding: 12px;
+  overflow-x: auto;
+  border-radius: var(--radius-input);
+  background: var(--color-surface-muted);
+  font:
+    400 12px/1.5 ui-monospace,
+    'SF Mono',
+    Menlo,
+    monospace;
+  color: var(--color-text);
+}
+
+.tools {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0 0;
+}
+
+.tool {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tool dd {
+  margin: 0;
+}
+
+.toolName {
+  font:
+    600 13px/1.3 ui-monospace,
+    'SF Mono',
+    Menlo,
+    monospace;
+  color: var(--color-text);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agentRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.agentText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.agentName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 14px/1.3 var(--font-sans);
+  color: var(--color-text);
+}
+
+.activityText {
+  font: 400 13px/1.45 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.activityText b {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.avatar {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-accent-light-bg);
+  color: var(--color-accent-light-text);
+  font: 700 12px/1 var(--font-sans);
+}
+
+.linkButton,
+.dangerButton {
+  flex: none;
+  border: none;
+  background: transparent;
+  padding: 2px 0;
+  font: 500 12px/1 var(--font-sans);
+  cursor: pointer;
+}
+
+.linkButton {
+  align-self: flex-start;
+  color: var(--color-text-secondary);
+}
+
+.dangerButton {
+  color: var(--color-danger-text, #a4544a);
+}
+
+.linkButton:hover,
+.dangerButton:hover {
+  text-decoration: underline;
+}
+
+.permRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.permText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.permName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 14px/1.3 var(--font-sans);
+  color: var(--color-text);
+}

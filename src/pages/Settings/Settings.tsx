@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { PageHeader } from '../../components/layout';
 import { LifeAreasManager } from '../../components/lifeAreas';
 import { BoardsManager } from '../../components/board';
+import { AgentsSettings } from '../../components/agents';
 import { FeedbackButton } from '../../components/feedback';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { useBoards } from '../../hooks/useBoards';
@@ -14,7 +15,7 @@ import { useTheme, type ThemeName } from '../../theme/ThemeProvider';
 import styles from './Settings.module.css';
 
 const THEMES: ThemeName[] = ['powder', 'glamour'];
-const SECTIONS = ['lifeAreas', 'boards', 'appearance', 'account'] as const;
+const SECTIONS = ['lifeAreas', 'boards', 'appearance', 'agents', 'account'] as const;
 type SectionId = (typeof SECTIONS)[number];
 
 export default function Settings() {
@@ -32,6 +33,7 @@ export default function Settings() {
     lifeAreas: areas ? `${areas.length}/${MAX_LIFE_AREAS}` : undefined,
     boards: boards ? String(boards.length) : undefined,
     appearance: t(`theme.${theme}`),
+    agents: undefined,
     account: undefined,
   };
 
@@ -134,6 +136,8 @@ export default function Settings() {
             </div>
           </section>
         </div>
+
+        <AgentsSettings />
 
         <section id="account" className={[styles.card, styles.account].join(' ')}>
           <div className={styles.accountInfo}>

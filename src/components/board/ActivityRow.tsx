@@ -3,15 +3,8 @@ import { useBoardMembers } from '../../hooks/useBoards';
 import type { ActivityEntry } from '../../models';
 import { MemberAvatar } from './BoardTile';
 import { memberLabel } from './memberLabel';
+import { activityTimeLabel } from '../../lib/dateUtils';
 import styles from './board.module.css';
-
-function timeLabel(iso: string, locale: string) {
-  const date = new Date(iso);
-  const time = date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
-  return date.toDateString() === new Date().toDateString()
-    ? time
-    : `${date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })} ${time}`;
-}
 
 interface ActivityRowProps {
   entry: ActivityEntry;
@@ -47,7 +40,7 @@ export function ActivityRow({ entry, locale, unread }: ActivityRowProps) {
             components={{ b: <b /> }}
           />
         </span>
-        <span className={styles.rowMeta}>{timeLabel(entry.createdAt, locale)}</span>
+        <span className={styles.rowMeta}>{activityTimeLabel(entry.createdAt, locale)}</span>
       </div>
       {unread && <span className={styles.unreadDot} aria-hidden />}
     </div>

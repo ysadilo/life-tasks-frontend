@@ -9,3 +9,4 @@ export type { LifeArea } from './LifeArea';
 export type { Board, BoardMember, BoardRole, BoardInvite, BoardJoinPreview, NewBoardInput } from './Board';
 export type { ActivityEntry, ActivityType } from './Activity';
 export type { NewFeedbackInput } from './Feedback';
+export type { Agent, AgentPermission, AgentsResponse, AgentActionKind, AgentActivityEntry } from './Agent';

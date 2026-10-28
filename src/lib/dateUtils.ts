@@ -94,3 +94,12 @@ export function useLocalToday(): string {
 export function localDayAsUTC(date = new Date()): string {
   return new Date(localISODate(date)).toISOString();
 }
+
+/** "09:41" for today, "12 Oct 09:41" for an earlier day — the activity feeds' timestamp. */
+export function activityTimeLabel(iso: string, locale: string): string {
+  const date = new Date(iso);
+  const time = date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+  return date.toDateString() === new Date().toDateString()
+    ? time
+    : `${date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })} ${time}`;
+}
