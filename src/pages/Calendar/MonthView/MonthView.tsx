@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TaskChip } from '../../../components/task';
+import { useScrollTodayIntoView } from '../../../hooks/useScrollTodayIntoView';
 import { buildMonthGrid, isSameDay, weekdayLabel } from '../../../lib/dateUtils';
 import type { CalendarEntry } from '../../../lib/calendarEntries';
 import { DayTasksModal } from '../DayTasksModal';
@@ -19,11 +20,13 @@ export function MonthView({ anchor, entries }: MonthViewProps) {
   const weekdayLabels = cells.slice(0, 7).map((cell) => weekdayLabel(cell.date, i18n.language));
   const today = new Date();
   const [openDay, setOpenDay] = useState<Date | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  useScrollTodayIntoView(wrapRef, cells[0].date.toISOString());
 
   const openDayEntries = openDay ? entries.filter((entry) => isSameDay(entry.date, openDay)) : [];
 
   return (
-    <div className={styles.wrap}>
+    <div className={styles.wrap} ref={wrapRef}>
       <div className={styles.scrollArea}>
         <div className={styles.weekdayRow}>
           {weekdayLabels.map((label, index) => (
@@ -43,6 +46,7 @@ export function MonthView({ anchor, entries }: MonthViewProps) {
               <button
                 key={cell.date.toISOString()}
                 type="button"
+                data-today={isToday || undefined}
                 className={[styles.cell, !cell.isCurrentMonth ? styles.faded : '', isToday ? styles.today : '']
                   .filter(Boolean)
                   .join(' ')}
