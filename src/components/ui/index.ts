@@ -1,6 +1,7 @@
 export { Button } from './Button';
 export { Chip } from './Chip';
 export { PillButton } from './PillButton';
+export { ToolbarPill } from './ToolbarPill';
 export type { ChipVariant } from './Chip';
 export { Checkbox } from './Checkbox';
 export { Input } from './Input';

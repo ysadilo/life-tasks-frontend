@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
-import { Button, Input, EmptyState, PillButton } from '../../components/ui';
+import { Button, EmptyState, PillButton, ToolbarPill } from '../../components/ui';
 import {
   TaskRow,
   taskForm,
@@ -33,6 +33,13 @@ export default function Backlog() {
   const { preferences, update: updatePreferences } = usePreferences();
   const groupBy = preferences.backlogGroupBy;
   const [groupOpen, setGroupOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(new Set());
+  const toggleGroup = (key: string) =>
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
 
   const filteredTasks = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -53,41 +60,47 @@ export default function Backlog() {
           count: filteredTasks.length,
           grouping: t(`backlog.group.subtitle.${groupBy}`),
         })}
-        actions={
-          <>
-            <Input
-              placeholder={t('backlog.searchPlaceholder')}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <div className={styles.filterWrap}>
-              <Button variant="ghost" onClick={() => setGroupOpen((v) => !v)}>
-                {t('backlog.group.label', { mode: t(`backlog.group.${groupBy}`) })}
-              </Button>
-              {groupOpen && (
-                <TaskGroupPopover
-                  groupBy={groupBy}
-                  onChange={(backlogGroupBy) => updatePreferences({ backlogGroupBy })}
-                  onClose={() => setGroupOpen(false)}
-                />
-              )}
-            </div>
-            <div className={styles.filterWrap}>
-              <Button variant="ghost" onClick={() => setFilterOpen((v) => !v)}>
-                {filterCount > 0 ? `${t('today.filter')} · ${filterCount}` : t('today.filter')}
-              </Button>
-              {filterOpen && (
-                <TaskFilterPopover
-                  filters={filters}
-                  onChange={setFilters}
-                  matchCount={filteredTasks.length}
-                  onClose={() => setFilterOpen(false)}
-                />
-              )}
-            </div>
-          </>
-        }
       />
+
+      <div className={styles.toolbar}>
+        <label className={styles.search}>
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
+            <circle cx="7" cy="7" r="4.8" stroke="currentColor" strokeWidth="1.6" />
+            <path d="m10.6 10.6 3.4 3.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+          <input
+            className={styles.searchInput}
+            placeholder={t('backlog.searchPlaceholder')}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </label>
+        <div className={styles.filterWrap}>
+          <ToolbarPill caret onClick={() => setGroupOpen((v) => !v)}>
+            {t('backlog.group.label', { mode: t(`backlog.group.${groupBy}`) })}
+          </ToolbarPill>
+          {groupOpen && (
+            <TaskGroupPopover
+              groupBy={groupBy}
+              onChange={(backlogGroupBy) => updatePreferences({ backlogGroupBy })}
+              onClose={() => setGroupOpen(false)}
+            />
+          )}
+        </div>
+        <div className={styles.filterWrap}>
+          <ToolbarPill active={filterCount > 0} onClick={() => setFilterOpen((v) => !v)}>
+            {filterCount > 0 ? `${t('today.filter')} · ${filterCount}` : t('today.filter')}
+          </ToolbarPill>
+          {filterOpen && (
+            <TaskFilterPopover
+              filters={filters}
+              onChange={setFilters}
+              matchCount={filteredTasks.length}
+              onClose={() => setFilterOpen(false)}
+            />
+          )}
+        </div>
+      </div>
 
       <AppliedFilters filters={filters} onChange={setFilters} />
 
@@ -107,48 +120,61 @@ export default function Backlog() {
           />
         )}
 
-        {groups.map((group) => (
-          <div key={group.key} className={styles.group}>
-            {group.labelKey !== null || group.areaName ? (
-              <div className={styles.groupHeader}>
-                {group.dot && <span className={styles.groupDot} style={{ background: group.dot }} />}
-                <span className={styles.groupLabel}>{group.areaName ?? t(group.labelKey!, group.labelValues)}</span>
-                <span className={styles.groupCount}>{group.tasks.length}</span>
-              </div>
-            ) : null}
-            {group.tasks.map((task) => (
-              <TaskRow
-                key={task.id}
-                task={task}
-                inline
-                onOpen={() => taskForm.openView(task)}
-                swipe={{
-                  left: {
-                    label: t('task.swipe.delete'),
-                    tone: 'danger',
-                    onAction: () => deleteTask(task),
-                  },
-                  // A recurring series is forced to the backlog by the BE, so it can't move to Today.
-                  right: task.recurrence
-                    ? { label: t('task.swipe.cantMove'), tone: 'blocked' }
-                    : {
-                        label: t('task.swipe.toToday'),
-                        tone: 'neutral',
-                        onAction: () => updateStatus.mutateAsync({ id: task.id, status: 'today' }),
+        {groups.map((group) => {
+          const hasHeader = group.labelKey !== null || group.areaName;
+          const isCollapsed = !!hasHeader && collapsed.has(group.key);
+          return (
+            <div key={group.key} className={styles.group}>
+              {hasHeader ? (
+                <button
+                  type="button"
+                  className={styles.groupHeader}
+                  aria-expanded={!isCollapsed}
+                  onClick={() => toggleGroup(group.key)}
+                >
+                  <span className={`${styles.chevron} ${isCollapsed ? styles.chevronCollapsed : ''}`} aria-hidden />
+                  {group.dot && <span className={styles.groupDot} style={{ background: group.dot }} />}
+                  <span className={styles.groupLabel}>{group.areaName ?? t(group.labelKey!, group.labelValues)}</span>
+                  <span className={styles.groupCount}>{group.tasks.length}</span>
+                </button>
+              ) : null}
+              {!isCollapsed &&
+                group.tasks.map((task) => (
+                  <TaskRow
+                    key={task.id}
+                    task={task}
+                    inline
+                    onOpen={() => taskForm.openView(task)}
+                    swipe={{
+                      left: {
+                        label: t('task.swipe.delete'),
+                        tone: 'danger',
+                        onAction: () => deleteTask(task),
                       },
-                }}
-                trailing={
-                  <PillButton
-                    aria-label={t('task.addToToday')}
-                    onClick={() => leaveThen(task.id, () => updateStatus.mutateAsync({ id: task.id, status: 'today' }))}
-                  >
-                    {t('task.toToday')}
-                  </PillButton>
-                }
-              />
-            ))}
-          </div>
-        ))}
+                      // A recurring series is forced to the backlog by the BE, so it can't move to Today.
+                      right: task.recurrence
+                        ? { label: t('task.swipe.cantMove'), tone: 'blocked' }
+                        : {
+                            label: t('task.swipe.toToday'),
+                            tone: 'neutral',
+                            onAction: () => updateStatus.mutateAsync({ id: task.id, status: 'today' }),
+                          },
+                    }}
+                    trailing={
+                      <PillButton
+                        aria-label={t('task.addToToday')}
+                        onClick={() =>
+                          leaveThen(task.id, () => updateStatus.mutateAsync({ id: task.id, status: 'today' }))
+                        }
+                      >
+                        {t('task.toToday')}
+                      </PillButton>
+                    }
+                  />
+                ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

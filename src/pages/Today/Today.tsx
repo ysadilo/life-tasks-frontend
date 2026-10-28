@@ -4,7 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { PageHeader, PageState } from '../../components/layout';
 import { useBoardMembers } from '../../hooks/useBoards';
 import { TodayRail, TodaySplit } from '../../components/board';
-import { Button, EmptyState, peek, SamoyedAvatar, SamoyedMoment, SegmentedTabs } from '../../components/ui';
+import {
+  Button,
+  EmptyState,
+  peek,
+  SamoyedAvatar,
+  SamoyedMoment,
+  SegmentedTabs,
+  ToolbarPill,
+} from '../../components/ui';
 import {
   TaskRow,
   DoneTaskRow,
@@ -47,7 +55,7 @@ export default function Today() {
   const manualOrder = useManualOrder();
 
   const { shared, me } = useBoardMembers();
-  const [assigneeView, setAssigneeView] = useState<AssigneeView>('mine');
+  const [assigneeView, setAssigneeView] = useState<AssigneeView>('everyone');
   const [hideDone, setHideDone] = useState(false);
   const { preferences, update: updatePreferences } = usePreferences();
   const sortBy = preferences.todaySortBy;
@@ -176,9 +184,9 @@ export default function Today() {
           actions={
             <>
               <div className={styles.filterWrap}>
-                <Button variant="ghost" onClick={() => setFilterOpen((v) => !v)}>
+                <ToolbarPill active={filterCount > 0} onClick={() => setFilterOpen((v) => !v)}>
                   {filterCount > 0 ? `${t('today.filter')} · ${filterCount}` : t('today.filter')}
-                </Button>
+                </ToolbarPill>
                 {filterOpen && (
                   <TaskFilterPopover
                     filters={filters}
@@ -189,9 +197,9 @@ export default function Today() {
                 )}
               </div>
               <div className={styles.sortWrap}>
-                <Button variant="ghost" onClick={() => setSortOpen((v) => !v)}>
+                <ToolbarPill caret onClick={() => setSortOpen((v) => !v)}>
                   {t('today.sort.label', { mode: t(`today.sort.${sortBy}`) })}
-                </Button>
+                </ToolbarPill>
                 {sortOpen && (
                   <TaskSortPopover
                     sortBy={sortBy}
@@ -200,9 +208,9 @@ export default function Today() {
                   />
                 )}
               </div>
-              <Button variant="ghost" onClick={() => setHideDone((v) => !v)}>
+              <ToolbarPill onClick={() => setHideDone((v) => !v)}>
                 {hideDone ? t('today.showDone') : t('today.hideDone')}
-              </Button>
+              </ToolbarPill>
             </>
           }
         />
