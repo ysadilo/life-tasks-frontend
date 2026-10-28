@@ -651,7 +651,8 @@
       "pickBoard": "Pick at least one board for the agent to work on.",
       "invalidTitle": "This approval link isn’t valid",
       "invalidHint": "It may have expired. Start the connection again from your assistant.",
-      "toSettings": "Go to Settings"
+      "toSettings": "Go to Settings",
+      "from": "Asking from {{host}}. Only allow assistants you trust."
     }
   }
 }

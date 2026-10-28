@@ -68,23 +68,31 @@ export function useSetAgentsEnabled() {
   });
 }
 
-/** Who is asking to connect, read from the signed token Auth0 put in the approval link. */
-export function useConnectRequest(token: string) {
+/** Who is asking to connect, from the pending sign-in the approval page was opened with. */
+export function useConnectRequest(request: string) {
   return useQuery({
-    queryKey: ['agentConnectRequest', token],
-    queryFn: () => api.post<AgentConnectRequest>('/agents/connect-request', { token }),
-    enabled: token !== '',
+    queryKey: ['agentConnectRequest', request],
+    queryFn: () => api.post<AgentConnectRequest>('/agents/connect-request', { request }),
+    enabled: request !== '',
     retry: false,
     staleTime: Infinity,
   });
 }
 
-/** Saves what the user allowed; the agent gets its token once the sign-in continues. */
-export function useAuthorizeAgent() {
+interface ApprovalInput {
+  request: string;
+  /** Omit both to keep what an already-connected assistant has. */
+  permissions?: AgentPermission[];
+  boardIds?: string[];
+  /** The person pressed Cancel. */
+  deny?: boolean;
+}
+
+/** Saves the person's answer; the reply says where to send the browser back to the assistant. */
+export function useApproveAgent() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: { token: string; permissions: AgentPermission[]; boardIds: string[] }) =>
-      api.post<Agent>('/agents/connect', input),
+    mutationFn: (input: ApprovalInput) => api.post<{ redirectUrl: string }>('/agents/connect', input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['agents'] }),
   });
 }
