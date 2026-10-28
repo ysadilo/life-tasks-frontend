@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TaskChip, taskForm } from '../../../components/task';
+import { useScrollTodayIntoView } from '../../../hooks/useScrollTodayIntoView';
 import { addDays, isSameDay, localISODate, startOfDay, startOfWeek, weekdayLabel } from '../../../lib/dateUtils';
 import type { CalendarEntry } from '../../../lib/calendarEntries';
 import { openCalendarEntry } from '../openCalendarEntry';
@@ -21,11 +22,13 @@ export function WeekView({ anchor, entries }: WeekViewProps) {
   const today = new Date();
   const todayStart = startOfDay(today);
   const [openDay, setOpenDay] = useState<Date | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  useScrollTodayIntoView(gridRef, start.toISOString());
 
   const openDayEntries = openDay ? entries.filter((entry) => isSameDay(entry.date, openDay)) : [];
 
   return (
-    <div className={styles.grid}>
+    <div className={styles.grid} ref={gridRef}>
       {days.map((day) => (
         <DayColumn
           key={day.toISOString()}
@@ -112,6 +115,7 @@ function DayColumn({ day, entries, isToday, isWeekend, canAdd, onMore }: DayColu
 
   return (
     <div
+      data-today={isToday || undefined}
       className={[styles.column, isWeekend ? styles.weekend : '', isToday ? styles.today : '']
         .filter(Boolean)
         .join(' ')}
