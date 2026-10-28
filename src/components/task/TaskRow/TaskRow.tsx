@@ -5,10 +5,10 @@ import { Chip } from '../../ui/Chip';
 import { SwipeActions, type SwipeAction } from '../../ui/SwipeActions';
 import { DragHandle } from '../DragHandle';
 import { MetaChip } from '../MetaChip';
-import { RecurrenceIcon } from '../RecurrenceIcon';
 import { AssigneeChip } from '../../board';
 import { dueUrgency, type DueUrgency } from '../../../lib/taskDates';
 import { htmlToText } from '../../../lib/richText';
+import { recurrenceLabel } from '../../../lib/recurrence';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
 import { useTaskFormState } from '../taskFormStore';
 import { openOnRowClick } from '../openOnRowClick';
@@ -68,7 +68,9 @@ export function TaskRow({
   const selected = useTaskFormState().task?.id === task.id;
   const urgency = dueUrgency(task);
   const areaName = task.areaId ? areas.get(task.areaId)?.name : undefined;
-  const hasChips = showChips && (urgency || task.priority || task.energy || task.estimatedMinutes != null || areaName);
+  const hasChips =
+    showChips &&
+    (urgency || task.priority || task.energy || task.estimatedMinutes != null || areaName || task.recurrence);
   const swiped = swipe && !dragHandleProps;
   const onClick = openOnRowClick(onOpen);
   const rowClassName = [
@@ -105,7 +107,6 @@ export function TaskRow({
           ) : (
             task.title
           )}
-          <RecurrenceIcon task={task} />
         </span>
         {task.description && <span className={styles.description}>{htmlToText(task.description)}</span>}
       </div>
@@ -116,6 +117,7 @@ export function TaskRow({
           {task.energy && <MetaChip axis="energy" value={task.energy} />}
           {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
           {areaName && <Chip>{areaName}</Chip>}
+          {task.recurrence && <Chip>↻ {recurrenceLabel(t, task)}</Chip>}
         </div>
       )}
       <div className={styles.assignee}>
