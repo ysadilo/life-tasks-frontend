@@ -10,6 +10,7 @@ export function RequireAuth() {
   const location = useLocation();
 
   if (isLoading) return <PageState>{t('auth.loading')}</PageState>;
-  if (!isAuthenticated) return <Navigate to="/sign-in" replace state={{ returnTo: location.pathname }} />;
+  if (!isAuthenticated)
+    return <Navigate to="/sign-in" replace state={{ returnTo: location.pathname + location.search }} />;
   return <Outlet />;
 }

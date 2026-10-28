@@ -29,6 +29,15 @@
   font-weight: 600;
 }
 
+.small {
+  padding: 2px;
+}
+
+.small .tab {
+  padding: 7px 12px;
+  font-size: 12px;
+}
+
 @media (max-width: 768px) {
   .track {
     display: grid;
@@ -37,5 +46,14 @@
 
   .tab {
     padding-inline: 0;
+  }
+
+  .small {
+    display: inline-grid;
+    width: auto;
+  }
+
+  .small .tab {
+    padding-inline: 12px;
   }
 }

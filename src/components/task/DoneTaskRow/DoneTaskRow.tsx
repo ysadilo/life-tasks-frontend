@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from '../../ui/Checkbox';
+import { Chip } from '../../ui/Chip';
 import { PillButton } from '../../ui/PillButton';
 import { MemberAvatar } from '../../board';
 import { useBoardMembers } from '../../../hooks/useBoards';
@@ -44,6 +45,7 @@ export function DoneTaskRow({ task, onToggle, onOpen, onReflect }: DoneTaskRowPr
         )}
         <RecurrenceIcon task={task} />
       </span>
+      {task.completedVia && <Chip variant="info">{t('agents.doneBy', { name: task.completedVia })}</Chip>}
       {assignee && <MemberAvatar email={assignee.email} />}
       {time && <span className={styles.time}>{time}</span>}
       {onReflect && <PillButton onClick={onReflect}>{t('task.reflect')}</PillButton>}

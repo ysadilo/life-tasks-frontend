@@ -15,8 +15,17 @@
   "settings": {
     "onThisPage": "On this page",
     "autosave": "Changes save automatically.",
+    "agentsHint": "Let an assistant add and update tasks",
+    "pages": { "general": "General", "agents": "AI agents" },
+    "pageHints": { "general": "Areas, boards, theme", "agents": "Connect assistants" },
     "boardsHint": "Each board has its own tasks and life areas",
-    "nav": { "lifeAreas": "Life areas", "boards": "Boards", "appearance": "Appearance", "account": "Account" },
+    "nav": {
+      "lifeAreas": "Life areas",
+      "boards": "Boards",
+      "appearance": "Appearance",
+      "account": "Account",
+      "agents": "AI agents"
+    },
     "title": "Settings",
     "subtitle": "Life areas, boards, theme and log out in one place.",
     "appearance": "Appearance",
@@ -481,5 +490,168 @@
       "member": "editor"
     },
     "boards": "Boards"
+  },
+  "agents": {
+    "title": "AI agents",
+    "connect": {
+      "title": "Connect",
+      "intro": "Life Tasks runs an MCP server, so AI assistants can read and manage your tasks for you.",
+      "serverLabel": "Your MCP server",
+      "copy": "Copy",
+      "copied": "Server URL copied",
+      "copyFailed": "Couldn't copy the URL",
+      "notConfigured": "This server has no MCP address configured yet.",
+      "oauthNote": "Agents sign in with your Life Tasks account (OAuth). No password or token is shared with the agent.",
+      "connectAnAgent": "Connect an agent",
+      "configFile": "Using a config file instead? Show JSON",
+      "client": {
+        "claude": "Claude",
+        "chatgpt": "ChatGPT",
+        "cursor": "Cursor",
+        "other": "Other MCP client"
+      },
+      "steps": {
+        "claude": {
+          "1": "Open Claude › Settings › Connectors",
+          "2": "Choose Add custom connector and paste the server URL",
+          "3": "Sign in to Life Tasks and pick what the agent may do"
+        },
+        "chatgpt": {
+          "1": "Open ChatGPT › Settings › Connectors",
+          "2": "Add a custom connector and paste the server URL",
+          "3": "Sign in to Life Tasks and pick what the agent may do"
+        },
+        "cursor": {
+          "1": "Open Cursor › Settings › MCP",
+          "2": "Add a server using the JSON config below",
+          "3": "Sign in to Life Tasks and pick what the agent may do"
+        },
+        "other": {
+          "1": "Add a remote MCP server (streamable HTTP)",
+          "2": "Use the server URL above",
+          "3": "Sign in to Life Tasks and pick what the agent may do"
+        }
+      },
+      "allowAgents": "Allow agents",
+      "paused": "Agents are paused. Turn this on to let connected assistants work again."
+    },
+    "connected": {
+      "title": "Connected agents",
+      "empty": "No agents yet. Add Life Tasks to an assistant using the steps on the left.",
+      "manage": "Manage",
+      "revoke": "Revoke",
+      "revokeConfirm": "{{name}} will lose access to Life Tasks right away. Connect it again from the assistant to bring it back.",
+      "revoked": "Access revoked",
+      "actions_one": "{{count}} action this week",
+      "actions_other": "{{count}} actions this week",
+      "neverUsed": "Not used yet",
+      "active": "Active",
+      "connect": "Connect",
+      "connectedOn": "Connected {{date}}",
+      "readOnly": "read only",
+      "idle_one": "Idle {{count}} day",
+      "idle_other": "Idle {{count}} days",
+      "showPermissions": "Show what {{name}} can do"
+    },
+    "permissions": {
+      "title": "What {{name}} can do",
+      "hint": "Agents act right away. Every change shows up in the activity feed.",
+      "boards": "Boards",
+      "sharedNote": "On shared boards an agent acts as you and only sees what you can see.",
+      "allow": "Allow",
+      "off": "Off",
+      "cantUndo": "Can't undo",
+      "deleteConfirm": "{{name}} will be able to delete tasks permanently. This cannot be undone.",
+      "read": {
+        "name": "Read tasks",
+        "hint": "Today, backlog, calendar, life areas and check-ins"
+      },
+      "add": {
+        "name": "Add tasks",
+        "hint": "Create tasks with priority, effort, energy and area"
+      },
+      "edit": {
+        "name": "Edit and move",
+        "hint": "Change details, reschedule, move between Today and Backlog"
+      },
+      "done": {
+        "name": "Mark done",
+        "hint": "Completes tasks; you can add how it felt later"
+      },
+      "triage": {
+        "name": "Run triage",
+        "hint": "Sort yesterday's leftovers into Today, Backlog, Done or Drop"
+      },
+      "delete": {
+        "name": "Delete tasks",
+        "hint": "Removes tasks permanently"
+      },
+      "sharedOff": "shared · off",
+      "revokeAccess": "Revoke {{name}}’s access"
+    },
+    "tools": {
+      "title": "Tools the server exposes",
+      "forDevelopers": "for developers",
+      "list_boards": "Boards the agent may use, with their life areas",
+      "list_tasks": "Today, backlog or a date range, with filters",
+      "get_task": "One task with notes and check-in",
+      "create_task": "Title plus any chips; the agent resolves natural dates",
+      "update_task": "Change fields",
+      "move_task": "Today ↔ Backlog, or another day",
+      "complete_task": "Optional feel score and actual time",
+      "delete_task": "Remove a task permanently",
+      "get_triage": "Yesterday's leftovers",
+      "triage_task": "Sort one leftover",
+      "get_stats": "Streak, load by area"
+    },
+    "activity": {
+      "title": "Agent activity",
+      "hint": "What agents changed, newest first.",
+      "empty": "Nothing yet. What agents do will show up here.",
+      "seeAll": "See all",
+      "showLess": "Show less",
+      "done_one": "marked a task done",
+      "done_other": "marked {{count}} tasks done",
+      "added_one": "added",
+      "added_other": "added {{count}} tasks",
+      "moved_one": "moved",
+      "moved_other": "moved {{count}} tasks",
+      "triaged_one": "triaged",
+      "triaged_other": "triaged {{count}} tasks",
+      "deleted_one": "deleted",
+      "deleted_other": "deleted {{count}} tasks",
+      "edited_one": "edited",
+      "edited_other": "edited {{count}} tasks",
+      "read_one": "read",
+      "read_other": "read",
+      "yesterday": "Yesterday"
+    },
+    "addedBy": "Added by {{name}}",
+    "doneBy": "Done by {{name}}",
+    "subtitle": "Let Claude, ChatGPT or another assistant plan and update your board.",
+    "nav": {
+      "connect": "Connect",
+      "connected": "Connected agents",
+      "permissions": "Permissions",
+      "activity": "Activity"
+    },
+    "mobile": {
+      "serverUrl": "Server URL",
+      "connected": "Connected",
+      "connectAnAgent": "Connect an agent",
+      "readOnly": "Read only",
+      "idle_one": "idle {{count}} day",
+      "idle_other": "idle {{count}} days"
+    },
+    "connectPage": {
+      "loading": "Checking the request…",
+      "title": "Connect {{name}}",
+      "hint": "Choose what {{name}} may do in Life Tasks. You can change this any time in Settings › AI agents.",
+      "allow": "Allow",
+      "pickBoard": "Pick at least one board for the agent to work on.",
+      "invalidTitle": "This approval link isn’t valid",
+      "invalidHint": "It may have expired. Start the connection again from your assistant.",
+      "toSettings": "Go to Settings"
+    }
   }
 }

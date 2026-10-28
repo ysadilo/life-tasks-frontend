@@ -33,4 +33,7 @@ export interface Task {
   /** Optional check-in, captured when finishing the task or added later with Reflect. */
   feeling?: Feeling | null;
   actualMinutes?: number | null;
+  /** Name of the AI agent that added / finished the task, when one did. */
+  createdVia?: string | null;
+  completedVia?: string | null;
 }

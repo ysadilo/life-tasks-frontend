@@ -94,3 +94,20 @@ export function useLocalToday(): string {
 export function localDayAsUTC(date = new Date()): string {
   return new Date(localISODate(date)).toISOString();
 }
+
+/** "09:41" for today, "12 Oct 09:41" for an earlier day — the activity feeds' timestamp. */
+export function activityTimeLabel(iso: string, locale: string): string {
+  const date = new Date(iso);
+  const time = date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+  return date.toDateString() === new Date().toDateString()
+    ? time
+    : `${date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })} ${time}`;
+}
+
+/** "12 Oct": day first, as the mockups write it (English falls back to the day-first UK order). */
+export function dayMonthLabel(iso: string, locale: string): string {
+  return new Date(iso).toLocaleDateString(locale.startsWith('en') ? 'en-GB' : locale, {
+    day: 'numeric',
+    month: 'short',
+  });
+}
