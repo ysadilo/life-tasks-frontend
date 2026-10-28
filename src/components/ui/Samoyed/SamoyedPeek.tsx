@@ -13,8 +13,10 @@ function PeekBubble({ moment, name }: Peek) {
   const phrase = usePhrase(moment, name);
   return (
     <div className={styles.peek} role="status" aria-live="polite">
-      <SamoyedAvatar moment={moment} size={46} />
-      <span>{phrase}</span>
+      <span className={styles.peekDog}>
+        <SamoyedAvatar moment={moment} size={96} />
+      </span>
+      <span className={styles.peekBubble}>{phrase}</span>
     </div>
   );
 }
