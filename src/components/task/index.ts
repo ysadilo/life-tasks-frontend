@@ -15,3 +15,5 @@ export type { SortBy } from './TaskSortPopover';
 export { leaveThen } from './taskLeavingStore';
 export { taskForm } from './taskFormStore';
 export { taskPreview } from './taskPreviewStore';
+export { QuickAddModal } from './QuickAddModal';
+export { quickAdd } from './quickAddStore';

@@ -207,3 +207,44 @@
 .nudgeWrap {
   margin: 20px 30px 0;
 }
+
+.quickAddBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 30px 0;
+  padding: 13px 14px 13px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font: 400 14px/1 var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.quickAddText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quickAddKey {
+  padding: 3px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  font: 500 11px/1 var(--font-sans);
+}
+
+@media (max-width: 768px) {
+  .quickAddBar {
+    margin: 12px 16px 0;
+  }
+
+  .quickAddKey {
+    display: none;
+  }
+}
