@@ -23,7 +23,7 @@ export type MomentId =
 export const SAMOYED_MODES: SamoyedMode[] = ['off', 'bigWins', 'chatty'];
 
 const BIG_WINS: MomentId[] = ['allDone', 'triageCleared', 'streak'];
-const MAX_PER_DAY = 3;
+const MAX_PER_DAY = 10;
 const MILESTONES = [3, 6, 10];
 const AWAY_DAYS = 3;
 const KEY = 'samoyed';
