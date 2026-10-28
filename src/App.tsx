@@ -10,6 +10,7 @@ import Triage from './pages/Triage';
 import CalendarPage from './pages/Calendar';
 import Settings, { AgentsPage } from './pages/Settings';
 import InvitePage from './pages/Invite';
+import AgentConnectPage from './pages/AgentConnect';
 
 export default function App() {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ export default function App() {
       <Route path="/sign-up" element={<AuthLandingPage mode="signup" />} />
       <Route element={<RequireAuth />}>
         <Route path="/join/:code" element={<InvitePage />} />
+        <Route path="/agents/connect" element={<AgentConnectPage />} />
         <Route element={<AppShell />}>
           <Route path="/" element={<Navigate to="/today" replace />} />
           <Route path="/today" element={<Today />} />

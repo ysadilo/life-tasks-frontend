@@ -514,22 +514,22 @@
         "claude": {
           "1": "Open Claude › Settings › Connectors",
           "2": "Choose Add custom connector and paste the server URL",
-          "3": "Sign in to Life Tasks and approve. It starts with read and add only; change that below."
+          "3": "Sign in to Life Tasks and pick what the agent may do"
         },
         "chatgpt": {
           "1": "Open ChatGPT › Settings › Connectors",
           "2": "Add a custom connector and paste the server URL",
-          "3": "Sign in to Life Tasks and approve. It starts with read and add only; change that below."
+          "3": "Sign in to Life Tasks and pick what the agent may do"
         },
         "cursor": {
           "1": "Open Cursor › Settings › MCP",
           "2": "Add a server using the JSON config below",
-          "3": "Sign in to Life Tasks when Cursor asks. It starts with read and add only; change that below."
+          "3": "Sign in to Life Tasks and pick what the agent may do"
         },
         "other": {
           "1": "Add a remote MCP server (streamable HTTP)",
           "2": "Use the server URL above",
-          "3": "Sign in to Life Tasks when asked. It starts with read and add only; change that below."
+          "3": "Sign in to Life Tasks and pick what the agent may do"
         }
       },
       "allowAgents": "Allow agents",
@@ -642,6 +642,16 @@
       "readOnly": "Read only",
       "idle_one": "idle {{count}} day",
       "idle_other": "idle {{count}} days"
+    },
+    "connectPage": {
+      "loading": "Checking the request…",
+      "title": "Connect {{name}}",
+      "hint": "Choose what {{name}} may do in Life Tasks. You can change this any time in Settings › AI agents.",
+      "allow": "Allow",
+      "pickBoard": "Pick at least one board for the agent to work on.",
+      "invalidTitle": "This approval link isn’t valid",
+      "invalidHint": "It may have expired. Start the connection again from your assistant.",
+      "toSettings": "Go to Settings"
     }
   }
 }

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
-import type { Agent, AgentActivityEntry, AgentPermission, AgentsResponse } from '../models';
+import type { Agent, AgentActivityEntry, AgentConnectRequest, AgentPermission, AgentsResponse } from '../models';
 
 const REFRESH_MS = 30_000;
 
@@ -65,5 +65,26 @@ export function useSetAgentsEnabled() {
     },
     onError: (_error, _vars, context) => queryClient.setQueryData(['agents'], context?.previous),
     onSettled: () => queryClient.invalidateQueries({ queryKey: ['agents'] }),
+  });
+}
+
+/** Who is asking to connect, read from the signed token Auth0 put in the approval link. */
+export function useConnectRequest(token: string) {
+  return useQuery({
+    queryKey: ['agentConnectRequest', token],
+    queryFn: () => api.post<AgentConnectRequest>('/agents/connect-request', { token }),
+    enabled: token !== '',
+    retry: false,
+    staleTime: Infinity,
+  });
+}
+
+/** Saves what the user allowed; the agent gets its token once the sign-in continues. */
+export function useAuthorizeAgent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { token: string; permissions: AgentPermission[]; boardIds: string[] }) =>
+      api.post<Agent>('/agents/connect', input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['agents'] }),
   });
 }

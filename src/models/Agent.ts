@@ -31,3 +31,10 @@ export interface AgentActivityEntry {
   detail: string | null;
   createdAt: string;
 }
+
+/** An agent that is mid-sign-in and waiting for the user to approve it. */
+export interface AgentConnectRequest {
+  name: string;
+  /** It already has access (and permissions), so there is nothing to ask. */
+  alreadyConnected: boolean;
+}
