@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Button } from '../../ui';
+import { Button, SettingsIcon } from '../../ui';
 import { taskForm } from '../../task';
 import { lifeAreasModal } from '../../lifeAreas';
 import { BoardSwitcher, MembersSection } from '../../board';
@@ -78,7 +78,7 @@ export function Sidebar() {
             <span className={styles.profileSubtitle}>{t('settings.profileHint')}</span>
           </div>
           <span className={styles.settingsIcon} aria-label={t('nav.settings')}>
-            ⚙
+            <SettingsIcon />
           </span>
         </NavLink>
       </div>

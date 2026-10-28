@@ -19,3 +19,4 @@ export { SwipeActions } from './SwipeActions';
 export type { SwipeAction } from './SwipeActions';
 export { SamoyedAvatar, SamoyedMoment, SamoyedNudge, SamoyedPeek, peek, usePhrase } from './Samoyed';
 export { ConfirmDialog } from './ConfirmDialog';
+export { SettingsIcon } from './SettingsIcon';

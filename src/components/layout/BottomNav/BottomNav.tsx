@@ -6,6 +6,7 @@ import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
 import { openRecurringOn } from '../../../lib/recurrence';
 import { taskForm } from '../../task';
 import { useActiveBoard } from '../../../hooks/useBoards';
+import { SettingsIcon } from '../../ui';
 import styles from './BottomNav.module.css';
 
 function navClassName({ isActive }: { isActive: boolean }) {
@@ -86,7 +87,9 @@ export function BottomNav() {
               </div>
             </div>
             <NavLink to="/settings" role="menuitem" className={styles.menuItem} onClick={() => setMenuOpen(false)}>
-              <span className={styles.menuIcon}>⚙</span>
+              <span className={styles.menuIcon}>
+                <SettingsIcon size={16} />
+              </span>
               {t('nav.settings')}
             </NavLink>
             <button
