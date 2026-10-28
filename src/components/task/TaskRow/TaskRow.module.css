@@ -179,8 +179,11 @@
 
   .noChips,
   .inline.noChips {
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
-    grid-template-areas: 'lead body assignee action';
+    /* No chip line to share: stack the assignee over the action so the title keeps its width. */
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'lead body assignee'
+      'lead body action';
   }
 
   .assignee {
@@ -197,7 +200,9 @@
   }
 
   .noChips .action {
-    align-self: start;
+    align-self: end;
+    justify-self: end;
+    margin-top: 8px;
   }
 
   .lead {
