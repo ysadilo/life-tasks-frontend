@@ -1,18 +1,20 @@
-import { useTranslation } from 'react-i18next';
 import { SamoyedAvatar } from './SamoyedAvatar';
-import { usePeek } from './peekStore';
+import { usePeek, type Peek } from './peekStore';
+import { usePhrase } from './usePhrase';
 import styles from './Samoyed.module.css';
 
 /** Mount once (see AppShell). */
 export function SamoyedPeek() {
-  const { t } = useTranslation();
-  const moment = usePeek();
-  if (!moment) return null;
+  const current = usePeek();
+  return current && <PeekBubble key={`${current.moment}${current.name}`} {...current} />;
+}
 
+function PeekBubble({ moment, name }: Peek) {
+  const phrase = usePhrase(moment, name);
   return (
-    <div key={moment} className={styles.peek} role="status" aria-live="polite">
+    <div className={styles.peek} role="status" aria-live="polite">
       <SamoyedAvatar moment={moment} size={46} />
-      <span>{t(`samoyed.phrases.${moment}`)}</span>
+      <span>{phrase}</span>
     </div>
   );
 }

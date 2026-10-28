@@ -369,16 +369,55 @@
       "chatty": "Chatty"
     },
     "phrases": {
-      "allDone": "Good human!",
-      "triageCleared": "Yesterday's sorted. Fresh day!",
-      "streak": "7 days in a row! Treat?",
-      "overdue": "This one keeps waiting for you.",
-      "heavyDay": "That's a lot. Move one to tomorrow?",
-      "roughCheckin": "Rough one. You still did it.",
-      "emptyBacklog": "Nothing to chase. Nap time.",
-      "lateNight": "Bed's calling. Tasks can wait.",
-      "handed": "Max threw you one!",
-      "welcomeBack": "You came back! Missed you.",
+      "allDone": [
+        "Good human!",
+        "Clean sweep. Belly rubs?",
+        "Nothing left. Go sniff some grass.",
+        "Every box ticked. Proud of you."
+      ],
+      "triageCleared": [
+        "Yesterday's sorted. Fresh day!",
+        "Leftovers handled. Off we go.",
+        "Slate's clean. Let's play.",
+        "Sorted in record time!"
+      ],
+      "streak": [
+        "7 days in a row! Treat?",
+        "Another day, another tick. Streak's alive!",
+        "Don't stop now, we're on a roll.",
+        "Look at that streak go!"
+      ],
+      "overdue": [
+        "This one keeps waiting for you.",
+        "Still here… want to move it?",
+        "It's been a few days. Do it or drop it?",
+        "This task misses you."
+      ],
+      "heavyDay": [
+        "That's a lot. Move one to tomorrow?",
+        "Big plate today. Share some?",
+        "Even I can't fetch all that. Trim one?",
+        "Maybe pick the top three?"
+      ],
+      "roughCheckin": [
+        "Rough one. You still did it.",
+        "Hard tasks count double.",
+        "Sit with me a minute.",
+        "That was heavy. Be kind to you."
+      ],
+      "emptyBacklog": ["Nothing to chase. Nap time.", "Backlog's empty. Rare sight!", "Zero left. Time for a walk?"],
+      "lateNight": [
+        "Bed's calling. Tasks can wait.",
+        "It's late. Tomorrow-you has this.",
+        "Lights out? The list will keep."
+      ],
+      "handed": ["{{name}} threw you one!", "Incoming from {{name}}!", "Catch! {{name}} passed you a task."],
+      "welcomeBack": [
+        "You came back! Missed you.",
+        "There you are!",
+        "Welcome back. Let's start small.",
+        "Long time! Triage first?"
+      ],
       "added3": "Writing it all down.",
       "added6": "That's a list! Pick 3 for today?",
       "added10": "Big brain dump. Park some in Backlog?",
@@ -386,6 +425,9 @@
       "done6": "Six! Earned a bone.",
       "done10": "10 today. Personal best!"
     },
+    "overdueAction": "Edit task",
+    "heavyAction": "Move \"{{title}}\"",
+    "notNow": "Not now",
     "allDoneSummary": "{{done}} done today"
   },
   "board": {

@@ -3,14 +3,20 @@ import type { MomentId } from '../../../lib/samoyed';
 
 const PEEK_MS = 2500;
 
-let current: MomentId | null = null;
+export interface Peek {
+  moment: MomentId;
+  /** Who handed the task, for the `handed` phrase. */
+  name?: string;
+}
+
+let current: Peek | null = null;
 let timer: ReturnType<typeof setTimeout> | undefined;
 const listeners = new Set<() => void>();
 
 /** The dog peeks in from the corner for a moment. Fire from anywhere via `peek.show()`. */
 export const peek = {
-  show(moment: MomentId) {
-    current = moment;
+  show(moment: MomentId, name?: string) {
+    current = { moment, name };
     listeners.forEach((l) => l());
     clearTimeout(timer);
     timer = setTimeout(() => {

@@ -27,6 +27,9 @@ const MAX_PER_DAY = 3;
 const MILESTONES = [3, 6, 10];
 const AWAY_DAYS = 3;
 const KEY = 'samoyed';
+const LOAD_DAYS = 14;
+const HEAVY_EXTRA_MINUTES = 60;
+const MIN_LOAD_HISTORY = 2;
 
 interface Stored {
   mode: SamoyedMode;
@@ -35,6 +38,8 @@ interface Stored {
   added: number;
   done: number;
   lastVisit: string;
+  /** Planned minutes on Today per day, last LOAD_DAYS days; the average of the earlier ones is the "usual". */
+  loads: Record<string, number>;
 }
 
 const fresh = (stored?: Partial<Stored>): Stored => {
@@ -47,6 +52,7 @@ const fresh = (stored?: Partial<Stored>): Stored => {
     added: sameDay ? (stored?.added ?? 0) : 0,
     done: sameDay ? (stored?.done ?? 0) : 0,
     lastVisit: stored?.lastVisit ?? day,
+    loads: stored?.loads ?? {},
   };
 };
 
@@ -109,4 +115,15 @@ export function welcomeBack(): boolean {
     returned = gap >= AWAY_DAYS && tryAppear('welcomeBack');
   }
   return returned;
+}
+
+/** Records today's planned minutes; true when that is an hour or more over the usual (needs a few earlier days to compare). */
+export function isHeavyDay(plannedMinutes: number): boolean {
+  const state = load();
+  const loads = { ...state.loads, [state.day]: plannedMinutes };
+  const days = Object.keys(loads).sort().slice(-LOAD_DAYS);
+  save({ ...state, loads: Object.fromEntries(days.map((d) => [d, loads[d]])) });
+  const earlier = days.filter((d) => d !== state.day).map((d) => loads[d]);
+  if (earlier.length < MIN_LOAD_HISTORY) return false;
+  return plannedMinutes >= earlier.reduce((a, b) => a + b, 0) / earlier.length + HEAVY_EXTRA_MINUTES;
 }

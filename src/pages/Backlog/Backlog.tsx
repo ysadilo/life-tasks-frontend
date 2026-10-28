@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
-import { Button, EmptyState, PillButton, ToolbarPill } from '../../components/ui';
+import { Button, EmptyState, PillButton, SamoyedMoment, ToolbarPill } from '../../components/ui';
 import {
   TaskRow,
   taskForm,
@@ -18,6 +18,7 @@ import { useDeleteTaskWithUndo } from '../../hooks/useDeleteTaskWithUndo';
 import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { usePreferences } from '../../hooks/usePreferences';
+import { tryAppear } from '../../lib/samoyed';
 import { groupTasks } from '../../lib/taskGrouping';
 import styles from './Backlog.module.css';
 
@@ -51,6 +52,8 @@ export default function Backlog() {
 
   if (isLoading) return <PageState>{t('backlog.loading')}</PageState>;
   if (error) return <PageState>{t('backlog.error')}</PageState>;
+
+  const napping = tasks?.length === 0 && !search && !filterCount && tryAppear('emptyBacklog');
 
   return (
     <div className={styles.page}>
@@ -105,7 +108,8 @@ export default function Backlog() {
       <AppliedFilters filters={filters} onChange={setFilters} />
 
       <div className={styles.groups}>
-        {groups.length === 0 && (
+        {napping && <SamoyedMoment moment="emptyBacklog" />}
+        {groups.length === 0 && !napping && (
           <EmptyState
             title={t('backlog.emptyTitle')}
             description={search || filterCount ? t('backlog.emptyNoResults') : t('backlog.emptyDefault')}
