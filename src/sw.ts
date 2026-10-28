@@ -8,7 +8,12 @@ declare const self: ServiceWorkerGlobalScope;
 // App shell: same precache + SPA fallback the generated worker had.
 precacheAndRoute(self.__WB_MANIFEST);
 cleanupOutdatedCaches();
-registerRoute(new NavigationRoute(createHandlerBoundToURL('index.html')));
+// Page navigations fall back to the app shell, except addresses that belong to the API: an assistant
+// connecting via OAuth opens /api/oauth/authorize (and returns through /api/oauth/callback) as a real
+// page in this browser, and answering those with the shell would show a blank page.
+registerRoute(
+  new NavigationRoute(createHandlerBoundToURL('index.html'), { denylist: [/^\/api\//, /^\/\.well-known\//] })
+);
 
 // registerType 'autoUpdate': a new worker takes over straight away.
 self.addEventListener('install', () => void self.skipWaiting());
