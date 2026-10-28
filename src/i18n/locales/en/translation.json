@@ -361,7 +361,11 @@
   },
   "samoyed": {
     "setting": "Samoyed",
-    "settingHint": "Big wins only: All done, Triage cleared, Streak.",
+    "modeHint": {
+      "off": "The dog stays out of your way.",
+      "bigWins": "All done, Triage cleared, Streak.",
+      "chatty": "Every scenario, up to 3 appearances a day."
+    },
     "dismiss": "Dismiss",
     "mode": {
       "off": "Off",
