@@ -15,7 +15,7 @@ export function SamoyedNudge({ moment, actions }: SamoyedNudgeProps) {
   const phrase = usePhrase(moment);
   return (
     <div className={styles.nudge}>
-      <SamoyedAvatar moment={moment} size={44} />
+      <SamoyedAvatar moment={moment} size={80} />
       <div className={styles.nudgeBody}>
         <span className={styles.nudgeText}>{phrase}</span>
         <div className={styles.nudgeActions}>{actions}</div>

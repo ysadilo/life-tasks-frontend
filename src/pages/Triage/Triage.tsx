@@ -154,7 +154,7 @@ export default function Triage() {
           <div className={styles.complete}>
             <div className={styles.completeIcon}>
               {tryAppear('triageCleared') ? (
-                <SamoyedAvatar moment="triageCleared" size={64} />
+                <SamoyedAvatar moment="triageCleared" size={96} />
               ) : (
                 <svg
                   width="26"
