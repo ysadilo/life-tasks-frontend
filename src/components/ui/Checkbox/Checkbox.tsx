@@ -4,9 +4,11 @@ interface CheckboxProps {
   checked: boolean;
   onChange?: () => void;
   label?: string;
+  /** `done` (green) completes a task; `select` (solid dark) only includes an item, so it can't be mistaken for done. */
+  tone?: 'done' | 'select';
 }
 
-export function Checkbox({ checked, onChange, label }: CheckboxProps) {
+export function Checkbox({ checked, onChange, label, tone = 'done' }: CheckboxProps) {
   return (
     <button
       type="button"
@@ -14,7 +16,9 @@ export function Checkbox({ checked, onChange, label }: CheckboxProps) {
       aria-checked={checked}
       aria-label={label}
       onClick={onChange}
-      className={[styles.checkbox, checked ? styles.checked : ''].filter(Boolean).join(' ')}
+      className={[styles.checkbox, tone === 'select' ? styles.select : '', checked ? styles.checked : '']
+        .filter(Boolean)
+        .join(' ')}
     >
       {checked && (
         <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden>

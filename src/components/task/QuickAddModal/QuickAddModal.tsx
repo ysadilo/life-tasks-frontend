@@ -2,10 +2,10 @@ import { useEffect, useState, type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from '../../ui/Modal';
 import { MetaChip } from '../MetaChip';
-import { useCreateTask, type TaskInput } from '../../../hooks/useTasks';
+import { useCreateTask } from '../../../hooks/useTasks';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
-import { parseQuickAdd } from '../../../lib/quickAdd';
-import { dayMonthLabel, localDayAsUTC } from '../../../lib/dateUtils';
+import { draftToInput, parseQuickAdd } from '../../../lib/quickAdd';
+import { dayMonthLabel } from '../../../lib/dateUtils';
 import type { TaskStatus } from '../../../models';
 import { quickAdd, useQuickAddOpen } from '../quickAddStore';
 import { taskForm } from '../taskFormStore';
@@ -46,16 +46,7 @@ function QuickAddForm({ locale }: { locale: string }) {
 
   const add = (status: TaskStatus) => {
     if (blocked) return;
-    const input: TaskInput = {
-      title: draft.title,
-      dueDate: draft.dueDate ? new Date(draft.dueDate).toISOString() : null,
-      priority: draft.priority,
-      areaId: draft.areaId,
-      estimatedMinutes: draft.minutes,
-      status,
-      todayDate: status === 'today' ? localDayAsUTC() : null,
-    };
-    createTask.mutate(input, { onSuccess: quickAdd.close });
+    createTask.mutate(draftToInput(draft, status, false), { onSuccess: quickAdd.close });
   };
 
   const openDetails = () => {

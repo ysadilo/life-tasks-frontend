@@ -1,5 +1,6 @@
-import { localISODate, addDays } from './dateUtils';
-import type { Energy, LifeArea, LifeAreaId, Priority, Recurrence } from '../models';
+import { localISODate, localDayAsUTC, addDays } from './dateUtils';
+import type { TaskInput } from '../hooks/useTasks';
+import type { Energy, LifeArea, LifeAreaId, Priority, Recurrence, RecurrenceUnit, TaskStatus } from '../models';
 
 /** What a quick-add line resolves to; also the prefill handed to the full task form. */
 export interface TaskDraft {
@@ -9,10 +10,41 @@ export interface TaskDraft {
   priority: Priority | null;
   areaId: LifeAreaId | null;
   minutes: number | null;
-  /** Rich-text HTML; only a photo import fills the fields below. */
+  /** Rich-text HTML; only a photo import or the form itself fills the fields below. */
   description?: string | null;
   energy?: Energy | null;
   recurrence?: Recurrence | null;
+  recurrenceInterval?: number | null;
+  recurrenceUnit?: RecurrenceUnit | null;
+  /** `YYYY-MM-DD`. */
+  recurrenceEndDate?: string | null;
+  assigneeId?: string | null;
+}
+
+/** A one-off task due today (or earlier) belongs on Today — it can't go to the backlog. */
+export const mustBeToday = (draft: TaskDraft) =>
+  !draft.recurrence && !!draft.dueDate && draft.dueDate <= localISODate();
+
+/** What the API gets for a draft. `shared` boards also carry the assignee. A repeating task is always scheduled (backlog). */
+export function draftToInput(draft: TaskDraft, status: TaskStatus, shared: boolean): TaskInput {
+  const custom = draft.recurrence === 'custom';
+  return {
+    title: draft.title,
+    description: draft.description ?? null,
+    dueDate: draft.dueDate ? new Date(draft.dueDate).toISOString() : null,
+    areaId: draft.areaId,
+    ...(shared ? { assigneeId: draft.assigneeId ?? null } : {}),
+    priority: draft.priority,
+    energy: draft.energy ?? null,
+    estimatedMinutes: draft.minutes,
+    recurrence: draft.recurrence ?? null,
+    recurrenceInterval: custom ? (draft.recurrenceInterval ?? null) : null,
+    recurrenceUnit: custom ? (draft.recurrenceUnit ?? null) : null,
+    recurrenceEndDate:
+      draft.recurrence && draft.recurrenceEndDate ? new Date(draft.recurrenceEndDate).toISOString() : null,
+    status,
+    todayDate: status === 'today' ? localDayAsUTC() : null,
+  };
 }
 
 const PRIORITY = /^p([1-4])$/i;
