@@ -50,6 +50,7 @@ export function PhotoTaskList({
           {drafts.map((draft, index) => (
             <li key={index} className={[styles.row, included[index] ? '' : styles.skipped].join(' ')}>
               <Checkbox
+                tone="select"
                 checked={included[index]}
                 onChange={() => onToggle(index)}
                 label={t('photoBatch.include', { title: draft.title })}

@@ -50,3 +50,10 @@
   background: var(--color-success-solid);
   border-color: var(--color-success-solid-border);
 }
+
+.select.checked,
+.select.checked:hover {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-bg);
+}
