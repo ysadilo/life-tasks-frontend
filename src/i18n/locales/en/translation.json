@@ -215,6 +215,7 @@
   },
   "photo": {
     "button": "From photo",
+    "aiTag": "AI",
     "reading": "Reading…",
     "error": "Couldn't read that photo. Try a clearer one.",
     "empty": "Nothing readable found in that photo.",

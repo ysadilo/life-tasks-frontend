@@ -1,9 +1,9 @@
 import { useRef, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../../ui/Button';
 import { toast } from '../../ui/Toast';
 import { usePhotoImport } from '../../../hooks/usePhotoImport';
 import { taskForm } from '../taskFormStore';
+import styles from './PhotoImportButton.module.css';
 
 /** "From photo" in the New task header: pick or take a picture and the form below is prefilled from it. */
 export function PhotoImportButton({ presetDate }: { presetDate: string | null }) {
@@ -29,9 +29,15 @@ export function PhotoImportButton({ presetDate }: { presetDate: string | null })
   return (
     <>
       <input ref={input} type="file" accept="image/*" hidden onChange={onPick} />
-      <Button type="button" variant="ghost" disabled={photo.isPending} onClick={() => input.current?.click()}>
+      <button type="button" className={styles.button} disabled={photo.isPending} onClick={() => input.current?.click()}>
+        <span className={styles.badge} aria-hidden>
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.5c.4 3 1.9 4.6 5 5-3.1.4-4.6 2-5 5-.4-3-1.9-4.6-5-5 3.1-.4 4.6-2 5-5Z" fill="currentColor" />
+          </svg>
+        </span>
         {photo.isPending ? t('photo.reading') : t('photo.button')}
-      </Button>
+        <span className={styles.tag}>{t('photo.aiTag')}</span>
+      </button>
     </>
   );
 }
