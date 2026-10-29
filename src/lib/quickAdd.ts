@@ -1,5 +1,5 @@
 import { localISODate, addDays } from './dateUtils';
-import type { LifeArea, LifeAreaId, Priority } from '../models';
+import type { Energy, LifeArea, LifeAreaId, Priority, Recurrence } from '../models';
 
 /** What a quick-add line resolves to; also the prefill handed to the full task form. */
 export interface TaskDraft {
@@ -9,6 +9,10 @@ export interface TaskDraft {
   priority: Priority | null;
   areaId: LifeAreaId | null;
   minutes: number | null;
+  /** Rich-text HTML; only a photo import fills the fields below. */
+  description?: string | null;
+  energy?: Energy | null;
+  recurrence?: Recurrence | null;
 }
 
 const PRIORITY = /^p([1-4])$/i;

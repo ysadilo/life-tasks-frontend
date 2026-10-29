@@ -202,7 +202,8 @@
     "customIntervalInvalid": "Pick a whole number from 1 to {{max}}.",
     "recurrenceEnd": "Repeat until",
     "addToToday": "Add to today",
-    "parkInBacklog": "Park in backlog",
+    "cancel": "Cancel",
+    "addToBacklog": "Add to backlog",
     "moveToBacklog": "Move to backlog",
     "markNotDone": "Mark not done",
     "save": "Save",
@@ -211,6 +212,13 @@
     "delete": "Delete",
     "error": "Something went wrong. Try again.",
     "close": "Close"
+  },
+  "photo": {
+    "button": "From photo",
+    "reading": "Reading…",
+    "error": "Couldn't read that photo. Try a clearer one.",
+    "empty": "Nothing readable found in that photo.",
+    "multiple_other": "Found {{count}} tasks — filled in the first one."
   },
   "taskView": {
     "title": "Task details",
