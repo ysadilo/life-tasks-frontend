@@ -22,11 +22,13 @@ interface SidePanelProps {
   onClose: () => void;
   title: string;
   closeLabel?: string;
+  /** Sits beside the close button. */
+  headerAction?: ReactNode;
   children: ReactNode;
 }
 
 /** Non-modal panel that sits beside the page content (bottom-up sheet on mobile). Mount as a flex sibling of <main>. */
-export function SidePanel({ open, onClose, title, closeLabel = 'Close', children }: SidePanelProps) {
+export function SidePanel({ open, onClose, title, closeLabel = 'Close', headerAction, children }: SidePanelProps) {
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -58,7 +60,8 @@ export function SidePanel({ open, onClose, title, closeLabel = 'Close', children
   const dragStart = useRef<number | null>(null);
   const drag = {
     onPointerDown: (e: PointerEvent) => {
-      if (!window.matchMedia(MOBILE_QUERY).matches) return;
+      // Capturing the pointer would redirect the click away from a header button.
+      if (!window.matchMedia(MOBILE_QUERY).matches || (e.target as Element).closest('button')) return;
       dragStart.current = e.clientY;
       e.currentTarget.setPointerCapture(e.pointerId);
     },
@@ -124,9 +127,12 @@ export function SidePanel({ open, onClose, title, closeLabel = 'Close', children
         <span className={styles.handle} aria-hidden {...drag} />
         <div className={styles.header} {...drag}>
           <h3 className={styles.title}>{title}</h3>
-          <button type="button" className={styles.close} onClick={onClose} aria-label={closeLabel}>
-            ×
-          </button>
+          <div className={styles.actions}>
+            {headerAction}
+            <button type="button" className={styles.close} onClick={onClose} aria-label={closeLabel}>
+              ×
+            </button>
+          </div>
         </div>
         <div className={styles.body}>{open ? children : lastChildren.current}</div>
       </aside>

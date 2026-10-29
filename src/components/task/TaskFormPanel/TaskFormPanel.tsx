@@ -20,6 +20,7 @@ import { localDayAsUTC, localISODate } from '../../../lib/dateUtils';
 import { ENERGIES, EFFORT_MINUTES, energyRampKey, effortRampKey, priorityRampKey } from '../../../lib/taskMeta';
 import type { Energy, LifeAreaId, Priority, Recurrence, RecurrenceUnit, Task, TaskStatus } from '../../../models';
 import { OptionGroup } from '../OptionGroup';
+import { PhotoImportButton } from '../PhotoImportButton';
 import { TaskDetails } from '../TaskDetails';
 import styles from './TaskFormPanel.module.css';
 
@@ -40,12 +41,13 @@ export function TaskFormPanel() {
       onClose={onClose}
       closeLabel={t('taskForm.close')}
       title={task ? t(mode === 'view' ? 'taskView.title' : 'taskForm.editTitle') : t('taskForm.newTitle')}
+      headerAction={task ? undefined : <PhotoImportButton presetDate={presetDate} />}
     >
       {task && mode === 'view' ? (
         <TaskDetails key={task.id} task={task} onEdit={() => taskForm.openEdit(task)} />
       ) : (
         <TaskForm
-          key={task?.id ?? presetDate ?? draft?.title ?? 'new'}
+          key={`${task?.id ?? ''}|${presetDate ?? ''}|${draft?.title ?? ''}`}
           task={task}
           presetDate={presetDate}
           draft={draft}
@@ -73,7 +75,7 @@ function TaskForm({
   const isEdit = task != null;
 
   const [title, setTitle] = useState(task?.title ?? draft?.title ?? '');
-  const [description, setDescription] = useState(task?.description ?? '');
+  const [description, setDescription] = useState(task?.description ?? draft?.description ?? '');
   const [dueDate, setDueDate] = useState(
     task?.dueDate ? task.dueDate.slice(0, 10) : (presetDate ?? draft?.dueDate ?? '')
   );
@@ -81,11 +83,11 @@ function TaskForm({
   // New tasks on a shared board start on the creator's plate; clicking the chip again hands it to anyone.
   const [assignee, setAssignee] = useState(task ? (task.assigneeId ?? '') : (board.me?.userId ?? ''));
   const [priority, setPriority] = useState<Priority | ''>(task?.priority ?? draft?.priority ?? '');
-  const [energy, setEnergy] = useState<Energy | ''>(task?.energy ?? '');
+  const [energy, setEnergy] = useState<Energy | ''>(task?.energy ?? draft?.energy ?? '');
   const [effort, setEffort] = useState(
     task?.estimatedMinutes ? String(task.estimatedMinutes) : draft?.minutes ? String(draft.minutes) : ''
   );
-  const [recurrence, setRecurrence] = useState<Recurrence | ''>(task?.recurrence ?? '');
+  const [recurrence, setRecurrence] = useState<Recurrence | ''>(task?.recurrence ?? draft?.recurrence ?? '');
   const [interval, setInterval] = useState(task?.recurrenceInterval ? String(task.recurrenceInterval) : '1');
   const [unit, setUnit] = useState<RecurrenceUnit>(task?.recurrenceUnit ?? 'week');
   const [recurrenceEnd, setRecurrenceEnd] = useState(
@@ -281,11 +283,11 @@ function TaskForm({
 
       <div className={styles.footer}>
         {recurrence ? (
-          <>
-            <Button type="submit" variant="primary" disabled={blocked}>
-              {isEdit ? t('taskForm.save') : t('taskForm.schedule')}
-            </Button>
-            {isEdit && (
+          isEdit ? (
+            <>
+              <Button type="submit" variant="primary" disabled={blocked}>
+                {t('taskForm.save')}
+              </Button>
               <div className={styles.footerRight}>
                 <button
                   type="button"
@@ -296,8 +298,17 @@ function TaskForm({
                   {t('taskForm.delete')}
                 </button>
               </div>
-            )}
-          </>
+            </>
+          ) : (
+            <>
+              <Button type="button" variant="ghost" onClick={onClose}>
+                {t('taskForm.cancel')}
+              </Button>
+              <Button type="submit" variant="primary" disabled={blocked}>
+                {t('taskForm.schedule')}
+              </Button>
+            </>
+          )
         ) : isEdit ? (
           <>
             <Button type="submit" variant="primary" disabled={blocked}>
@@ -332,12 +343,17 @@ function TaskForm({
           </>
         ) : (
           <>
-            <Button type="submit" variant="primary" disabled={blocked}>
-              {t('taskForm.addToToday')}
+            <Button type="button" variant="ghost" onClick={onClose}>
+              {t('taskForm.cancel')}
             </Button>
-            <Button type="button" variant="secondary" disabled={blocked || dueToday} onClick={() => save('backlog')}>
-              {t('taskForm.parkInBacklog')}
-            </Button>
+            <div className={styles.footerRight}>
+              <Button type="button" variant="secondary" disabled={blocked || dueToday} onClick={() => save('backlog')}>
+                {t('taskForm.addToBacklog')}
+              </Button>
+              <Button type="submit" variant="primary" disabled={blocked}>
+                {t('taskForm.addToToday')}
+              </Button>
+            </div>
           </>
         )}
       </div>

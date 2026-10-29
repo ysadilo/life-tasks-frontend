@@ -1,0 +1,57 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px 8px 10px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-pill);
+  /* Solid fill clipped to the padding box over a gradient clipped to the border box = a gradient rim. */
+  background:
+    linear-gradient(var(--color-ai-bg), var(--color-ai-bg)) padding-box,
+    linear-gradient(120deg, #c4b8dc, #e0bbd6 45%, #e8c766) border-box;
+  box-shadow: 0 4px 14px -6px var(--color-ai-shadow);
+  color: var(--color-ai-text);
+  font: 600 13px/1 var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast),
+    opacity var(--dur-fast);
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -6px var(--color-ai-shadow);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c4b8dc, #e0bbd6);
+  color: #fbfaf7;
+}
+
+.tag {
+  padding: 3px 5px;
+  border: 1px solid var(--color-ai-tag-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-ai-tag-bg);
+  font: 700 9px/1 var(--font-sans);
+  letter-spacing: 0.08em;
+}

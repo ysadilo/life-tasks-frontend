@@ -50,6 +50,13 @@
   --color-accent-light-border: #e3d3a2;
   --color-accent-light-text: #6e6a63;
 
+  /* AI features (e.g. "From photo"): a soft lavender surface; the lavender→pink→gold rim is in the component. */
+  --color-ai-bg: #f4f2f9;
+  --color-ai-text: #3a3255;
+  --color-ai-shadow: rgba(140, 120, 190, 0.55);
+  --color-ai-tag-bg: #fbfaf7;
+  --color-ai-tag-border: #d9d4e6;
+
   --color-success-bg: #cfddd2;
   --color-success-border: #bdcdc1;
   --color-success-text: #3f6650;
@@ -153,6 +160,12 @@
   --color-accent-light-bg: #2e2536;
   --color-accent-light-border: #3a3047;
   --color-accent-light-text: #d8b863;
+
+  --color-ai-bg: #2a2338;
+  --color-ai-text: #e6dcf5;
+  --color-ai-shadow: rgba(140, 120, 190, 0.35);
+  --color-ai-tag-bg: #211b29;
+  --color-ai-tag-border: #4a3e66;
 
   --color-success-bg: #24382e;
   --color-success-border: #33513f;
