@@ -8,19 +8,20 @@ import { RichTextEditor } from '../../ui/RichText';
 import { toast } from '../../ui/Toast';
 import { isBlankHtml } from '../../../lib/richText';
 import { useCreateTask, useUpdateTask, useDeleteTask, type TaskInput } from '../../../hooks/useTasks';
+import { usePhotoBatch } from '../../../hooks/usePhotoBatch';
 import { taskForm, useTaskFormState } from '../taskFormStore';
 import { leaveThen } from '../taskLeavingStore';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { useBoardMembers } from '../../../hooks/useBoards';
 import { memberLabel } from '../../board';
-import type { TaskDraft } from '../../../lib/quickAdd';
+import { draftToInput, mustBeToday, type TaskDraft } from '../../../lib/quickAdd';
 import { PRIORITIES } from '../../../lib/priority';
 import { RECURRENCES, RECURRENCE_UNITS, MAX_CUSTOM_INTERVAL, isValidCustomInterval } from '../../../lib/recurrence';
-import { localDayAsUTC, localISODate } from '../../../lib/dateUtils';
 import { ENERGIES, EFFORT_MINUTES, energyRampKey, effortRampKey, priorityRampKey } from '../../../lib/taskMeta';
 import type { Energy, LifeAreaId, Priority, Recurrence, RecurrenceUnit, Task, TaskStatus } from '../../../models';
 import { OptionGroup } from '../OptionGroup';
 import { PhotoImportButton } from '../PhotoImportButton';
+import { PhotoTaskList } from '../PhotoTaskList';
 import { TaskDetails } from '../TaskDetails';
 import styles from './TaskFormPanel.module.css';
 
@@ -31,7 +32,7 @@ import styles from './TaskFormPanel.module.css';
 const UNASSIGNED = 'unassigned';
 
 export function TaskFormPanel() {
-  const { open, task, presetDate, draft, mode } = useTaskFormState();
+  const { open, task, presetDate, draft, mode, batch } = useTaskFormState();
   const { t } = useTranslation();
   const onClose = taskForm.close;
 
@@ -40,10 +41,18 @@ export function TaskFormPanel() {
       open={open}
       onClose={onClose}
       closeLabel={t('taskForm.close')}
-      title={task ? t(mode === 'view' ? 'taskView.title' : 'taskForm.editTitle') : t('taskForm.newTitle')}
-      headerAction={task ? undefined : <PhotoImportButton presetDate={presetDate} />}
+      title={
+        batch
+          ? t('photoBatch.title', { count: batch.drafts.length })
+          : task
+            ? t(mode === 'view' ? 'taskView.title' : 'taskForm.editTitle')
+            : t('taskForm.newTitle')
+      }
+      headerAction={task || batch ? undefined : <PhotoImportButton presetDate={presetDate} />}
     >
-      {task && mode === 'view' ? (
+      {batch ? (
+        <PhotoBatch key={batch.photoUrl ?? 'batch'} drafts={batch.drafts} photoUrl={batch.photoUrl} onClose={onClose} />
+      ) : task && mode === 'view' ? (
         <TaskDetails key={task.id} task={task} onEdit={() => taskForm.openEdit(task)} />
       ) : (
         <TaskForm
@@ -58,16 +67,65 @@ export function TaskFormPanel() {
   );
 }
 
+/** Several tasks from one photo: the review list, or — after tapping a row — that task in the regular form. */
+function PhotoBatch({
+  drafts,
+  photoUrl,
+  onClose,
+}: {
+  drafts: TaskDraft[];
+  photoUrl: string | null;
+  onClose: () => void;
+}) {
+  const flow = usePhotoBatch(drafts, onClose);
+  const { editing, setEditing } = flow;
+
+  if (editing != null) {
+    return (
+      <TaskForm
+        key={editing}
+        task={null}
+        presetDate={null}
+        draft={flow.drafts[editing]}
+        onClose={() => setEditing(null)}
+        onDone={(edited) => {
+          flow.update(editing, edited);
+          setEditing(null);
+        }}
+      />
+    );
+  }
+
+  return (
+    <PhotoTaskList
+      drafts={flow.drafts}
+      included={flow.included}
+      photoUrl={photoUrl}
+      count={flow.count}
+      canBacklog={flow.canBacklog}
+      pending={flow.pending}
+      failed={flow.failed}
+      onToggle={flow.toggle}
+      onOpen={setEditing}
+      onCancel={onClose}
+      onAdd={(status) => void flow.add(status)}
+    />
+  );
+}
+
 function TaskForm({
   task,
   presetDate,
   draft,
   onClose,
+  onDone,
 }: {
   task: Task | null;
   presetDate: string | null;
   draft: TaskDraft | null;
   onClose: () => void;
+  /** Set when editing one row of a photo batch: the form hands the result back instead of creating a task. */
+  onDone?: (draft: TaskDraft) => void;
 }) {
   const { t } = useTranslation();
   const { data: lifeAreas } = useLifeAreas();
@@ -81,17 +139,23 @@ function TaskForm({
   );
   const [area, setArea] = useState<LifeAreaId | ''>(task?.areaId ?? draft?.areaId ?? '');
   // New tasks on a shared board start on the creator's plate; clicking the chip again hands it to anyone.
-  const [assignee, setAssignee] = useState(task ? (task.assigneeId ?? '') : (board.me?.userId ?? ''));
+  const [assignee, setAssignee] = useState(
+    task
+      ? (task.assigneeId ?? '')
+      : draft?.assigneeId !== undefined
+        ? (draft.assigneeId ?? '')
+        : (board.me?.userId ?? '')
+  );
   const [priority, setPriority] = useState<Priority | ''>(task?.priority ?? draft?.priority ?? '');
   const [energy, setEnergy] = useState<Energy | ''>(task?.energy ?? draft?.energy ?? '');
   const [effort, setEffort] = useState(
     task?.estimatedMinutes ? String(task.estimatedMinutes) : draft?.minutes ? String(draft.minutes) : ''
   );
   const [recurrence, setRecurrence] = useState<Recurrence | ''>(task?.recurrence ?? draft?.recurrence ?? '');
-  const [interval, setInterval] = useState(task?.recurrenceInterval ? String(task.recurrenceInterval) : '1');
-  const [unit, setUnit] = useState<RecurrenceUnit>(task?.recurrenceUnit ?? 'week');
+  const [interval, setInterval] = useState(String(task?.recurrenceInterval ?? draft?.recurrenceInterval ?? 1));
+  const [unit, setUnit] = useState<RecurrenceUnit>(task?.recurrenceUnit ?? draft?.recurrenceUnit ?? 'week');
   const [recurrenceEnd, setRecurrenceEnd] = useState(
-    task?.recurrenceEndDate ? task.recurrenceEndDate.slice(0, 10) : ''
+    task?.recurrenceEndDate ? task.recurrenceEndDate.slice(0, 10) : (draft?.recurrenceEndDate ?? '')
   );
 
   const createTask = useCreateTask();
@@ -106,25 +170,24 @@ function TaskForm({
   const custom = recurrence === 'custom';
   const badInterval = custom && !isValidCustomInterval(Number(interval));
   const blocked = pending || !trimmedTitle || missingStart || badInterval;
-  // A one-off task due today (or earlier) belongs on Today — the backlog option is off.
-  const dueToday = !recurrence && !!dueDate && dueDate <= localISODate();
 
-  const buildInput = (status: TaskStatus): TaskInput => ({
+  const currentDraft = (): TaskDraft => ({
     title: trimmedTitle,
     description: isBlankHtml(description) ? null : description,
-    dueDate: dueDate ? new Date(dueDate).toISOString() : null,
+    dueDate: dueDate || null,
     areaId: area || null,
-    ...(board.shared ? { assigneeId: assignee || null } : {}),
+    assigneeId: assignee || null,
     priority: priority || null,
     energy: energy || null,
-    estimatedMinutes: effort ? Number(effort) : null,
+    minutes: effort ? Number(effort) : null,
     recurrence: recurrence || null,
     recurrenceInterval: custom ? Number(interval) : null,
     recurrenceUnit: custom ? unit : null,
-    recurrenceEndDate: recurrence && recurrenceEnd ? new Date(recurrenceEnd).toISOString() : null,
-    status,
-    todayDate: status === 'today' ? localDayAsUTC() : null,
+    recurrenceEndDate: recurrenceEnd || null,
   });
+  const dueToday = mustBeToday(currentDraft());
+
+  const buildInput = (status: TaskStatus): TaskInput => draftToInput(currentDraft(), status, board.shared);
 
   const save = (status: TaskStatus) => {
     if (blocked) return;
@@ -149,6 +212,10 @@ function TaskForm({
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (onDone) {
+      if (!blocked) onDone(currentDraft());
+      return;
+    }
     save(recurrence ? 'backlog' : isEdit ? task.status : 'today');
   };
 
@@ -282,7 +349,16 @@ function TaskForm({
       </div>
 
       <div className={styles.footer}>
-        {recurrence ? (
+        {onDone ? (
+          <>
+            <Button type="button" variant="ghost" onClick={onClose}>
+              {t('taskForm.cancel')}
+            </Button>
+            <Button type="submit" variant="primary" disabled={blocked}>
+              {t('photoBatch.done')}
+            </Button>
+          </>
+        ) : recurrence ? (
           isEdit ? (
             <>
               <Button type="submit" variant="primary" disabled={blocked}>

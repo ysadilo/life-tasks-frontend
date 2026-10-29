@@ -16,11 +16,16 @@ export function PhotoImportButton({ presetDate }: { presetDate: string | null })
     e.target.value = '';
     if (!file) return;
     photo.mutate(file, {
-      onSuccess: ([first, ...rest]) => {
-        if (!first) return toast.show(t('photo.empty'));
-        if (rest.length) toast.show(t('photo.multiple', { count: rest.length + 1 }));
-        // A deadline read from the photo beats the calendar day the panel was opened from.
-        taskForm.openNew(first.dueDate ? null : presetDate, first);
+      onSuccess: (drafts) => {
+        switch (drafts.length) {
+          case 0:
+            return toast.show(t('photo.empty'));
+          case 1:
+            // A deadline read from the photo beats the calendar day the panel was opened from.
+            return taskForm.openNew(drafts[0].dueDate ? null : presetDate, drafts[0]);
+          default:
+            return taskForm.openBatch(drafts, URL.createObjectURL(file));
+        }
       },
       onError: () => toast.show(t('photo.error')),
     });

@@ -218,8 +218,15 @@
     "aiTag": "AI",
     "reading": "Reading…",
     "error": "Couldn't read that photo. Try a clearer one.",
-    "empty": "Nothing readable found in that photo.",
-    "multiple_other": "Found {{count}} tasks — filled in the first one."
+    "empty": "Nothing readable found in that photo."
+  },
+  "photoBatch": {
+    "title": "New tasks · {{count}}",
+    "hint": "Found {{count}} tasks. Tap one to edit it in the New task form.",
+    "include": "Add {{title}}",
+    "done": "Done",
+    "addToBacklog": "Add to backlog ({{count}})",
+    "addToToday": "Add to today ({{count}})"
   },
   "taskView": {
     "title": "Task details",
