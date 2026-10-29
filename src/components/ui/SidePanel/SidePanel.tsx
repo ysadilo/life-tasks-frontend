@@ -5,6 +5,18 @@ import styles from './SidePanel.module.css';
 const EXIT_MS = 250;
 const DISMISS_DRAG_PX = 100;
 
+/** True when a vertical touch scroll starting at `el` can be consumed by `el` or an ancestor below `root`. */
+function canScroll(el: Element | null, root: Element, dy: number): boolean {
+  for (; el && el !== root; el = el.parentElement) {
+    const { overflowY } = getComputedStyle(el);
+    if ((overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight) {
+      // dy > 0: finger moving down = scrolling up.
+      if (dy > 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight) return true;
+    }
+  }
+  return false;
+}
+
 interface SidePanelProps {
   open: boolean;
   onClose: () => void;
@@ -65,6 +77,29 @@ export function SidePanel({ open, onClose, title, closeLabel = 'Close', children
     },
   };
 
+  // The mobile sheet is fixed: touches on its non-scrolling areas (footer, gaps) must not scroll the page behind.
+  const panelRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    let lastY = 0;
+    const onStart = (e: TouchEvent) => {
+      lastY = e.touches[0].clientY;
+    };
+    const onMove = (e: TouchEvent) => {
+      const y = e.touches[0].clientY;
+      const dy = y - lastY;
+      lastY = y;
+      if (window.matchMedia(MOBILE_QUERY).matches && !canScroll(e.target as Element, panel, dy)) e.preventDefault();
+    };
+    panel.addEventListener('touchstart', onStart, { passive: true });
+    panel.addEventListener('touchmove', onMove, { passive: false });
+    return () => {
+      panel.removeEventListener('touchstart', onStart);
+      panel.removeEventListener('touchmove', onMove);
+    };
+  }, [mounted]);
+
   if (!mounted) return null;
 
   return (
@@ -77,6 +112,7 @@ export function SidePanel({ open, onClose, title, closeLabel = 'Close', children
         onClick={onClose}
       />
       <aside
+        ref={panelRef}
         className={[styles.panel, open ? '' : styles.leaving].join(' ')}
         style={
           dragY
