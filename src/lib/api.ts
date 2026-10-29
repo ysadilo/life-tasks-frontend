@@ -3,6 +3,20 @@ import { getActiveBoardId } from './activeBoard';
 
 const API_BASE = '/api';
 
+/** `code` of a 502 from the backend when an AI provider failed, not us (contract with the BE's photo import). */
+export const AI_UNAVAILABLE = 'ai_unavailable';
+
+/** A failed API call: the HTTP status plus the backend's machine-readable `code`, when it sent one. */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+    readonly code?: string
+  ) {
+    super(message);
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = await getAuthToken();
   const boardId = getActiveBoardId();
@@ -17,7 +31,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
-    throw new Error(`${init?.method ?? 'GET'} ${path} failed: ${res.status}`);
+    const body: unknown = await res.json().catch(() => null);
+    const code = typeof body === 'object' && body !== null && 'code' in body ? String(body.code) : undefined;
+    throw new ApiError(`${init?.method ?? 'GET'} ${path} failed: ${res.status}`, res.status, code);
   }
 
   const text = await res.text();
