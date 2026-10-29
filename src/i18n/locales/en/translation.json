@@ -162,6 +162,7 @@
     "editTitle": "Edit task",
     "titlePlaceholder": "What needs doing?",
     "descriptionPlaceholder": "Notes — links, phone numbers, what \"done\" looks like…",
+    "clearDate": "Clear date",
     "dueDate": "Due date",
     "startsOn": "Starts on",
     "startsOnRequired": "Pick a start date for the repeat.",
