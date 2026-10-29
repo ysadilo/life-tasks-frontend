@@ -218,6 +218,7 @@
     "aiTag": "AI",
     "reading": "Reading…",
     "error": "Couldn't read that photo. Try a clearer one.",
+    "busy": "The AI service is busy right now. Try again in a minute.",
     "empty": "Nothing readable found in that photo."
   },
   "photoBatch": {

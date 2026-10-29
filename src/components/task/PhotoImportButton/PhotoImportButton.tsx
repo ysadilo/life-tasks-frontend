@@ -2,6 +2,7 @@ import { useRef, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from '../../ui/Toast';
 import { usePhotoImport } from '../../../hooks/usePhotoImport';
+import { AI_UNAVAILABLE, ApiError } from '../../../lib/api';
 import { taskForm } from '../taskFormStore';
 import styles from './PhotoImportButton.module.css';
 
@@ -27,7 +28,8 @@ export function PhotoImportButton({ presetDate }: { presetDate: string | null })
             return taskForm.openBatch(drafts, URL.createObjectURL(file));
         }
       },
-      onError: () => toast.show(t('photo.error')),
+      onError: (error) =>
+        toast.show(error instanceof ApiError && error.code === AI_UNAVAILABLE ? t('photo.busy') : t('photo.error')),
     });
   };
 
