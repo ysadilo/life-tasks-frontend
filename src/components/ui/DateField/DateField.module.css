@@ -1,0 +1,36 @@
+.wrap {
+  position: relative;
+  display: flex;
+}
+
+.wrap > input {
+  flex: 1;
+  min-width: 0;
+  padding-right: 40px;
+}
+
+.clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-faint);
+  font: 400 16px/1 var(--font-sans);
+  cursor: pointer;
+}
+
+.clear:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.clear:hover:not(:disabled) {
+  background: var(--color-hover-bg);
+  color: var(--color-text);
+}

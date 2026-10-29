@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SidePanel } from '../../ui/SidePanel';
 import { Button } from '../../ui/Button';
 import { Input } from '../../ui/Input';
+import { DateField } from '../../ui/DateField';
 import { RichTextEditor } from '../../ui/RichText';
 import { toast } from '../../ui/Toast';
 import { isBlankHtml } from '../../../lib/richText';
@@ -162,7 +163,7 @@ function TaskForm({
         <div className={styles.props}>
           <label className={styles.row}>
             <span className={styles.label}>{recurrence ? t('taskForm.startsOn') : t('taskForm.dueDate')}</span>
-            <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+            <DateField value={dueDate} onChange={setDueDate} />
           </label>
 
           <OptionGroup
@@ -259,12 +260,7 @@ function TaskForm({
           {recurrence && (
             <label className={styles.row}>
               <span className={styles.label}>{t('taskForm.recurrenceEnd')}</span>
-              <Input
-                type="date"
-                value={recurrenceEnd}
-                min={dueDate || undefined}
-                onChange={(e) => setRecurrenceEnd(e.target.value)}
-              />
+              <DateField value={recurrenceEnd} min={dueDate || undefined} onChange={setRecurrenceEnd} />
             </label>
           )}
         </div>
