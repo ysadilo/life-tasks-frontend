@@ -234,7 +234,7 @@ export default function Today() {
 
         {greeting && greetingOpen && (
           <div className={styles.greeting}>
-            <SamoyedAvatar moment={greeting} size={56} />
+            <SamoyedAvatar moment={greeting} size={96} />
             <span className={styles.greetingText}>{greetingPhrase}</span>
             <button
               type="button"
