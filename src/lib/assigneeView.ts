@@ -13,3 +13,8 @@ export function matchesAssigneeView(task: Task, view: AssigneeView, myId?: strin
       return true;
   }
 }
+
+/** On a shared board only the assignee may complete / reflect on a task; unassigned tasks are open to everyone. */
+export function canActOn(task: Task, shared: boolean, myId?: string): boolean {
+  return !shared || !task.assigneeId || task.assigneeId === myId;
+}

@@ -33,6 +33,8 @@ export interface Task {
   /** Optional check-in, captured when finishing the task or added later with Reflect. */
   feeling?: Feeling | null;
   actualMinutes?: number | null;
+  /** Recurring series: each ticked day's check-in, keyed by ISO day. */
+  occurrenceCheckins?: Record<string, { feeling?: Feeling; actualMinutes?: number }>;
   /** Name of the AI agent that added / finished the task, when one did. */
   createdVia?: string | null;
   completedVia?: string | null;

@@ -95,8 +95,25 @@ export function useToggleOccurrence() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, date, done }: { id: string; date: string; done: boolean }) =>
-      api.patch<Task>(`/tasks/${id}`, { occurrenceDate: date, occurrenceDone: done }),
+    mutationFn: ({
+      id,
+      date,
+      done,
+      feeling,
+      actualMinutes,
+    }: {
+      id: string;
+      date: string;
+      done: boolean;
+      feeling?: Feeling | null;
+      actualMinutes?: number | null;
+    }) =>
+      api.patch<Task>(`/tasks/${id}`, {
+        occurrenceDate: date,
+        occurrenceDone: done,
+        occurrenceFeeling: feeling,
+        occurrenceMinutes: actualMinutes,
+      }),
     onSuccess: (_task, { done }) => {
       tallyDone(done);
       invalidateTasks(queryClient);
