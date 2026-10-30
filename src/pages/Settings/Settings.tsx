@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { LANGUAGES } from '../../i18n';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LifeAreasManager } from '../../components/lifeAreas';
 import { BoardsManager } from '../../components/board';
@@ -17,7 +18,7 @@ import styles from './Settings.module.css';
 const THEMES: ThemeName[] = ['powder', 'glamour'];
 
 export default function Settings() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, logout } = useAuth0();
   const { theme, setTheme } = useTheme();
   const { data: areas } = useLifeAreas();
@@ -78,6 +79,14 @@ export default function Settings() {
                 {t(`theme.${name}`)}
               </button>
             ))}
+          </div>
+          <div className={styles.samoyed}>
+            <span className={styles.cardTitle}>{t('settings.language')}</span>
+            <SegmentedTabs
+              value={i18n.resolvedLanguage ?? 'en'}
+              onChange={(lng) => void i18n.changeLanguage(lng)}
+              options={LANGUAGES.map((lng) => ({ value: lng, label: t(`language.${lng}`) }))}
+            />
           </div>
           <div className={styles.samoyed}>
             <span className={styles.cardTitle}>{t('samoyed.setting')}</span>
