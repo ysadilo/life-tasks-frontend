@@ -732,3 +732,12 @@
     color: var(--color-text);
   }
 }
+
+.activityLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.activityLink:hover .activityText b {
+  text-decoration: underline;
+}

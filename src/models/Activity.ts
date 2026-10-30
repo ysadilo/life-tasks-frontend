@@ -4,6 +4,8 @@ export interface ActivityEntry {
   id: string;
   type: ActivityType;
   taskTitle: string;
+  /** Null for entries from before links existed; the task may also have been deleted since. */
+  taskId: string | null;
   actorId: string;
   actorEmail: string;
   /** For `assigned`: who got the task; null = it was unassigned. */
