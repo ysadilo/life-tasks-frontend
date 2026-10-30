@@ -48,10 +48,12 @@ export function draftToInput(draft: TaskDraft, status: TaskStatus, shared: boole
 }
 
 const PRIORITY = /^p([1-4])$/i;
-const EFFORT = /^(\d+)(m|h)$/i;
+const EFFORT = /^(\d+)(m|h|хв|год)$/i;
+const TODAY = new Set(['today', 'сьогодні']);
+const TOMORROW = new Set(['tomorrow', 'завтра']);
 
 /**
- * Pulls `today|tomorrow`, `p1`–`p4`, `#Area` and `15m`/`2h` tokens out of a line; the rest is the title.
+ * Pulls `today|tomorrow` (or `сьогодні|завтра`), `p1`–`p4`, `#Area` and `15m`/`2h` (or `15хв`/`2год`) tokens out of a line; the rest is the title.
  * Each kind is taken once (first wins); an unknown `#tag` stays in the title.
  */
 export function parseQuickAdd(input: string, areas: LifeArea[], now = new Date()): TaskDraft {
@@ -61,12 +63,12 @@ export function parseQuickAdd(input: string, areas: LifeArea[], now = new Date()
   for (const word of input.trim().split(/\s+/).filter(Boolean)) {
     const lower = word.toLowerCase();
     const effort = EFFORT.exec(word);
-    if (!draft.dueDate && (lower === 'today' || lower === 'tomorrow')) {
-      draft.dueDate = localISODate(lower === 'today' ? now : addDays(now, 1));
+    if (!draft.dueDate && (TODAY.has(lower) || TOMORROW.has(lower))) {
+      draft.dueDate = localISODate(TODAY.has(lower) ? now : addDays(now, 1));
     } else if (!draft.priority && PRIORITY.test(word)) {
       draft.priority = word.toUpperCase() as Priority;
     } else if (!draft.minutes && effort && Number(effort[1]) > 0) {
-      draft.minutes = Number(effort[1]) * (effort[2].toLowerCase() === 'h' ? 60 : 1);
+      draft.minutes = Number(effort[1]) * (['h', 'год'].includes(effort[2].toLowerCase()) ? 60 : 1);
     } else if (!draft.areaId && word.length > 1 && word.startsWith('#')) {
       const name = lower.slice(1);
       const area =
