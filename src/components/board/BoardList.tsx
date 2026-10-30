@@ -45,7 +45,7 @@ export function BoardList({ onDone, searchable = false }: { onDone: () => void; 
       aria-current={board.id === active?.id}
       onClick={() => pick(board)}
     >
-      <BoardTile id={board.id} name={board.name} />
+      <BoardTile id={board.id} name={board.name} coverKey={board.coverKey} />
       <span className={styles.rowText}>
         <span className={styles.rowName}>{board.name}</span>
         <span className={styles.rowMeta}>
@@ -57,7 +57,7 @@ export function BoardList({ onDone, searchable = false }: { onDone: () => void; 
       {board.shared && (
         <span className={styles.avatars}>
           {board.members.slice(0, MAX_AVATARS).map((m) => (
-            <MemberAvatar key={m.userId} email={m.email} />
+            <MemberAvatar key={m.userId} email={m.email} avatarKey={m.avatarKey} />
           ))}
         </span>
       )}

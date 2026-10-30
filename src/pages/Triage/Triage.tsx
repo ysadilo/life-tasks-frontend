@@ -256,7 +256,7 @@ export default function Triage() {
                     className={styles.handButton}
                     onClick={() => handTo(member)}
                   >
-                    <MemberAvatar email={member.email} />
+                    <MemberAvatar email={member.email} avatarKey={member.avatarKey} />
                     {memberLabel(member, t)}
                   </button>
                 ))}
@@ -291,7 +291,7 @@ export default function Triage() {
                 .filter(({ tasks }) => tasks.length > 0)
                 .map(({ member, tasks }) => (
                   <div key={member.userId} className={styles.sideItem}>
-                    <MemberAvatar email={member.email} />
+                    <MemberAvatar email={member.email} avatarKey={member.avatarKey} />
                     <span className={styles.sideTitle}>
                       {memberLabel(member, t)} · {t('triage.waiting', { count: tasks.length })}
                     </span>

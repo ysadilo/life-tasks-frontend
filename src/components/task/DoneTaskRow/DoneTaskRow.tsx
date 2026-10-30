@@ -46,7 +46,7 @@ export function DoneTaskRow({ task, onToggle, onOpen, onReflect }: DoneTaskRowPr
         <RecurrenceIcon task={task} />
       </span>
       {task.completedVia && <Chip variant="info">{t('agents.doneBy', { name: task.completedVia })}</Chip>}
-      {assignee && <MemberAvatar email={assignee.email} />}
+      {assignee && <MemberAvatar email={assignee.email} avatarKey={assignee.avatarKey} />}
       {time && <span className={styles.time}>{time}</span>}
       {onReflect && <PillButton onClick={onReflect}>{t('task.reflect')}</PillButton>}
     </div>

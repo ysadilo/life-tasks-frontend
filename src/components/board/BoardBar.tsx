@@ -35,7 +35,7 @@ export function BoardBar() {
   return (
     <div className={styles.bar}>
       <button type="button" className={styles.barBoard} aria-haspopup="true" onClick={() => setBoardsOpen(true)}>
-        {board && <BoardTile id={board.id} name={board.name} />}
+        {board && <BoardTile id={board.id} name={board.name} coverKey={board.coverKey} />}
         <span className={styles.barName}>{board?.name ?? '…'}</span>
         <svg
           className={styles.barChevron}
@@ -57,7 +57,7 @@ export function BoardBar() {
         <>
           <span className={styles.avatars}>
             {board.members.slice(0, MAX_AVATARS).map((m) => (
-              <MemberAvatar key={m.userId} email={m.email} />
+              <MemberAvatar key={m.userId} email={m.email} avatarKey={m.avatarKey} />
             ))}
           </span>
           <button

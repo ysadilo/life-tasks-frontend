@@ -42,7 +42,11 @@ export function TodaySplit({ openTasks }: { openTasks: Task[] }) {
       <div className={styles.splitChips}>
         {rows.map(({ member, count, minutes }) => (
           <div key={member?.userId ?? 'unassigned'} className={styles.splitChip}>
-            {member ? <MemberAvatar email={member.email} /> : <span className={styles.avatarEmpty} />}
+            {member ? (
+              <MemberAvatar email={member.email} avatarKey={member.avatarKey} />
+            ) : (
+              <span className={styles.avatarEmpty} />
+            )}
             <span className={styles.splitChipText}>
               <span className={styles.splitChipName}>{member ? memberLabel(member, t) : t('board.unassigned')}</span>
               <span className={styles.rowMeta}>

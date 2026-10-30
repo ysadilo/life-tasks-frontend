@@ -8,9 +8,12 @@ import {
   useLeaveBoard,
   useRemoveMember,
   useRenameBoard,
+  useSetBoardCover,
+  useClearBoardCover,
   useRevokeInvite,
 } from '../../hooks/useBoards';
 import { Button } from '../ui/Button';
+import { FilePickButton } from '../ui/FilePickButton';
 import { Input } from '../ui/Input';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { toast } from '../ui/Toast';
@@ -26,6 +29,8 @@ function BoardCard({ board, canDelete }: { board: Board; canDelete: boolean }) {
   const { t } = useTranslation();
   const rename = useRenameBoard();
   const remove = useDeleteBoard();
+  const setCover = useSetBoardCover();
+  const clearCover = useClearBoardCover();
   const leave = useLeaveBoard();
   const removeMember = useRemoveMember();
   const revoke = useRevokeInvite();
@@ -65,7 +70,7 @@ function BoardCard({ board, canDelete }: { board: Board; canDelete: boolean }) {
   return (
     <div className={[styles.manageCard, current ? styles.manageCardCurrent : ''].filter(Boolean).join(' ')}>
       <div className={styles.manageHeader}>
-        <BoardTile id={board.id} name={board.name} />
+        <BoardTile id={board.id} name={board.name} coverKey={board.coverKey} />
         <span className={styles.rowText}>
           <span className={styles.rowName}>{board.name}</span>
           <span className={styles.rowMeta}>
@@ -112,6 +117,25 @@ function BoardCard({ board, canDelete }: { board: Board; canDelete: boolean }) {
               </button>
             )
           )}
+          {owner && (
+            <>
+              <FilePickButton
+                disabled={setCover.isPending}
+                onFile={(file) => setCover.mutate({ id: board.id, file }, notify(t('board.coverUpdated')))}
+              >
+                {t(board.coverKey ? 'board.changePicture' : 'board.addPicture')}
+              </FilePickButton>
+              {board.coverKey && (
+                <button
+                  type="button"
+                  className={styles.linkButton}
+                  onClick={() => clearCover.mutate(board.id, notify(t('board.coverRemoved')))}
+                >
+                  {t('board.removePicture')}
+                </button>
+              )}
+            </>
+          )}
           {board.shared && (
             <button type="button" className={styles.linkButton} onClick={() => setMuted(!muted)}>
               {t(muted ? 'board.notify.unmute' : 'board.notify.mute')}
@@ -155,7 +179,7 @@ function BoardCard({ board, canDelete }: { board: Board; canDelete: boolean }) {
         <div className={styles.manageMembers}>
           {board.members.map((m) => (
             <div key={m.userId} className={styles.member}>
-              <MemberAvatar email={m.email} />
+              <MemberAvatar email={m.email} avatarKey={m.avatarKey} />
               <span className={styles.rowText}>
                 <span className={styles.memberName}>{m.email}</span>
                 <span className={styles.rowMeta}>{t(`board.role.${m.role}`)}</span>

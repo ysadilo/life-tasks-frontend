@@ -4,6 +4,7 @@ export { PillButton } from './PillButton';
 export { ToolbarPill } from './ToolbarPill';
 export type { ChipVariant } from './Chip';
 export { Checkbox } from './Checkbox';
+export { FilePickButton } from './FilePickButton';
 export { Input } from './Input';
 export { Modal } from './Modal';
 export { SidePanel } from './SidePanel';

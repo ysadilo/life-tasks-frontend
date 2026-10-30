@@ -8,6 +8,7 @@
   border-radius: 10px;
   font: 700 13px/1 var(--font-sans);
   color: var(--color-text);
+  object-fit: cover;
 }
 
 .avatar {
@@ -21,6 +22,7 @@
   border: 2px solid var(--color-surface);
   font: 700 9px/1 var(--font-sans);
   color: var(--color-text);
+  object-fit: cover;
 }
 
 .avatars {
