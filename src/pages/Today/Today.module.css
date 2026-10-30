@@ -248,3 +248,20 @@
     display: none;
   }
 }
+
+/* Mobile: the whole page scrolls (header, banners and list together) so the tasks get the full screen. */
+@media (max-width: 768px) {
+  .page {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .page > * {
+    flex-shrink: 0;
+  }
+
+  .list {
+    flex: none;
+    overflow: visible;
+  }
+}

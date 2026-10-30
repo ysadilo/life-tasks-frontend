@@ -33,8 +33,9 @@
 
 @media (max-width: 768px) {
   .header {
-    padding: 24px 20px 18px;
-    padding-top: calc(24px + env(safe-area-inset-top));
+    padding: 12px 20px 10px;
+    padding-top: calc(12px + env(safe-area-inset-top));
+    gap: 10px;
     padding-left: calc(20px + env(safe-area-inset-left));
     padding-right: calc(20px + env(safe-area-inset-right));
   }

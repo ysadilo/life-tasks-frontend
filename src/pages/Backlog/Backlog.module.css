@@ -117,3 +117,20 @@
 .searchInput::placeholder {
   color: var(--color-text-muted);
 }
+
+/* Mobile: the whole page scrolls (header, toolbar and groups together) so the tasks get the full screen. */
+@media (max-width: 768px) {
+  .page {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .page > * {
+    flex-shrink: 0;
+  }
+
+  .groups {
+    flex: none;
+    overflow: visible;
+  }
+}
