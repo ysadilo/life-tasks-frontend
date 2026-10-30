@@ -86,7 +86,7 @@ export function SettingsShell({ page, sections, title, subtitle, children }: Set
           >
             {({ isActive }) => (
               <>
-                {t(`settings.pages.${id}`)}
+                <span className={styles.pageLabel}>{t(`settings.pages.${id}`)}</span>
                 {!isActive && <span className={styles.pageMeta}>{t(`settings.pageHints.${id}`)} ›</span>}
               </>
             )}

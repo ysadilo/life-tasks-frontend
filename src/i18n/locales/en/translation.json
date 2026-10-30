@@ -33,6 +33,7 @@
     "title": "Settings",
     "subtitle": "Life areas, boards, theme and log out in one place.",
     "appearance": "Appearance",
+    "language": "Language",
     "appearanceHint": "Pick the theme you like best",
     "profileHint": "Settings, theme, log out"
   },
@@ -53,6 +54,10 @@
     "soloBoard": "Solo board",
     "switchTheme": "Switch to {{theme}} theme",
     "switchThemeShort": "Switch theme"
+  },
+  "language": {
+    "en": "English",
+    "uk": "Українська"
   },
   "theme": {
     "powder": "Powder",
