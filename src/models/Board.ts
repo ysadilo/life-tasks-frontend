@@ -3,6 +3,8 @@ export type BoardRole = 'owner' | 'member';
 export interface BoardMember {
   userId: string;
   email: string;
+  /** Image key of the member's avatar; null = initials. */
+  avatarKey: string | null;
   role: BoardRole;
   /** True for the signed-in user's own membership. */
   isMe: boolean;
@@ -13,6 +15,8 @@ export interface Board {
   name: string;
   /** Shared boards have members and take invites; personal ones are private. */
   shared: boolean;
+  /** Image key of the board's cover picture; null = initials tile. */
+  coverKey: string | null;
   /** The caller's role on this board. */
   role: BoardRole;
   members: BoardMember[];

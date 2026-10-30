@@ -5,8 +5,9 @@ import { LifeAreasManager } from '../../components/lifeAreas';
 import { BoardsManager } from '../../components/board';
 import { FeedbackButton } from '../../components/feedback';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
-import { useBoards } from '../../hooks/useBoards';
-import { SegmentedTabs } from '../../components/ui';
+import { useBoards, useClearAvatar, useMyAvatarKey, useSetAvatar } from '../../hooks/useBoards';
+import { FilePickButton, SegmentedTabs, toast } from '../../components/ui';
+import { imageUrl } from '../../lib/images';
 import { getSamoyedMode, SAMOYED_MODES, setSamoyedMode, type SamoyedMode } from '../../lib/samoyed';
 import { MAX_LIFE_AREAS } from '../../lib/lifeAreas';
 import { useTheme, type ThemeName } from '../../theme/ThemeProvider';
@@ -21,6 +22,9 @@ export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { data: areas } = useLifeAreas();
   const { data: boards } = useBoards();
+  const avatarKey = useMyAvatarKey();
+  const setAvatar = useSetAvatar();
+  const clearAvatar = useClearAvatar();
   const [samoyedMode, setSamoyedModeState] = useState(getSamoyedMode);
 
   const displayName = user?.given_name ?? user?.nickname ?? user?.name ?? user?.email ?? t('user.defaultName');
@@ -92,8 +96,8 @@ export default function Settings() {
 
       <section id="account" className={[styles.card, styles.account].join(' ')}>
         <div className={styles.accountInfo}>
-          {user?.picture ? (
-            <img className={styles.avatar} src={user.picture} alt="" />
+          {avatarKey || user?.picture ? (
+            <img className={styles.avatar} src={avatarKey ? imageUrl(avatarKey) : user?.picture} alt="" />
           ) : (
             <div className={styles.avatar} />
           )}
@@ -103,6 +107,22 @@ export default function Settings() {
           </div>
         </div>
         <div className={styles.accountActions}>
+          <FilePickButton
+            disabled={setAvatar.isPending}
+            onFile={(file) =>
+              setAvatar.mutate(file, {
+                onSuccess: () => toast.show(t('settings.avatarUpdated')),
+                onError: () => toast.show(t('board.actionFailed')),
+              })
+            }
+          >
+            {t(avatarKey ? 'settings.changeAvatar' : 'settings.addAvatar')}
+          </FilePickButton>
+          {avatarKey && (
+            <button type="button" className={styles.logout} onClick={() => clearAvatar.mutate()}>
+              {t('settings.removeAvatar')}
+            </button>
+          )}
           <FeedbackButton />
           <button
             type="button"

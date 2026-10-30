@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { setActiveBoardId, useActiveBoardId } from '../lib/activeBoard';
 import { localISODate } from '../lib/dateUtils';
+import { AVATAR_SIDE, COVER_SIDE, resizeToWebp, uploadImage } from '../lib/images';
 import type { Board, BoardInvite, BoardJoinPreview, NewBoardInput } from '../models';
 
 export function useBoards() {
@@ -174,3 +175,22 @@ export const useCreateInviteLink = () =>
 /** Turns the link off; creating it again gives a new code. */
 export const useDisableInviteLink = () =>
   useBoardMutation((boardId: string) => api.delete<void>(`/boards/${boardId}/invite-link`));
+
+/** Re-encodes the picked photo to a small WebP and uploads it as the board's cover (owner only). */
+export const useSetBoardCover = () =>
+  useBoardMutation(async ({ id, file }: { id: string; file: File }) =>
+    uploadImage(await resizeToWebp(file, COVER_SIDE, false), `/boards/${id}/cover`)
+  );
+
+export const useClearBoardCover = () => useBoardMutation((id: string) => api.delete<void>(`/boards/${id}/cover`));
+
+/** The signed-in user's avatar image key, read off their membership (every user has at least one board). */
+export function useMyAvatarKey(): string | null {
+  const { data: boards } = useBoards();
+  return boards?.flatMap((b) => b.members).find((m) => m.isMe)?.avatarKey ?? null;
+}
+
+export const useSetAvatar = () =>
+  useBoardMutation(async (file: File) => uploadImage(await resizeToWebp(file, AVATAR_SIDE, true), '/me/avatar'));
+
+export const useClearAvatar = () => useBoardMutation<void>(() => api.delete<void>('/me/avatar'));

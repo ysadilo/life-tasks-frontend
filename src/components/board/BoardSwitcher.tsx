@@ -48,7 +48,7 @@ export function BoardSwitcher() {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
-        {board && <BoardTile id={board.id} name={board.name} />}
+        {board && <BoardTile id={board.id} name={board.name} coverKey={board.coverKey} />}
         <span className={styles.rowText}>
           <span className={styles.rowName}>{board?.name ?? '…'}</span>
           <span className={styles.rowMeta}>

@@ -69,7 +69,7 @@ function AssignPopover({
       <span className={styles.groupLabel}>{t('board.assignTo')}</span>
       {members.map((m) => (
         <button key={m.userId} type="button" role="menuitem" className={styles.row} onClick={() => assign(m.userId)}>
-          <MemberAvatar email={m.email} />
+          <MemberAvatar email={m.email} avatarKey={m.avatarKey} />
           <span className={styles.rowText}>
             <span className={styles.rowName}>{memberLabel(m, t)}</span>
           </span>
@@ -112,7 +112,7 @@ export function AssigneeChip({ task }: { task: Task }) {
       >
         {assignee ? (
           <>
-            <MemberAvatar email={assignee.email} />
+            <MemberAvatar email={assignee.email} avatarKey={assignee.avatarKey} />
             {memberLabel(assignee, t)}
           </>
         ) : (

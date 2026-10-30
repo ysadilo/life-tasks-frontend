@@ -23,7 +23,11 @@ export function TodayRail({ openTasks }: { openTasks: Task[] }) {
         <span className={styles.groupLabel}>{t('board.split')}</span>
         {splitByAssignee(openTasks, members).map(({ member, count, minutes }) => (
           <div key={member?.userId ?? 'unassigned'} className={styles.splitRow}>
-            {member ? <MemberAvatar email={member.email} /> : <span className={styles.avatarEmpty} />}
+            {member ? (
+              <MemberAvatar email={member.email} avatarKey={member.avatarKey} />
+            ) : (
+              <span className={styles.avatarEmpty} />
+            )}
             <span className={styles.splitName}>{member ? memberLabel(member, t) : t('board.unassigned')}</span>
             <span className={styles.rowMeta}>
               {count}

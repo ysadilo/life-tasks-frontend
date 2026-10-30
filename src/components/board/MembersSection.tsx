@@ -23,7 +23,7 @@ export function MembersSection() {
       </div>
       {board.members.map((m) => (
         <div key={m.userId} className={styles.member}>
-          <MemberAvatar email={m.email} />
+          <MemberAvatar email={m.email} avatarKey={m.avatarKey} />
           <span className={styles.rowText}>
             <span className={styles.memberName}>{m.email}</span>
             <span className={styles.rowMeta}>{t(`board.role.${m.role}`)}</span>
