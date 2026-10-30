@@ -6,12 +6,14 @@ import { LifeAreasModal } from '../../lifeAreas';
 import { BoardBar, InviteModal, NewBoardModal } from '../../board';
 import { SamoyedPeek, Toaster } from '../../ui';
 import { useHandedTaskPeek } from '../../../hooks/useHandedTaskPeek';
+import { useOpenTaskFromUrl } from '../../../hooks/useOpenTaskFromUrl';
 import { useSyncPushSubscription } from '../../../hooks/usePushNotifications';
 import styles from './AppShell.module.css';
 
 export function AppShell() {
   useSyncPushSubscription();
   useHandedTaskPeek();
+  useOpenTaskFromUrl();
   return (
     <div className={styles.shell}>
       <Sidebar />

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { useBoardMembers } from '../../hooks/useBoards';
 import type { ActivityEntry } from '../../models';
@@ -29,8 +30,14 @@ export function ActivityRow({ entry, locale, unread }: ActivityRowProps) {
     key = !entry.targetUserId ? 'unassigned' : target?.isMe ? 'assignedToYou' : 'assignedTo';
   }
 
+  const className = [styles.activityRow, unread ? styles.activityUnread : '', entry.taskId ? styles.activityLink : '']
+    .filter(Boolean)
+    .join(' ');
+  const Row = entry.taskId ? Link : 'div';
+  const rowProps = entry.taskId ? { to: `/today?task=${entry.taskId}` } : {};
+
   return (
-    <div className={[styles.activityRow, unread ? styles.activityUnread : ''].filter(Boolean).join(' ')}>
+    <Row className={className} {...(rowProps as { to: string })}>
       <MemberAvatar email={entry.actorEmail} />
       <div className={styles.activityText}>
         <span>
@@ -43,6 +50,6 @@ export function ActivityRow({ entry, locale, unread }: ActivityRowProps) {
         <span className={styles.rowMeta}>{activityTimeLabel(entry.createdAt, locale)}</span>
       </div>
       {unread && <span className={styles.unreadDot} aria-hidden />}
-    </div>
+    </Row>
   );
 }
