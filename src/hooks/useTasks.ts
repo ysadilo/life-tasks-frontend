@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { peek } from '../components/ui';
-import { bump } from '../lib/samoyed';
+import { getActiveBoardId } from '../lib/activeBoard';
+import { bumpAdded, bumpDone, unbumpDone } from '../lib/samoyed';
 import { localDayAsUTC, localISODate, useLocalToday } from '../lib/dateUtils';
 import type { Energy, Feeling, LifeAreaId, Priority, Recurrence, RecurrenceUnit, Task, TaskStatus } from '../models';
 
@@ -11,6 +12,22 @@ function invalidateTasks(queryClient: QueryClient) {
     queryClient.invalidateQueries({ queryKey: ['tasks'] }),
     queryClient.invalidateQueries({ queryKey: ['activity'] }),
   ]);
+}
+
+/** Counts a completion (or takes one back) in the active board's Samoyed tally. */
+function tallyDone(done: boolean) {
+  const boardId = getActiveBoardId() ?? '';
+  if (!done) return unbumpDone(boardId);
+  const milestone = bumpDone(boardId);
+  if (milestone) peek.show(milestone);
+}
+
+/** The cached status of a task, to tell a real done/un-done change from a re-save (e.g. adding a check-in). */
+function cachedStatus(queryClient: QueryClient, id: string) {
+  return queryClient
+    .getQueriesData<Task[]>({ queryKey: ['tasks'] })
+    .flatMap(([, tasks]) => tasks ?? [])
+    .find((t) => t.id === id)?.status;
 }
 
 export type ResolveMissedAction = 'done' | 'dismiss' | 'addToday';
@@ -80,7 +97,10 @@ export function useToggleOccurrence() {
   return useMutation({
     mutationFn: ({ id, date, done }: { id: string; date: string; done: boolean }) =>
       api.patch<Task>(`/tasks/${id}`, { occurrenceDate: date, occurrenceDone: done }),
-    onSuccess: () => invalidateTasks(queryClient),
+    onSuccess: (_task, { done }) => {
+      tallyDone(done);
+      invalidateTasks(queryClient);
+    },
   });
 }
 
@@ -114,7 +134,12 @@ export function useUpdateTaskStatus() {
         `/tasks/${id}?today=${localISODate()}`,
         patch.status === 'today' ? { ...patch, todayDate: localDayAsUTC() } : patch
       ),
-    onSuccess: () => invalidateTasks(queryClient),
+    onSuccess: (_task, { id, status }) => {
+      const wasDone = cachedStatus(queryClient, id) === 'done';
+      if (status === 'done' && !wasDone) tallyDone(true);
+      else if (status !== 'done' && wasDone) tallyDone(false);
+      invalidateTasks(queryClient);
+    },
   });
 }
 
@@ -131,7 +156,7 @@ export function useCreateTask() {
           predicate: (q) => (q.queryKey[1] as { status?: TaskStatus } | undefined)?.status === 'today',
         })
         .reduce((sum, [, tasks]) => sum + (tasks?.length ?? 0), 0);
-      const milestone = bump('added', (id) => id !== 'added10' || todayCount >= 6);
+      const milestone = bumpAdded((id) => id !== 'added10' || todayCount >= 6);
       if (milestone) peek.show(milestone);
     },
   });

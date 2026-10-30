@@ -34,9 +34,11 @@ const MIN_LOAD_HISTORY = 2;
 interface Stored {
   mode: SamoyedMode;
   day: string;
-  shown: MomentId[];
+  /** Moment ids; per-board ones are `${id}:${boardId}`. */
+  shown: string[];
   added: number;
-  done: number;
+  /** Tasks finished today, per board. */
+  done: Record<string, number>;
   lastVisit: string;
   /** Planned minutes on Today per day, last LOAD_DAYS days; the average of the earlier ones is the "usual". */
   loads: Record<string, number>;
@@ -50,7 +52,7 @@ const fresh = (stored?: Partial<Stored>): Stored => {
     day,
     shown: sameDay ? (stored?.shown ?? []) : [],
     added: sameDay ? (stored?.added ?? 0) : 0,
-    done: sameDay ? (stored?.done ?? 0) : 0,
+    done: sameDay && typeof stored?.done === 'object' ? stored.done : {},
     lastVisit: stored?.lastVisit ?? day,
     loads: stored?.loads ?? {},
   };
@@ -83,25 +85,41 @@ export const modeAllows = (mode: SamoyedMode, id: MomentId) =>
   mode === 'chatty' || (mode === 'bigWins' && BIG_WINS.includes(id));
 
 // Moments already shown during this page load stay allowed, so remounts and StrictMode re-renders don't burn the day's quota.
-const seen = new Set<MomentId>();
+const seen = new Set<string>();
 
 /** Applies the rules (mode, once per moment per day, 3 a day) and records the appearance. */
-export function tryAppear(id: MomentId): boolean {
-  if (seen.has(id)) return true;
+export function tryAppear(id: MomentId, boardId?: string): boolean {
+  const key = boardId ? `${id}:${boardId}` : id;
+  if (seen.has(key)) return true;
   const state = load();
-  if (!modeAllows(state.mode, id) || state.shown.includes(id) || state.shown.length >= MAX_PER_DAY) return false;
-  seen.add(id);
-  save({ ...state, shown: [...state.shown, id] });
+  if (!modeAllows(state.mode, id) || state.shown.includes(key) || state.shown.length >= MAX_PER_DAY) return false;
+  seen.add(key);
+  save({ ...state, shown: [...state.shown, key] });
   return true;
 }
 
-/** Counts a task added/finished today; returns the milestone moment when this one is the 3rd, 6th or 10th. */
-export function bump(kind: 'added' | 'done', allow: (id: MomentId) => boolean = () => true): MomentId | null {
+/** Counts a task added today; returns the milestone moment when this one is the 3rd, 6th or 10th. */
+export function bumpAdded(allow: (id: MomentId) => boolean = () => true): MomentId | null {
   const state = load();
-  const count = state[kind] + 1;
-  save({ ...state, [kind]: count });
-  const id = `${kind}${count}` as MomentId;
+  const count = state.added + 1;
+  save({ ...state, added: count });
+  const id = `added${count}` as MomentId;
   return MILESTONES.includes(count) && allow(id) && tryAppear(id) ? id : null;
+}
+
+/** Counts a task finished today on `boardId`; returns the milestone moment when it is that board's 3rd, 6th or 10th. */
+export function bumpDone(boardId: string): MomentId | null {
+  const state = load();
+  const count = (state.done[boardId] ?? 0) + 1;
+  save({ ...state, done: { ...state.done, [boardId]: count } });
+  const id = `done${count}` as MomentId;
+  return MILESTONES.includes(count) && tryAppear(id, boardId) ? id : null;
+}
+
+/** A finished task was un-done: take it back out of the board's count. */
+export function unbumpDone(boardId: string) {
+  const state = load();
+  save({ ...state, done: { ...state.done, [boardId]: Math.max(0, (state.done[boardId] ?? 0) - 1) } });
 }
 
 let returned: boolean | undefined;
