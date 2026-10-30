@@ -40,7 +40,7 @@ import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recu
 import { isSameDay } from '../../lib/dateUtils';
 import { dueUrgency } from '../../lib/taskDates';
 import { inMyTriage } from '../../lib/triageScope';
-import { ASSIGNEE_VIEWS, matchesAssigneeView, type AssigneeView } from '../../lib/assigneeView';
+import { ASSIGNEE_VIEWS, canActOn, matchesAssigneeView, type AssigneeView } from '../../lib/assigneeView';
 import { getSamoyedMode, isHeavyDay, tryAppear, welcomeBack, type MomentId } from '../../lib/samoyed';
 import { PRIORITY_RANK } from '../../lib/priority';
 import type { Task } from '../../models';
@@ -112,6 +112,16 @@ export default function Today() {
   const saveReflection = (task: Task, { feeling, actualMinutes }: Reflection) => {
     setReflecting(null);
     if (feeling === 'drained' && tryAppear('roughCheckin')) peek.show('roughCheckin');
+    if (task.recurrence) {
+      toggleOccurrence.mutate({
+        id: task.id,
+        date: occurrenceISO(today),
+        done: true,
+        feeling: feeling ?? null,
+        actualMinutes: actualMinutes ?? null,
+      });
+      return;
+    }
     updateStatus.mutate({
       id: task.id,
       status: 'done',
@@ -282,7 +292,7 @@ export default function Today() {
           </div>
         )}
 
-        <ReflectModal task={reflecting} done onClose={() => setReflecting(null)} onSubmit={saveReflection} />
+        <ReflectModal task={reflecting && withTodaysCheckin(reflecting, today)} done onClose={() => setReflecting(null)} onSubmit={saveReflection} />
 
         <TodaySplit openTasks={sortedOpenTasks} />
 
@@ -330,7 +340,7 @@ export default function Today() {
             <TaskRow
               key={task.id}
               task={task}
-              onToggle={() => toggle(task, true)}
+              onToggle={canActOn(task, shared, me?.userId) ? () => toggle(task, true) : undefined}
               onOpen={() => taskForm.openView(task)}
               swipe={swipeFor(task)}
               rowRef={sortBy === 'manual' ? dragReorder.registerRow(task.id) : undefined}
@@ -353,10 +363,9 @@ export default function Today() {
                 <DoneTaskRow
                   key={task.id}
                   task={task}
-                  onToggle={() => toggle(task, false)}
+                  onToggle={canActOn(task, shared, me?.userId) ? () => toggle(task, false) : undefined}
                   onOpen={() => taskForm.openView(task)}
-                  // ponytail: recurring occurrences have no per-occurrence feeling/time field on the BE yet.
-                  onReflect={task.recurrence ? undefined : () => setReflecting(task)}
+                  onReflect={canActOn(task, shared, me?.userId) ? () => setReflecting(task) : undefined}
                 />
               ))}
             </>
@@ -366,4 +375,11 @@ export default function Today() {
       <TodayRail openTasks={sortedOpenTasks} />
     </div>
   );
+}
+
+/** A recurring series carries one check-in per day; show today's in the shape the modal reads. */
+function withTodaysCheckin(task: Task, day: Date): Task {
+  if (!task.recurrence) return task;
+  const checkin = task.occurrenceCheckins?.[occurrenceISO(day)];
+  return { ...task, feeling: checkin?.feeling ?? null, actualMinutes: checkin?.actualMinutes ?? null };
 }

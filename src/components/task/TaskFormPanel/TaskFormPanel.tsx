@@ -16,6 +16,7 @@ import { useBoardMembers } from '../../../hooks/useBoards';
 import { memberLabel } from '../../board';
 import { draftToInput, mustBeToday, type TaskDraft } from '../../../lib/quickAdd';
 import { PRIORITIES } from '../../../lib/priority';
+import { canActOn } from '../../../lib/assigneeView';
 import { RECURRENCES, RECURRENCE_UNITS, MAX_CUSTOM_INTERVAL, isValidCustomInterval } from '../../../lib/recurrence';
 import { ENERGIES, EFFORT_MINUTES, energyRampKey, effortRampKey, priorityRampKey } from '../../../lib/taskMeta';
 import type { Energy, LifeAreaId, Priority, Recurrence, RecurrenceUnit, Task, TaskStatus } from '../../../models';
@@ -278,16 +279,19 @@ function TaskForm({
           </label>
 
           {board.shared && (
-            <OptionGroup
-              row
-              label={t('board.assignee')}
-              value={assignee || UNASSIGNED}
-              onChange={(v) => setAssignee(v === UNASSIGNED ? '' : v)}
-              options={[
-                ...board.members.map((m) => ({ value: m.userId, label: memberLabel(m, t) })),
-                { value: UNASSIGNED, label: t('board.unassigned') },
-              ]}
-            />
+            // Done tasks can't be reassigned (the BE rejects it too); a disabled fieldset disables its buttons.
+            <fieldset disabled={task?.status === 'done'} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
+              <OptionGroup
+                row
+                label={t('board.assignee')}
+                value={assignee || UNASSIGNED}
+                onChange={(v) => setAssignee(v === UNASSIGNED ? '' : v)}
+                options={[
+                  ...board.members.map((m) => ({ value: m.userId, label: memberLabel(m, t) })),
+                  { value: UNASSIGNED, label: t('board.unassigned') },
+                ]}
+              />
+            </fieldset>
           )}
 
           <OptionGroup
@@ -400,9 +404,11 @@ function TaskForm({
                 {t('taskForm.delete')}
               </button>
               {task.status === 'done' ? (
-                <Button type="button" variant="secondary" disabled={blocked} onClick={() => save('today')}>
-                  {t('taskForm.markNotDone')}
-                </Button>
+                canActOn(task, board.shared, board.me?.userId) && (
+                  <Button type="button" variant="secondary" disabled={blocked} onClick={() => save('today')}>
+                    {t('taskForm.markNotDone')}
+                  </Button>
+                )
               ) : (
                 task.status !== 'backlog' && (
                   <Button

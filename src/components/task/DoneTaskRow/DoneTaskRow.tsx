@@ -34,7 +34,7 @@ export function DoneTaskRow({ task, onToggle, onOpen, onReflect }: DoneTaskRowPr
 
   return (
     <div className={onOpen ? `${styles.row} ${styles.clickable}` : styles.row} onClick={openOnRowClick(onOpen)}>
-      <Checkbox checked onChange={onToggle} label={t('task.markNotDone', { title: task.title })} />
+      <Checkbox checked disabled={!onToggle} onChange={onToggle} label={t('task.markNotDone', { title: task.title })} />
       <span className={styles.titleWrap}>
         {onOpen ? (
           <button type="button" className={`${styles.title} ${styles.titleButton}`} onClick={onOpen}>
