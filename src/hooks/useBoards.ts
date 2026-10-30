@@ -176,7 +176,7 @@ export const useCreateInviteLink = () =>
 export const useDisableInviteLink = () =>
   useBoardMutation((boardId: string) => api.delete<void>(`/boards/${boardId}/invite-link`));
 
-/** Re-encodes the picked photo to a small WebP and uploads it as the board's cover (owner only). */
+/** Re-encodes the picked photo to a small JPEG and uploads it as the board's cover (owner only). */
 export const useSetBoardCover = () =>
   useBoardMutation(async ({ id, file }: { id: string; file: File }) =>
     uploadImage(await resizeToWebp(file, COVER_SIDE, false), `/boards/${id}/cover`)
