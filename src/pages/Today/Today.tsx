@@ -41,7 +41,7 @@ import { isSameDay } from '../../lib/dateUtils';
 import { dueUrgency } from '../../lib/taskDates';
 import { inMyTriage } from '../../lib/triageScope';
 import { ASSIGNEE_VIEWS, matchesAssigneeView, type AssigneeView } from '../../lib/assigneeView';
-import { bump, getSamoyedMode, isHeavyDay, tryAppear, welcomeBack, type MomentId } from '../../lib/samoyed';
+import { getSamoyedMode, isHeavyDay, tryAppear, welcomeBack, type MomentId } from '../../lib/samoyed';
 import { PRIORITY_RANK } from '../../lib/priority';
 import type { Task } from '../../models';
 import styles from './Today.module.css';
@@ -78,10 +78,6 @@ export default function Today() {
   const today = useMemo(() => new Date(), []);
 
   const toggle = (task: Task, done: boolean) => {
-    if (done) {
-      const milestone = bump('done');
-      if (milestone) peek.show(milestone);
-    }
     if (task.recurrence) {
       toggleOccurrence.mutate({ id: task.id, date: occurrenceISO(today), done });
     } else {
