@@ -175,6 +175,11 @@
   background: var(--color-area-3);
   object-fit: cover;
   flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 600 12px/1 var(--font-sans);
+  color: var(--color-text);
 }
 
 .profileText {

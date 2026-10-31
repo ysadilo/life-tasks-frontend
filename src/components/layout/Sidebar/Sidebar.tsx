@@ -6,6 +6,8 @@ import { taskForm } from '../../task';
 import { lifeAreasModal } from '../../lifeAreas';
 import { BoardSwitcher, MembersSection } from '../../board';
 import { lifeAreaColorVar } from '../../../lib/lifeAreas';
+import { imageUrl } from '../../../lib/images';
+import { useActiveBoard } from '../../../hooks/useBoards';
 import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { openRecurringOn } from '../../../lib/recurrence';
@@ -22,10 +24,13 @@ export function Sidebar() {
   const { data: backlogTasks } = useTasksByStatus('backlog');
   const { data: recurringTasks } = useRecurringTasks();
   const { data: lifeAreas } = useLifeAreas();
+  const board = useActiveBoard();
 
   const todayCount = (todayTasks?.length ?? 0) + openRecurringOn(recurringTasks, new Date()).length;
 
   const displayName = user?.given_name ?? user?.nickname ?? user?.name ?? user?.email ?? t('user.defaultName');
+  const avatarKey = board?.members.find((m) => m.email === user?.email)?.avatarKey;
+  const avatarSrc = avatarKey ? imageUrl(avatarKey) : user?.picture;
 
   return (
     <aside className={styles.sidebar}>
@@ -68,10 +73,10 @@ export function Sidebar() {
 
       <div className={styles.footer}>
         <NavLink to="/settings" className={styles.profile}>
-          {user?.picture ? (
-            <img className={styles.avatar} src={user.picture} alt="" />
+          {avatarSrc ? (
+            <img className={styles.avatar} src={avatarSrc} alt="" referrerPolicy="no-referrer" />
           ) : (
-            <div className={styles.avatar} />
+            <div className={styles.avatar}>{displayName[0]?.toUpperCase()}</div>
           )}
           <div className={styles.profileText}>
             <span className={styles.profileName}>{displayName}</span>
