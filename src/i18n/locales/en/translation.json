@@ -7,10 +7,170 @@
     "today": "Today",
     "backlog": "Backlog",
     "calendar": "Calendar",
+    "dashboard": "Dashboard",
     "week": "Week",
     "month": "Month",
     "menu": "Menu",
     "settings": "Settings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "loading": "Loading insights…",
+    "noData": "Nothing to show for this period yet.",
+    "summary_week": "{{closed}} tasks closed this week · {{checkins}} with a check-in",
+    "summary_month": "{{closed}} tasks closed this month · {{checkins}} with a check-in",
+    "summary_year": "{{closed}} tasks closed this year · {{checkins}} with a check-in",
+    "range": {
+      "week": "Week",
+      "month": "Month",
+      "year": "Year"
+    },
+    "streak": {
+      "title": "The Streak Keeper",
+      "subtitle": "Days in a row with a task closed",
+      "caption": "days · best {{best}}",
+      "info": {
+        "shows": "How many days in a row you’ve finished something.",
+        "counted": "Any finished task counts for the day. Miss a day and the count starts again; your best run is kept."
+      }
+    },
+    "effort": {
+      "title": "Time Well Spent",
+      "subtitle": {
+        "week": "Effort points burned this week",
+        "month": "Effort points burned this month, by week",
+        "year": "Effort points burned this year, by month"
+      },
+      "points": "points",
+      "above": "{{n}} above your median",
+      "below": "{{n}} below your median",
+      "info": {
+        "shows": "How much effort you put in.",
+        "counted": "Each finished task adds points by its effort size: small tasks add a little, big ones more. The bars split the period; the note compares the week with your usual."
+      }
+    },
+    "energy": {
+      "title": "The Vibe Check",
+      "subtitle": "Done tasks by energy needed",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "info": {
+        "shows": "What kind of tasks you finish, by the energy they needed.",
+        "counted": "Counts tasks marked done in this period, grouped by their Low, Medium or High energy tag."
+      }
+    },
+    "balance": {
+      "title": "Life Area Balance",
+      "subtitle": "Share of completed tasks",
+      "info": {
+        "shows": "Where your finished tasks went.",
+        "counted": "Each part of the bar is that life area’s share of all tasks you finished in this period."
+      }
+    },
+    "burnout": {
+      "title": "The Burnout Radar",
+      "subtitle": "Post-task vibes by life area",
+      "empty": "Needs at least 3 check-ins in an area.",
+      "tip": "{{area}} tasks drain you most. Try batching them into one sitting.",
+      "info": {
+        "shows": "How tasks in each life area felt.",
+        "counted": "Built from your “How did it feel?” check-ins. Rose means drained or heavy, grey neutral, green good or great. Tasks without a check-in are left out."
+      }
+    },
+    "gaps": {
+      "title": "Expectation vs. Reality",
+      "subtitle": "Planned effort against logged time",
+      "empty": "Log the time a task took when you finish it.",
+      "under": "under",
+      "over": "over",
+      "info": {
+        "shows": "How your time guesses compare with reality.",
+        "counted": "Top bar is the effort you planned. Bottom bar is the time you said it took when you finished. Rose means it ran over."
+      }
+    },
+    "matrix": {
+      "title": "The Vibe Matrix",
+      "subtitle": "Energy needed vs. how it felt",
+      "drained": "Drain",
+      "neutral": "Neut",
+      "good": "Good",
+      "great": "Great",
+      "row": {
+        "low": "Low",
+        "medium": "Med",
+        "high": "High"
+      },
+      "info": {
+        "shows": "Whether harder tasks feel worse.",
+        "counted": "Each square counts finished tasks by the energy they needed (rows) and how they felt (columns). Darker squares mean more tasks."
+      }
+    },
+    "habits": {
+      "title": "Habit Hall of Fame",
+      "subtitle": "Repeats never skipped",
+      "empty": "No repeating task has a streak yet.",
+      "info": {
+        "shows": "Your most reliable repeating tasks.",
+        "counted": "The number is how many times in a row you did it without skipping or moving it. A rose badge means the run was recently broken."
+      }
+    },
+    "calendar": {
+      "title": "Vibe Calendar",
+      "subtitle": {
+        "week": "Daily average feeling · this week",
+        "month": "Daily average feeling · this month",
+        "year": "Daily average feeling · last 52 weeks"
+      },
+      "low": "low",
+      "high": "high",
+      "info": {
+        "shows": "Your mood, day by day.",
+        "counted": "Each square is one day, coloured by the average of that day’s check-ins. Empty squares are days without any."
+      }
+    },
+    "createdDone": {
+      "title": "Created vs. Done by Life Area",
+      "subtitle": {
+        "week": "Tasks added this week and how many were finished",
+        "month": "Tasks added this month and how many were finished",
+        "year": "Tasks added this year and how many were finished"
+      },
+      "created": "Created",
+      "done": "Done",
+      "area": "Area",
+      "rate": "Finish rate",
+      "total": "Total",
+      "tip": "{{area}} is filling up faster than it empties: {{created}} added, {{done}} done.",
+      "info": {
+        "shows": "Whether you keep up in each life area.",
+        "counted": "For every area, the outer petal is tasks you added and the inner one is tasks you finished in this period. A big gap means that area is piling up."
+      }
+    },
+    "infoLabels": {
+      "about": "About {{title}}",
+      "shows": "What it shows",
+      "counted": "How it’s counted",
+      "dismiss": "Got it"
+    },
+    "planned": {
+      "title": "Planned vs. Done",
+      "subtitle": "Tasks on each day's list against tasks finished that day · {{period}}",
+      "planned": "Planned",
+      "done": "Done",
+      "hitRate": "Hit rate",
+      "ahead": "Ahead",
+      "tip": "{{weekday}}s are the gap: you plan about {{planned}} and finish {{done}}.",
+      "empty": "Nothing planned in this period yet.",
+      "tipToday": {
+        "week": "Today has {{n}} planned, your busiest day this week.",
+        "month": "Today has {{n}} planned, your busiest day this month."
+      },
+      "info": {
+        "shows": "How much of each day’s plan you finished.",
+        "counted": "Blue is the tasks on your Today list after morning triage. Green is the tasks you finished that day, extras included. Hit rate is done divided by planned."
+      }
+    }
   },
   "settings": {
     "onThisPage": "On this page",

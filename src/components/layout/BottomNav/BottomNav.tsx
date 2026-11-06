@@ -86,6 +86,9 @@ export function BottomNav() {
                 <span className={styles.profileSubtitle}>{activeBoard?.name ?? t('sidebar.soloBoard')}</span>
               </div>
             </div>
+            <NavLink to="/dashboard" role="menuitem" className={styles.menuItem} onClick={() => setMenuOpen(false)}>
+              {t('nav.dashboard')}
+            </NavLink>
             <NavLink to="/settings" role="menuitem" className={styles.menuItem} onClick={() => setMenuOpen(false)}>
               <span className={styles.menuIcon}>
                 <SettingsIcon size={16} />

@@ -52,6 +52,9 @@ export function Sidebar() {
         <NavLink to="/calendar" className={navClassName}>
           <span>{t('nav.calendar')}</span>
         </NavLink>
+        <NavLink to="/dashboard" className={navClassName}>
+          <span>{t('nav.dashboard')}</span>
+        </NavLink>
       </nav>
 
       <MembersSection />

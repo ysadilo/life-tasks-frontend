@@ -1,0 +1,492 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 18px 30px 30px;
+}
+
+.card {
+  /* Mockup tones that have no theme token: soft rose and a deeper green. */
+  --insight-rose: color-mix(in srgb, var(--color-danger-solid) 75%, var(--color-surface));
+  --insight-done: color-mix(in srgb, var(--color-success-solid) 70%, var(--color-success-text));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  min-width: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 18px;
+}
+
+.span1 {
+  grid-column: span 1;
+}
+.span2 {
+  grid-column: span 2;
+}
+.span4 {
+  grid-column: span 4;
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cardTitles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  position: relative;
+}
+
+.cardTitle {
+  font: 600 15px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.cardSubtitle {
+  font: 400 12px/1.35 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.big {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font: 400 13px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.bigNumber {
+  font: 700 52px/1 var(--font-sans);
+  letter-spacing: -0.04em;
+  color: var(--color-text);
+}
+
+.bigNumberSm {
+  composes: bigNumber;
+  font-size: 36px;
+}
+
+.empty {
+  font: 400 13px/1.4 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.tip {
+  font: 500 12px/1.4 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.chart {
+  width: 100%;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+/* Streak */
+.streakDots {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.streakDot {
+  height: 16px;
+  border-radius: 5px;
+  background: var(--color-neutral-chip-bg);
+}
+
+.streakDotOn {
+  background: var(--color-success-solid);
+}
+
+/* Vibe check */
+.hbarRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.hbarLabel {
+  width: 62px;
+}
+
+.hbarTrack {
+  flex: 1;
+  height: 18px;
+  background: var(--color-neutral-chip-bg);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.hbarFill {
+  display: block;
+  height: 100%;
+}
+
+.hbarValue {
+  width: 22px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Vibe matrix */
+.matrix {
+  display: grid;
+  grid-template-columns: 44px repeat(4, 1fr);
+  gap: 4px;
+  align-items: center;
+  font: 500 10px/1 var(--font-sans);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.matrixRowLabel {
+  text-align: left;
+  font-size: 11px;
+}
+
+.matrixCell {
+  display: grid;
+  place-items: center;
+  height: 30px;
+  border-radius: 6px;
+  font: 600 11px/1 var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-neutral-chip-bg);
+}
+
+/* Habits */
+.habit {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 500 12px/1.2 var(--font-sans);
+  color: var(--color-text);
+}
+
+.habitBadge {
+  font: 600 11px/1 var(--font-sans);
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.habitBadgeRisk {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Vibe calendar */
+.heat {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  font: 500 10px/1 var(--font-sans);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.heatYear {
+  grid-template-columns: none;
+  grid-template-rows: repeat(7, 12px);
+  grid-auto-flow: column;
+  grid-auto-columns: 12px;
+  overflow-x: auto;
+}
+
+.heatCell {
+  height: 28px;
+  border-radius: 4px;
+  background: var(--color-neutral-chip-bg);
+}
+
+.heatYear .heatCell {
+  height: auto;
+  border-radius: 3px;
+}
+
+.heat1 {
+  background: var(--color-success-bg);
+  opacity: 0.55;
+}
+.heat2 {
+  background: var(--color-success-bg);
+}
+.heat3 {
+  background: var(--color-success-solid);
+}
+.heat4 {
+  background: var(--color-success-text);
+}
+.heatOut {
+  visibility: hidden;
+}
+.heatFuture {
+  background: transparent;
+  border: 1px dashed var(--color-border);
+}
+.heatToday {
+  outline: 2px solid var(--color-text);
+  outline-offset: 1px;
+}
+
+.heatScale {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 500 11px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.heatScale .heatCell {
+  width: 12px;
+  height: 12px;
+}
+
+/* Created vs done */
+.polarLayout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+}
+
+.polar {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(64px, auto) minmax(64px, auto) minmax(56px, 1fr) 44px;
+  gap: 10px;
+  align-items: center;
+}
+
+.tableHead {
+  font: 600 11px/1 var(--font-sans);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.tableTotal {
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border-subtle);
+  font-weight: 700;
+}
+.headSpan {
+  grid-column: span 2;
+  white-space: nowrap;
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--color-area-0);
+  flex: none;
+}
+
+.swatchCreated {
+  background: color-mix(in srgb, var(--color-area-0) 25%, transparent);
+  border: 1px dashed var(--color-area-0);
+}
+
+.num {
+  text-align: right;
+}
+.areaName {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.rateTrack {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--color-neutral-chip-bg);
+  overflow: hidden;
+}
+.rateFill {
+  display: block;
+  height: 100%;
+}
+.rateLow {
+  color: var(--color-danger-text);
+}
+
+@media (max-width: 1100px) {
+  .polarLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .polar {
+    margin: 0 auto;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: dense;
+  }
+  .span4 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px 16px 24px;
+  }
+  .span1,
+  .span2,
+  .span4 {
+    grid-column: span 1;
+  }
+  .polarLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .polar {
+    margin: 0 auto;
+  }
+}
+
+/* The charts are display-only (tooltips aside): no focus box on tap, and no tab stops. */
+.card :global(.recharts-wrapper),
+.card :global(.recharts-wrapper) * {
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+/* Planned vs. done header stats */
+.stats {
+  display: flex;
+  gap: 22px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.statValue {
+  font: 700 22px/1 var(--font-sans);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.statLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.stats .swatch {
+  width: 10px;
+  height: 10px;
+}
+
+.swatchPlanned {
+  background: var(--color-info-border);
+}
+
+.swatchDoneGreen {
+  background: var(--color-success-solid);
+}
+
+.swatchAhead {
+  background: transparent;
+  border: 1.5px dashed var(--color-info-border);
+  box-sizing: border-box;
+}
+
+/* Vibe calendar: week and month are a compact grid with the day number in each cell. */
+.heatCompact {
+  max-width: 340px;
+}
+
+.heatCompact .heatCell {
+  display: flex;
+  align-items: flex-start;
+  padding: 5px 6px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  font: 500 10px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  text-align: left;
+}
+
+.heatDayToday {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.heatMatrixLow {
+  background: color-mix(in srgb, var(--color-text-muted) 14%, var(--color-surface));
+  color: var(--color-text-secondary);
+}
