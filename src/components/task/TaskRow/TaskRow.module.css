@@ -205,7 +205,12 @@
     margin-top: 8px;
   }
 
+  /* Checkbox sits above the drag handle so the title keeps its width. */
   .lead {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
     margin-right: 12px;
   }
 }
