@@ -30,6 +30,7 @@ export interface Task {
   /** Occurrence day(s) (ISO) forced onto Today outside the normal cadence. */
   extraTodayDates?: string[];
   completedAt?: string | null;
+  createdAt?: string;
   /** Optional check-in, captured when finishing the task or added later with Reflect. */
   feeling?: Feeling | null;
   actualMinutes?: number | null;

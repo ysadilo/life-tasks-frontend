@@ -1,0 +1,92 @@
+.wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.button {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.button:hover,
+.button[aria-expanded='true'] {
+  background: var(--color-hover-bg);
+  color: var(--color-text);
+}
+
+/* Inverse of the page: a dark bubble on Powder, a light one on Glamour. */
+.bubble {
+  position: absolute;
+  left: -8px;
+  top: 30px;
+  z-index: 30;
+  width: 300px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-radius: 14px;
+  box-shadow: var(--shadow-drag);
+  text-align: left;
+  white-space: normal;
+}
+
+.arrow {
+  position: absolute;
+  left: 15px;
+  top: -5px;
+  width: 12px;
+  height: 12px;
+  background: var(--color-text);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+.section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.heading {
+  font: 600 10px/1 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.lead {
+  font: 500 13px/1.45 var(--font-sans);
+}
+
+.body {
+  font: 400 13px/1.5 var(--font-sans);
+  opacity: 0.88;
+}
+
+.dismiss {
+  align-self: flex-start;
+  font: 600 12px/1 var(--font-sans);
+  color: var(--color-focus-ring);
+  background: none;
+  border: none;
+  padding: 4px 0 0;
+  cursor: pointer;
+}
