@@ -4,170 +4,118 @@
 
 @media (max-width: 768px) {
   .nav {
-    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 4px;
+    gap: 2px;
     flex: none;
-    /* Mockup: floats exactly 16px off the bottom edge (over the home-indicator area). */
-    margin: 0 14px 16px;
-    padding: 8px;
-    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
-    border: 1px solid var(--color-border);
-    border-radius: 24px;
-    box-shadow: 0 14px 30px -14px rgb(43 42 40 / 0.3);
+    /* Floats 10px above the home indicator. */
+    margin: 0 12px calc(10px + env(safe-area-inset-bottom));
+    padding: 6px;
+    background: color-mix(in srgb, var(--color-surface) 55%, transparent);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+    border: 1px solid color-mix(in srgb, white 70%, transparent);
+    border-radius: 22px;
+    box-shadow:
+      0 14px 30px -14px rgb(43 42 40 / 0.3),
+      inset 0 1px 0 rgb(255 255 255 / 0.8);
+  }
+
+  .item,
+  .add {
+    min-width: 44px;
+    height: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 15px;
+    text-decoration: none;
   }
 
   .item {
     flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 12px 0;
-    border-radius: 16px;
-    border: 1px solid transparent;
-    font: 500 12px/1 var(--font-sans);
     color: var(--color-text-secondary);
-    text-decoration: none;
+    font: 500 10px/1 var(--font-sans);
+    letter-spacing: -0.01em;
   }
 
   .itemActive {
     background: var(--color-bg);
-    border-color: transparent;
     color: var(--color-text);
     font-weight: 600;
   }
 
-  .count {
-    font: 600 11px/1 var(--font-sans);
-    color: var(--color-neutral-chip-text);
-    background: var(--color-neutral-chip-bg);
-    border-radius: var(--radius-pill);
-    padding: 3px 6px;
+  .label {
+    white-space: nowrap;
   }
 
-  .itemActive .count {
-    color: var(--color-accent-count-text);
+  .add {
+    flex: none;
+    width: 52px;
+    margin: 0 2px;
+    border: 1px solid var(--color-accent-border);
+    background: var(--color-accent);
+    color: var(--color-accent-text);
+    cursor: pointer;
+  }
+}
+
+/* Under 390px: icons only; the active tab expands into a pill with its label. */
+@media (max-width: 389px) {
+  .nav {
+    margin-inline: 8px;
+  }
+
+  .item,
+  .add {
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  .item {
+    flex: 1 1 44px;
+    flex-direction: row;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .itemActive {
+    flex: none;
+    padding: 0 12px;
+  }
+
+  .item:not(.itemActive) .label {
+    display: none;
+  }
+
+  .add {
+    width: 44px;
+  }
+}
+
+/* Under 320px (cover screens): six 44px icons, no labels, butter tint on the active tab. */
+@media (max-width: 319px) {
+  .nav {
+    margin-inline: 6px;
+    padding: 5px;
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .item,
+  .itemActive {
+    flex: none;
+    width: 44px;
+    padding: 0;
+  }
+
+  .itemActive {
     background: var(--color-accent-count-bg);
   }
 
-  .actions {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-left: 4px;
-  }
-
-  .menuButton,
-  .add {
-    width: 46px;
-    height: 46px;
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 16px;
-    cursor: pointer;
-  }
-
-  .menuButton {
-    background: transparent;
-    border: none;
-    font: 500 18px/1 var(--font-sans);
-    color: var(--color-text-secondary);
-  }
-
-  .add {
-    background: var(--color-accent);
-    border: 1px solid var(--color-accent-border);
-    font: 600 18px/1 var(--font-sans);
-    color: var(--color-accent-text);
-  }
-
-  .backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 20;
-    border: none;
-    background: transparent;
-    cursor: default;
-  }
-
-  .menu {
-    position: absolute;
-    right: 0;
-    bottom: calc(100% + 8px);
-    z-index: 21;
-    width: 240px;
-    display: flex;
-    flex-direction: column;
-    padding: 8px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    box-shadow: 0 12px 32px rgb(0 0 0 / 0.16);
-  }
-
-  .menuProfile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px;
-    border-bottom: 1px solid var(--color-border-subtle);
-    margin-bottom: 4px;
-  }
-
-  .avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--color-area-3);
-    object-fit: cover;
-    flex: none;
-  }
-
-  .profileText {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .profileName {
-    font: 600 13px/1 var(--font-sans);
-    color: var(--color-text);
-  }
-
-  .profileSubtitle {
-    font: 400 11px/1 var(--font-sans);
-    color: var(--color-text-muted);
-  }
-
-  .menuItem {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 11px 8px;
-    border: none;
-    background: transparent;
-    border-radius: var(--radius-sm);
-    font: 500 14px/1 var(--font-sans);
-    color: var(--color-text);
-    text-align: left;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .menuItem:hover {
-    background: var(--color-surface-muted);
-  }
-
-  .menuIcon {
-    width: 18px;
-    display: flex;
-    justify-content: center;
-    font-size: 14px;
-    color: var(--color-text-secondary);
+  .label {
+    display: none;
   }
 }

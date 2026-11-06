@@ -55,6 +55,6 @@
 
 @media (max-width: 768px) {
   .wrap {
-    bottom: 88px;
+    bottom: calc(88px + env(safe-area-inset-bottom));
   }
 }

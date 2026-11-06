@@ -22,7 +22,7 @@ interface ReflectModalProps {
 }
 
 const FEELINGS: Feeling[] = ['drained', 'heavy', 'neutral', 'good', 'great'];
-const TOOK_MINUTES = [30, 60, 120, 180];
+const TOOK_MINUTES = [15, 30, 60, 120, 180];
 
 /** Check-in for a task: how it felt and how long it took, both optional (mockup 03). */
 export function ReflectModal({ task, done = false, onClose, onSubmit }: ReflectModalProps) {
