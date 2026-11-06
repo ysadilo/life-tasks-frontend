@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES } from '../../i18n';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -6,6 +6,7 @@ import { LifeAreasManager } from '../../components/lifeAreas';
 import { BoardsManager } from '../../components/board';
 import { FeedbackButton } from '../../components/feedback';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
+import { useOutsideClick } from '../../hooks/useOutsideClick';
 import { useBoards, useClearAvatar, useMyAvatarKey, useSetAvatar } from '../../hooks/useBoards';
 import { FilePickButton, SegmentedTabs, toast } from '../../components/ui';
 import { imageUrl } from '../../lib/images';
@@ -27,6 +28,10 @@ export default function Settings() {
   const setAvatar = useSetAvatar();
   const clearAvatar = useClearAvatar();
   const [samoyedMode, setSamoyedModeState] = useState(getSamoyedMode);
+  const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
+  const avatarMenuRef = useRef<HTMLDivElement>(null);
+  const closeAvatarMenu = useCallback(() => setAvatarMenuOpen(false), []);
+  useOutsideClick(avatarMenuRef, closeAvatarMenu);
 
   const displayName = user?.given_name ?? user?.nickname ?? user?.name ?? user?.email ?? t('user.defaultName');
 
@@ -105,33 +110,57 @@ export default function Settings() {
 
       <section id="account" className={[styles.card, styles.account].join(' ')}>
         <div className={styles.accountInfo}>
-          {avatarKey || user?.picture ? (
-            <img className={styles.avatar} src={avatarKey ? imageUrl(avatarKey) : user?.picture} alt="" />
-          ) : (
-            <div className={styles.avatar} />
-          )}
+          <div ref={avatarMenuRef} className={styles.avatarMenuWrap}>
+            <button
+              type="button"
+              className={styles.avatarButton}
+              aria-label={t(avatarKey ? 'settings.changeAvatar' : 'settings.addAvatar')}
+              aria-haspopup="menu"
+              aria-expanded={avatarMenuOpen}
+              onClick={() => setAvatarMenuOpen((v) => !v)}
+            >
+              {avatarKey || user?.picture ? (
+                <img className={styles.avatar} src={avatarKey ? imageUrl(avatarKey) : user?.picture} alt="" />
+              ) : (
+                <div className={styles.avatar} />
+              )}
+            </button>
+            {avatarMenuOpen && (
+              <div className={styles.avatarMenu} role="menu">
+                <FilePickButton
+                  disabled={setAvatar.isPending}
+                  onFile={(file) => {
+                    closeAvatarMenu();
+                    setAvatar.mutate(file, {
+                      onSuccess: () => toast.show(t('settings.avatarUpdated')),
+                      onError: () => toast.show(t('board.actionFailed')),
+                    });
+                  }}
+                >
+                  {t(avatarKey ? 'settings.changeAvatar' : 'settings.addAvatar')}
+                </FilePickButton>
+                {avatarKey && (
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className={styles.logout}
+                    onClick={() => {
+                      closeAvatarMenu();
+                      clearAvatar.mutate();
+                    }}
+                  >
+                    {t('settings.removeAvatar')}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
           <div className={styles.accountText}>
             <span className={styles.accountName}>{displayName}</span>
             {user?.email && <span className={styles.accountEmail}>{user.email}</span>}
           </div>
         </div>
         <div className={styles.accountActions}>
-          <FilePickButton
-            disabled={setAvatar.isPending}
-            onFile={(file) =>
-              setAvatar.mutate(file, {
-                onSuccess: () => toast.show(t('settings.avatarUpdated')),
-                onError: () => toast.show(t('board.actionFailed')),
-              })
-            }
-          >
-            {t(avatarKey ? 'settings.changeAvatar' : 'settings.addAvatar')}
-          </FilePickButton>
-          {avatarKey && (
-            <button type="button" className={styles.logout} onClick={() => clearAvatar.mutate()}>
-              {t('settings.removeAvatar')}
-            </button>
-          )}
           <FeedbackButton />
           <button
             type="button"
