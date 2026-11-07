@@ -20,6 +20,8 @@ export function sanitizeHtml(html: string): string {
 /** Plain-text projection for dense list rows (keeps the single-line clamp meaningful). */
 export function htmlToText(html: string): string {
   const doc = new DOMParser().parseFromString(html, 'text/html');
+  // textContent glues block lines together ("<p>a</p><p>b</p>" → "ab") — space them out first.
+  doc.body.querySelectorAll('br, p, div, li').forEach((el) => el.after(' '));
   return (doc.body.textContent ?? '').replace(/\s+/g, ' ').trim();
 }
 
