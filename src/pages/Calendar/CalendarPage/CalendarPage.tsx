@@ -12,7 +12,6 @@ import {
   startOfWeek,
   toISODate,
 } from '../../../lib/dateUtils';
-import { isOverdue } from '../../../lib/taskDates';
 import { buildCalendarEntries } from '../../../lib/calendarEntries';
 import { WeekView } from '../WeekView';
 import { MonthView } from '../MonthView';
@@ -60,7 +59,6 @@ export default function CalendarPage() {
   const { data: tasks, isLoading, error } = useTasksInRange(from, to);
 
   const entries = useMemo(() => buildCalendarEntries(tasks ?? [], fromDate, toDate), [tasks, fromDate, toDate]);
-  const overdueCount = useMemo(() => (tasks ?? []).filter((task) => isOverdue(task)).length, [tasks]);
 
   function goPrev() {
     setAnchor((current) =>
@@ -77,25 +75,31 @@ export default function CalendarPage() {
   if (isLoading) return <PageState>{t('calendar.loading')}</PageState>;
   if (error) return <PageState>{t('calendar.error')}</PageState>;
 
-  const subtitle =
-    t('calendar.tasksScheduled', { count: entries.length }) +
-    (overdueCount ? t('calendar.overdueSuffix', { count: overdueCount }) : '');
-
   return (
     <div className={styles.page}>
       <PageHeader
+        eyebrow={t('nav.calendar')}
         title={title}
-        subtitle={subtitle}
         actions={
           <>
             <div className={styles.navControls}>
-              <Button variant="ghost" onClick={goPrev} aria-label={t('calendar.previousPeriod')}>
-                ‹
-              </Button>
-              <Button variant="ghost" onClick={() => setAnchor(new Date())}>
+              <Button variant="secondary" className={styles.todayButton} onClick={() => setAnchor(new Date())}>
                 {t('calendar.today')}
               </Button>
-              <Button variant="ghost" onClick={goNext} aria-label={t('calendar.nextPeriod')}>
+              <Button
+                variant="secondary"
+                className={styles.arrow}
+                onClick={goPrev}
+                aria-label={t('calendar.previousPeriod')}
+              >
+                ‹
+              </Button>
+              <Button
+                variant="secondary"
+                className={styles.arrow}
+                onClick={goNext}
+                aria-label={t('calendar.nextPeriod')}
+              >
                 ›
               </Button>
             </div>

@@ -31,10 +31,6 @@
   animation: var(--kf-curdle-away) 500ms ease-in forwards;
 }
 
-.dueSoon {
-  border-color: var(--color-danger-border);
-}
-
 .selected {
   border-color: var(--color-accent-border);
   box-shadow: 0 0 0 3px var(--color-accent-light-bg);

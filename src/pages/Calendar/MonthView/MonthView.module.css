@@ -12,34 +12,34 @@
 
 .weekdayRow {
   display: grid;
-  grid-template-columns: repeat(7, minmax(160px, 1fr));
-  gap: 8px;
-  padding: 14px 0;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  padding: 16px 0 6px;
 }
 
 .weekdayLabel {
   font: 600 11px/1 var(--font-sans);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
-  padding-left: 9px;
+  color: var(--color-neutral-chip-text);
+  padding: 0 4px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(160px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .cell {
-  min-height: 124px;
+  min-height: 104px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-card);
   padding: 9px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   cursor: pointer;
   text-align: left;
   font: inherit;
@@ -62,8 +62,12 @@
 }
 
 .today {
-  background: var(--color-accent-light-bg);
-  border-color: var(--color-accent-border);
+  background: var(--color-today-bg);
+  border-color: var(--color-today-border);
+}
+
+.todayNumber {
+  font-weight: 700;
 }
 
 .dateNumber {
@@ -74,14 +78,15 @@
 .chips {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   min-height: 0;
   overflow: hidden;
 }
 
 .more {
-  font: 500 11px/1 var(--font-sans);
-  color: var(--color-text-muted);
+  font: 600 11px/1 var(--font-sans);
+  color: var(--color-text);
+  text-decoration: underline;
 }
 
 @media (max-width: 768px) {

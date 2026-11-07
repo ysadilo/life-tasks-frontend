@@ -2,11 +2,11 @@
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: repeat(7, minmax(160px, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   /* One row that fills the visible area, so each column has a bounded height
      to fit chips into (see DayColumn's measure loop). */
   grid-auto-rows: minmax(0, 1fr);
-  gap: 10px;
+  gap: 8px;
   padding: 20px 30px 26px;
   overflow: auto;
 }
@@ -28,9 +28,9 @@
   min-height: 0;
   /* Every column carries the weekend card's box metrics (transparent here) so
      day headers align across the row regardless of the weekend styling. */
-  padding: 8px;
+  padding: 10px;
   border: 1px solid transparent;
-  border-radius: var(--radius-card);
+  border-radius: 16px;
 }
 
 .weekend {
@@ -39,36 +39,35 @@
 }
 
 .today {
-  background: var(--color-accent-light-bg);
-  border-color: var(--color-accent-border);
+  background: var(--color-today-bg);
+  border-color: var(--color-today-border);
 }
 
 .dayHeader {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--color-border-subtle);
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 2px 2px 6px;
 }
 
 .weekday {
-  font: 600 11px/1 var(--font-sans);
-  letter-spacing: 0.1em;
+  font: 600 12px/1 var(--font-sans);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
 
 .dateNumber {
-  font: 700 19px/1 var(--font-sans);
+  font: 700 20px/1 var(--font-sans);
   color: var(--color-text);
 }
 
-.today .dayHeader {
-  border-bottom-color: var(--color-accent-border);
+.pastNumber {
+  color: var(--color-neutral-chip-text);
 }
 
 .today .weekday {
-  color: var(--color-accent-light-text);
+  color: var(--color-text-secondary);
 }
 
 .chips {
@@ -76,7 +75,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   overflow: hidden;
 }
 
@@ -96,12 +95,14 @@
 
 .addPlaceholder {
   width: 100%;
+  margin-top: 2px;
   border: 1px dashed var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 11px;
+  border-radius: 10px;
+  background: none;
+  padding: 8px 0;
   text-align: center;
-  font: 500 11px/1 var(--font-sans);
-  color: var(--color-text-faint);
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-neutral-chip-text);
   cursor: pointer;
 }
 

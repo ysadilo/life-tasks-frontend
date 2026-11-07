@@ -48,6 +48,9 @@
 
   --color-accent-light-bg: #f3e3b3;
   --color-accent-light-border: #e3d3a2;
+  /* Calendar's today column / cell. */
+  --color-today-bg: #fbf3da;
+  --color-today-border: #e3d3a2;
   --color-accent-light-text: #6e6a63;
 
   /* AI features (e.g. "From photo"): a soft lavender surface; the lavender→pink→gold rim is in the component. */
@@ -159,6 +162,8 @@
 
   --color-accent-light-bg: #2e2536;
   --color-accent-light-border: #3a3047;
+  --color-today-bg: #2e2536;
+  --color-today-border: #8e7220;
   --color-accent-light-text: #d8b863;
 
   --color-ai-bg: #2a2338;
