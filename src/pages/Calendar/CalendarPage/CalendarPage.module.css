@@ -10,3 +10,16 @@
   align-items: center;
   gap: 4px;
 }
+
+.todayButton {
+  border-radius: var(--radius-pill);
+  padding: 9px 14px;
+}
+
+.arrow {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 16px;
+}

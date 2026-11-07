@@ -1,11 +1,12 @@
 import { PRIORITIES } from './priority';
 import { lifeAreaColorVar } from './lifeAreas';
 import { ENERGIES } from './taskMeta';
+import { localISODate } from './dateUtils';
 import type { LifeArea, Task } from '../models';
 
-export type GroupBy = 'area' | 'priority' | 'energy' | 'effort' | 'none';
+export type GroupBy = 'area' | 'date' | 'priority' | 'energy' | 'effort' | 'none';
 
-export const GROUP_OPTIONS: GroupBy[] = ['area', 'priority', 'energy', 'effort', 'none'];
+export const GROUP_OPTIONS: GroupBy[] = ['area', 'date', 'priority', 'energy', 'effort', 'none'];
 
 export interface TaskGroup {
   key: string;
@@ -15,6 +16,8 @@ export interface TaskGroup {
   areaName?: string;
   /** Swatch colour (life-area CSS var). */
   dot?: string;
+  /** `YYYY-MM-DD` for a date group; the page formats it in the user's locale. */
+  date?: string;
   tasks: Task[];
 }
 
@@ -24,9 +27,11 @@ interface Bucket {
   labelValues?: Record<string, string>;
   areaName?: string;
   dot?: string;
+  date?: string;
 }
 
 const NO_VALUE = 'none';
+const EARLIER = 'earlier';
 const EFFORT_BUCKETS = [
   { key: 'quick', max: 15 },
   { key: 'short', max: 60 },
@@ -39,8 +44,17 @@ function effortBucket(task: Task): string {
 }
 
 /** Ordered buckets for a grouping, ending with the catch-all for tasks lacking the field. */
-function bucketsFor(by: Exclude<GroupBy, 'none'>, areas: LifeArea[]): Bucket[] {
+function bucketsFor(by: Exclude<GroupBy, 'none'>, areas: LifeArea[], keys: Set<string>): Bucket[] {
   switch (by) {
+    case 'date':
+      return [
+        { key: EARLIER, labelKey: 'backlog.group.earlier' },
+        ...[...keys]
+          .filter((k) => k !== EARLIER && k !== NO_VALUE)
+          .sort()
+          .map((day) => ({ key: day, labelKey: null, date: day })),
+        { key: NO_VALUE, labelKey: 'backlog.group.noDate' },
+      ];
     case 'area':
       return [
         ...areas.map((a) => ({ key: a.id, labelKey: null, areaName: a.name, dot: lifeAreaColorVar(a.order) })),
@@ -68,6 +82,12 @@ function keyOf(task: Task, by: Exclude<GroupBy, 'none'>): string {
   switch (by) {
     case 'area':
       return task.areaId ?? NO_VALUE;
+    case 'date': {
+      // Stored as UTC midnight, so the first 10 chars are the calendar day.
+      if (!task.dueDate) return NO_VALUE;
+      const day = task.dueDate.slice(0, 10);
+      return day < localISODate() ? EARLIER : day;
+    }
     case 'priority':
       return task.priority ?? NO_VALUE;
     case 'energy':
@@ -85,7 +105,7 @@ export function groupTasks(tasks: Task[], by: GroupBy, areas: LifeArea[]): TaskG
     const key = keyOf(task, by);
     byKey.set(key, [...(byKey.get(key) ?? []), task]);
   }
-  return bucketsFor(by, areas)
+  return bucketsFor(by, areas, new Set(byKey.keys()))
     .filter((bucket) => byKey.has(bucket.key))
     .map((bucket) => ({ ...bucket, tasks: byKey.get(bucket.key)! }));
 }

@@ -52,13 +52,13 @@ export function MonthView({ anchor, entries }: MonthViewProps) {
                   .join(' ')}
                 onClick={() => setOpenDay(cell.date)}
               >
-                <span className={styles.dateNumber}>
+                <span className={`${styles.dateNumber} ${isToday ? styles.todayNumber : ''}`}>
                   {cell.date.getDate()}
                   {isToday ? t('calendar.todaySuffix') : ''}
                 </span>
                 <div className={styles.chips}>
                   {visible.map((entry) => (
-                    <TaskChip key={entry.key} task={entry.task} done={entry.done} />
+                    <TaskChip key={entry.key} task={entry.task} done={entry.done} compact />
                   ))}
                   {overflow > 0 && <span className={styles.more}>{t('calendar.more', { count: overflow })}</span>}
                 </div>
