@@ -11,6 +11,7 @@ export { SidePanel } from './SidePanel';
 export { RichText, RichTextEditor } from './RichText';
 export { SegmentedTabs } from './SegmentedTabs';
 export { InfoPopover } from './InfoPopover';
+export { Tooltip } from './Tooltip';
 export { Switch } from './Switch';
 export type { SegmentedTabOption } from './SegmentedTabs';
 export { ThemeToggle } from './ThemeToggle';

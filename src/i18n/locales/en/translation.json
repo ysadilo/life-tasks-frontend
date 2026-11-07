@@ -374,6 +374,7 @@
     "cancel": "Cancel",
     "addToBacklog": "Add to backlog",
     "moveToBacklog": "Move to backlog",
+    "backlogDueHint": "Tasks dated today or earlier stay on Today — change the date first.",
     "markNotDone": "Mark not done",
     "save": "Save",
     "schedule": "Schedule",
