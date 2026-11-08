@@ -266,6 +266,18 @@
   background: var(--color-accent-light-bg);
 }
 
+.areaChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.areaChipActive {
+  color: var(--color-text);
+  border-color: var(--color-accent-border);
+  background: var(--color-accent-light-bg);
+}
+
 .inviteRow {
   display: flex;
   gap: 8px;
