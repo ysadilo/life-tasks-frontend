@@ -15,10 +15,11 @@ import {
 import { Button } from '../ui/Button';
 import { FilePickButton } from '../ui/FilePickButton';
 import { Input } from '../ui/Input';
+import { Switch } from '../ui/Switch';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { toast } from '../ui/Toast';
 import { useBoardMuted } from '../../hooks/useBoardMutes';
-import { usePushPermission } from '../../hooks/usePushNotifications';
+import { useNotificationsSwitch } from '../../hooks/usePushNotifications';
 import { BoardTile, MemberAvatar } from './BoardTile';
 import { inviteModal } from './inviteModalStore';
 import { newBoardModal } from './newBoardModalStore';
@@ -136,11 +137,10 @@ function BoardCard({ board, canDelete }: { board: Board; canDelete: boolean }) {
               )}
             </>
           )}
-          {board.shared && (
-            <button type="button" className={styles.linkButton} onClick={() => setMuted(!muted)}>
-              {t(muted ? 'board.notify.unmute' : 'board.notify.mute')}
-            </button>
-          )}
+          {/* Muting also silences task reminders, so personal boards get it too. */}
+          <button type="button" className={styles.linkButton} onClick={() => setMuted(!muted)}>
+            {t(muted ? 'board.notify.unmute' : 'board.notify.mute')}
+          </button>
           {owner && board.shared && (
             <button type="button" className={styles.linkButton} onClick={() => inviteModal.open(board.id)}>
               {t('board.invitePeople')}
@@ -247,19 +247,28 @@ export function BoardsManager() {
   const { t } = useTranslation();
   const { data: boards } = useBoards();
   const ownedCount = boards?.filter((b) => b.role === 'owner').length ?? 0;
-  const push = usePushPermission();
+  const push = useNotificationsSwitch();
 
   return (
     <div className={styles.manager}>
-      {push.available && push.permission !== 'granted' && (
-        <Button onClick={push.enable} disabled={push.permission === 'denied'}>
-          {t(push.permission === 'denied' ? 'board.notify.blocked' : 'board.notify.enable')}
-        </Button>
+      {push.available && (
+        <div className={styles.notifyRow}>
+          <div>
+            <div className={styles.notifyTitle}>{t('board.notify.all')}</div>
+            <div className={styles.notifyHint}>{t(push.blocked ? 'board.notify.blocked' : 'board.notify.allHint')}</div>
+          </div>
+          <Switch
+            checked={push.on}
+            onChange={push.setOn}
+            disabled={push.pending || (push.blocked && !push.on)}
+            label={t('board.notify.all')}
+          />
+        </div>
       )}
       {boards?.map((board) => (
         <BoardCard key={board.id} board={board} canDelete={ownedCount > 1} />
       ))}
-      <Button onClick={newBoardModal.open}>{t('board.newSharedBoard')}</Button>
+      <Button onClick={newBoardModal.open}>{t('board.newBoard')}</Button>
     </div>
   );
 }

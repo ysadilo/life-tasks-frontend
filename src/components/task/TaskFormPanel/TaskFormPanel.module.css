@@ -58,6 +58,46 @@
   width: 80px;
 }
 
+/* Native time input dressed like .select: bell on the left (mockup), chevron on the right.
+   Input opens the picker on any click, so Chrome's own clock icon is hidden. */
+.time {
+  --bell: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 16 16' fill='none' stroke='currentColor' stroke-width='1.4'%3E%3Cpath d='M4 11.5V7.5a4 4 0 0 1 8 0v4l1 1H3l1-1Z' stroke-linejoin='round'/%3E%3Cpath d='M6.5 14h3' stroke-linecap='round'/%3E%3C/svg%3E");
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  width: 132px;
+  padding: 8px 36px 8px 34px;
+  background:
+    var(--bell) no-repeat left 12px center,
+    var(--chevron) no-repeat right 12px center,
+    var(--color-surface);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+/* Input's own :disabled rule resets the background; keep the icons, dimmed. */
+.time:disabled {
+  background:
+    var(--bell) no-repeat left 12px center,
+    var(--chevron) no-repeat right 12px center,
+    var(--color-hover-bg);
+  opacity: 0.6;
+}
+
+.time::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.time::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.time::-webkit-datetime-edit-hour-field:focus,
+.time::-webkit-datetime-edit-minute-field:focus,
+.time::-webkit-datetime-edit-ampm-field:focus {
+  background: var(--color-focus-halo);
+  color: var(--color-text);
+  border-radius: 3px;
+}
+
 .select {
   appearance: none;
   padding: 8px 40px 8px 12px;

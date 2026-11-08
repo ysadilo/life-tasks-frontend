@@ -369,6 +369,12 @@
       "month_other": "Every {{count}} months"
     },
     "customIntervalInvalid": "Pick a whole number from 1 to {{max}}.",
+    "notify": "Notify",
+    "notifyTime": "Reminder time",
+    "notifyOff": "Don't notify",
+    "notifyDaysBefore_zero": "On due date",
+    "notifyDaysBefore_one": "{{count}} day before",
+    "notifyDaysBefore_other": "{{count}} days before",
     "recurrenceEnd": "Repeat until",
     "addToToday": "Add to today",
     "cancel": "Cancel",
@@ -651,7 +657,8 @@
       "unassigned": "{{actor}} unassigned <b>{{task}}</b>"
     },
     "notify": {
-      "enable": "Turn on notifications",
+      "all": "Notifications",
+      "allHint": "Reminders and board activity, on every device you use.",
       "blocked": "Notifications are blocked in browser settings",
       "mute": "Mute notifications",
       "unmute": "Unmute notifications"
@@ -674,7 +681,6 @@
     "current": "Current",
     "switch": "Switch",
     "manage": "Manage",
-    "newSharedBoard": "+ New shared board",
     "renamed": "Board renamed",
     "deleted": "Deleted \"{{name}}\"",
     "left": "You left \"{{name}}\"",

@@ -2,7 +2,13 @@ import { api } from './api';
 
 export const pushSupported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 
-export const fetchPushConfig = () => api.get<{ publicKey: string | null }>('/notifications/config');
+export interface PushConfig {
+  publicKey: string | null;
+  /** The user's master switch; off until they turn it on. */
+  enabled: boolean;
+}
+
+export const fetchPushConfig = () => api.get<PushConfig>('/notifications/config');
 
 const toBytes = (base64Url: string) => {
   const base64 = (base64Url + '='.repeat((4 - (base64Url.length % 4)) % 4)).replace(/-/g, '+').replace(/_/g, '/');

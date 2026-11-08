@@ -5,10 +5,12 @@ import { Chip } from '../../ui/Chip';
 import { SwipeActions, type SwipeAction } from '../../ui/SwipeActions';
 import { DragHandle } from '../DragHandle';
 import { MetaChip } from '../MetaChip';
+import { ReminderIcon } from '../ReminderIcon';
 import { AssigneeChip } from '../../board';
 import { dueUrgency, type DueUrgency } from '../../../lib/taskDates';
 import { htmlToText } from '../../../lib/richText';
 import { recurrenceLabel } from '../../../lib/recurrence';
+import { hasReminder, reminderLabel } from '../../../lib/reminder';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
 import { useTaskFormState } from '../taskFormStore';
 import { openOnRowClick } from '../openOnRowClick';
@@ -61,13 +63,14 @@ export function TaskRow({
   rowRef,
   dragHandleProps,
 }: TaskRowProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const leaving = useIsLeaving(task.id);
   const areas = useLifeAreaLookup();
   // Highlight the row whose details are open in the side panel (mockup 03).
   const selected = useTaskFormState().task?.id === task.id;
   const urgency = dueUrgency(task);
   const areaName = task.areaId ? areas.get(task.areaId)?.name : undefined;
+  const reminder = !!task.dueDate && hasReminder(task);
   const hasChips =
     showChips &&
     (urgency ||
@@ -76,6 +79,7 @@ export function TaskRow({
       task.estimatedMinutes != null ||
       areaName ||
       task.recurrence ||
+      reminder ||
       task.createdVia);
   const swiped = swipe && !dragHandleProps;
   const onClick = openOnRowClick(onOpen);
@@ -124,6 +128,11 @@ export function TaskRow({
           {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
           {areaName && <Chip>{areaName}</Chip>}
           {task.recurrence && <Chip>↻ {recurrenceLabel(t, task)}</Chip>}
+          {reminder && (
+            <Chip>
+              <ReminderIcon title={`${t('taskForm.notify')}: ${reminderLabel(t, task, i18n.language)}`} />
+            </Chip>
+          )}
           {task.createdVia && <Chip variant="info">{t('agents.addedBy', { name: task.createdVia })}</Chip>}
         </div>
       )}

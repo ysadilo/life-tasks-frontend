@@ -47,6 +47,9 @@ export interface TaskInput {
   recurrenceInterval?: number | null;
   recurrenceUnit?: RecurrenceUnit | null;
   recurrenceEndDate?: string | null;
+  notifyDaysBefore?: number | null;
+  notifyTime?: string | null;
+  notifyTimeZone?: string | null;
 }
 
 /** Every user-editable field of a task, for re-creating it (undo-delete, copy). Callers set `status`. */
@@ -62,6 +65,9 @@ export function taskToInput(task: Task): TaskInput {
     estimatedMinutes: task.estimatedMinutes ?? null,
     recurrence: task.recurrence ?? null,
     recurrenceEndDate: task.recurrenceEndDate ?? null,
+    notifyDaysBefore: task.notifyDaysBefore ?? null,
+    notifyTime: task.notifyTime ?? null,
+    notifyTimeZone: task.notifyTimeZone ?? null,
   };
 }
 
