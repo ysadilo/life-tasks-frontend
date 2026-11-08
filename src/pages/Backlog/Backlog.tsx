@@ -20,10 +20,11 @@ import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { usePreferences } from '../../hooks/usePreferences';
 import { tryAppear } from '../../lib/samoyed';
 import { groupTasks } from '../../lib/taskGrouping';
+import { addDays, localISODate } from '../../lib/dateUtils';
 import styles from './Backlog.module.css';
 
 export default function Backlog() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: tasks, isLoading, error } = useTasksByStatus('backlog');
   const { data: areas } = useLifeAreas();
   const updateStatus = useUpdateTaskStatus();
@@ -49,6 +50,16 @@ export default function Backlog() {
   const filterCount = activeFilterCount(filters);
 
   const groups = useMemo(() => groupTasks(filteredTasks, groupBy, areas ?? []), [filteredTasks, groupBy, areas]);
+
+  const dayLabel = (day: string) => {
+    if (day === localISODate()) return t('backlog.group.today');
+    if (day === localISODate(addDays(new Date(), 1))) return t('backlog.group.tomorrow');
+    return new Date(day + 'T00:00:00').toLocaleDateString(i18n.language, {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+    });
+  };
 
   if (isLoading) return <PageState>{t('backlog.loading')}</PageState>;
   if (error) return <PageState>{t('backlog.error')}</PageState>;
@@ -125,7 +136,7 @@ export default function Backlog() {
         )}
 
         {groups.map((group) => {
-          const hasHeader = group.labelKey !== null || group.areaName;
+          const hasHeader = group.labelKey !== null || group.areaName || group.date;
           const isCollapsed = !!hasHeader && collapsed.has(group.key);
           return (
             <div key={group.key} className={styles.group}>
@@ -138,7 +149,9 @@ export default function Backlog() {
                 >
                   <span className={`${styles.chevron} ${isCollapsed ? styles.chevronCollapsed : ''}`} aria-hidden />
                   {group.dot && <span className={styles.groupDot} style={{ background: group.dot }} />}
-                  <span className={styles.groupLabel}>{group.areaName ?? t(group.labelKey!, group.labelValues)}</span>
+                  <span className={styles.groupLabel}>
+                    {group.date ? dayLabel(group.date) : (group.areaName ?? t(group.labelKey!, group.labelValues))}
+                  </span>
                   <span className={styles.groupCount}>{group.tasks.length}</span>
                 </button>
               ) : null}

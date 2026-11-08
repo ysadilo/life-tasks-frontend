@@ -36,7 +36,7 @@ export function WeekView({ anchor, entries }: WeekViewProps) {
           entries={entries.filter((entry) => isSameDay(entry.date, day))}
           isToday={isSameDay(day, today)}
           isWeekend={day.getDay() === 0 || day.getDay() === 6}
-          canAdd={day >= todayStart}
+          isPast={day < todayStart}
           onMore={() => setOpenDay(day)}
         />
       ))}
@@ -50,11 +50,11 @@ interface DayColumnProps {
   entries: CalendarEntry[];
   isToday: boolean;
   isWeekend: boolean;
-  canAdd: boolean;
+  isPast: boolean;
   onMore: () => void;
 }
 
-function DayColumn({ day, entries, isToday, isWeekend, canAdd, onMore }: DayColumnProps) {
+function DayColumn({ day, entries, isToday, isWeekend, isPast, onMore }: DayColumnProps) {
   const { t, i18n } = useTranslation();
   const chipsRef = useRef<HTMLDivElement>(null);
   const [limit, setLimit] = useState(entries.length);
@@ -121,11 +121,8 @@ function DayColumn({ day, entries, isToday, isWeekend, canAdd, onMore }: DayColu
         .join(' ')}
     >
       <div className={styles.dayHeader}>
-        <span className={styles.weekday}>
-          {weekdayLabel(day, i18n.language)}
-          {isToday ? t('calendar.todaySuffix') : ''}
-        </span>
-        <span className={styles.dateNumber}>{day.getDate()}</span>
+        <span className={styles.weekday}>{weekdayLabel(day, i18n.language)}</span>
+        <span className={`${styles.dateNumber} ${isPast ? styles.pastNumber : ''}`}>{day.getDate()}</span>
       </div>
       <div className={styles.chips} ref={chipsRef}>
         {entries.map((entry, i) => (
@@ -142,7 +139,7 @@ function DayColumn({ day, entries, isToday, isWeekend, canAdd, onMore }: DayColu
         >
           {t('calendar.more', { count: Math.max(overflow, 1) })}
         </button>
-        {canAdd && (
+        {!isPast && (
           <button
             type="button"
             className={styles.addPlaceholder}

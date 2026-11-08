@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SidePanel } from '../../ui/SidePanel';
 import { Button } from '../../ui/Button';
+import { Tooltip } from '../../ui/Tooltip';
 import { Input } from '../../ui/Input';
 import { DateField } from '../../ui/DateField';
 import { RichTextEditor } from '../../ui/RichText';
@@ -60,7 +61,7 @@ export function TaskFormPanel() {
       {batch ? (
         <PhotoBatch key={batch.photoUrl ?? 'batch'} drafts={batch.drafts} photoUrl={batch.photoUrl} onClose={onClose} />
       ) : task && mode === 'view' ? (
-        <TaskDetails key={task.id} task={task} onEdit={() => taskForm.openEdit(task)} />
+        <TaskDetails key={task.id} task={task} onEdit={taskForm.openEdit} onClose={onClose} />
       ) : (
         <TaskForm
           key={`${task?.id ?? ''}|${presetDate ?? ''}|${draft?.title ?? ''}`}
@@ -198,6 +199,8 @@ function TaskForm({
     notifyTime,
   });
   const dueToday = mustBeToday(currentDraft());
+  // aria-disabled (not disabled) so a tap still reaches the button and shows the tooltip.
+  const toBacklog = () => !dueToday && save('backlog');
 
   const buildInput = (status: TaskStatus): TaskInput => draftToInput(currentDraft(), status, board.shared);
 
@@ -449,14 +452,17 @@ function TaskForm({
                     </Button>
                   )
                 : task.status !== 'backlog' && (
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      disabled={blocked || dueToday}
-                      onClick={() => save('backlog')}
-                    >
-                      {t('taskForm.moveToBacklog')}
-                    </Button>
+                    <Tooltip text={dueToday && t('taskForm.backlogDueHint')}>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        disabled={blocked}
+                        aria-disabled={dueToday}
+                        onClick={toBacklog}
+                      >
+                        {t('taskForm.moveToBacklog')}
+                      </Button>
+                    </Tooltip>
                   )}
             </div>
           </>
@@ -466,9 +472,17 @@ function TaskForm({
               {t('taskForm.cancel')}
             </Button>
             <div className={styles.footerRight}>
-              <Button type="button" variant="secondary" disabled={blocked || dueToday} onClick={() => save('backlog')}>
-                {t('taskForm.addToBacklog')}
-              </Button>
+              <Tooltip text={dueToday && t('taskForm.backlogDueHint')}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={blocked}
+                  aria-disabled={dueToday}
+                  onClick={toBacklog}
+                >
+                  {t('taskForm.addToBacklog')}
+                </Button>
+              </Tooltip>
               <Button type="submit" variant="primary" disabled={blocked}>
                 {t('taskForm.addToToday')}
               </Button>

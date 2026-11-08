@@ -87,15 +87,26 @@ interface RichTextProps {
   html: string;
   className?: string;
   style?: CSSProperties;
+  /** When set, checklist boxes are clickable and the toggled HTML is passed here. */
+  onChange?: (html: string) => void;
+}
+
+/** Same gutter hit-test as the editor: the box is a ::before in the li's left 20px. */
+function toggleChecklistItem(e: MouseEvent<HTMLDivElement>): boolean {
+  const li = e.target instanceof HTMLLIElement ? e.target : null;
+  if (!li?.parentElement?.hasAttribute('data-checklist') || e.nativeEvent.offsetX > 20) return false;
+  li.toggleAttribute('data-checked');
+  return true;
 }
 
 /** Renders stored task-description HTML. Sanitizes on every render — the field also comes from the API. */
-export function RichText({ html, className, style }: RichTextProps) {
+export function RichText({ html, className, style, onChange }: RichTextProps) {
   return (
     <div
-      className={[styles.rendered, className].filter(Boolean).join(' ')}
+      className={[styles.rendered, onChange && styles.checkable, className].filter(Boolean).join(' ')}
       style={style}
       dangerouslySetInnerHTML={{ __html: sanitizeHtml(html) }}
+      onClick={onChange && ((e) => toggleChecklistItem(e) && onChange(sanitizeHtml(e.currentTarget.innerHTML)))}
     />
   );
 }
@@ -216,12 +227,8 @@ export function RichTextEditor({ value, onChange, placeholder, ariaLabel }: Rich
     (closestTag(node, el, 'UL') ?? el.querySelector('ul'))?.setAttribute('data-checklist', '');
   };
 
-  // The box is a ::before in the li's left gutter — hit-test by x offset.
   const onSurfaceClick = (e: MouseEvent<HTMLDivElement>) => {
-    const li = e.target instanceof HTMLLIElement ? e.target : null;
-    if (!li?.parentElement?.hasAttribute('data-checklist') || e.nativeEvent.offsetX > 20) return;
-    li.toggleAttribute('data-checked');
-    emit();
+    if (toggleChecklistItem(e)) emit();
   };
 
   // Chrome clones attributes when Enter splits an li — a new item starts unchecked.

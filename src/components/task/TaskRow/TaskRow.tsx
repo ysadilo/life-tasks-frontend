@@ -88,7 +88,6 @@ export function TaskRow({
     inline && styles.inline,
     !hasChips && styles.noChips,
     onOpen && styles.clickable,
-    urgency && styles.dueSoon,
     selected && styles.selected,
     dragHandleProps?.dragging && styles.dragging,
     leaving && styles.leaving,
@@ -122,7 +121,7 @@ export function TaskRow({
       </div>
       {hasChips && (
         <div className={styles.chips}>
-          {urgency && <Chip variant="danger">{t(dueLabelKey(urgency))}</Chip>}
+          {urgency && <Chip>{t(dueLabelKey(urgency))}</Chip>}
           {task.priority && <MetaChip axis="priority" value={task.priority} />}
           {task.energy && <MetaChip axis="energy" value={task.energy} />}
           {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
