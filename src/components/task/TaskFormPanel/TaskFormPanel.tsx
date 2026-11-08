@@ -15,7 +15,13 @@ import { leaveThen } from '../taskLeavingStore';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { useBoardMembers } from '../../../hooks/useBoards';
 import { memberLabel } from '../../board';
-import { draftToInput, mustBeToday, type TaskDraft } from '../../../lib/quickAdd';
+import {
+  DEFAULT_NOTIFY_TIME,
+  NOTIFY_DAYS_BEFORE,
+  draftToInput,
+  mustBeToday,
+  type TaskDraft,
+} from '../../../lib/quickAdd';
 import { PRIORITIES } from '../../../lib/priority';
 import { canActOn } from '../../../lib/assigneeView';
 import { RECURRENCES, RECURRENCE_UNITS, MAX_CUSTOM_INTERVAL, isValidCustomInterval } from '../../../lib/recurrence';
@@ -159,6 +165,8 @@ function TaskForm({
   const [recurrenceEnd, setRecurrenceEnd] = useState(
     task?.recurrenceEndDate ? task.recurrenceEndDate.slice(0, 10) : (draft?.recurrenceEndDate ?? '')
   );
+  const [notifyDays, setNotifyDays] = useState(String(task?.notifyDaysBefore ?? draft?.notifyDaysBefore ?? ''));
+  const [notifyTime, setNotifyTime] = useState(task?.notifyTime ?? draft?.notifyTime ?? DEFAULT_NOTIFY_TIME);
 
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
@@ -186,6 +194,9 @@ function TaskForm({
     recurrenceInterval: custom ? Number(interval) : null,
     recurrenceUnit: custom ? unit : null,
     recurrenceEndDate: recurrenceEnd || null,
+    // A reminder needs a due date to count back from.
+    notifyDaysBefore: dueDate && notifyDays !== '' ? Number(notifyDays) : null,
+    notifyTime,
   });
   const dueToday = mustBeToday(currentDraft());
   // aria-disabled (not disabled) so a tap still reaches the button and shows the tooltip.
@@ -338,6 +349,34 @@ function TaskForm({
               <span className={styles.label}>{t('taskForm.recurrenceEnd')}</span>
               <DateField value={recurrenceEnd} min={dueDate || undefined} onChange={setRecurrenceEnd} />
             </label>
+          )}
+          {dueDate && (
+            <div className={styles.row}>
+              <span className={styles.label}>{t('taskForm.notify')}</span>
+              <div className={styles.custom}>
+                <Input
+                  type="time"
+                  className={styles.time}
+                  aria-label={t('taskForm.notifyTime')}
+                  value={notifyTime}
+                  disabled={notifyDays === ''}
+                  onChange={(e) => setNotifyTime(e.target.value)}
+                />
+                <select
+                  className={styles.select}
+                  aria-label={t('taskForm.notify')}
+                  value={notifyDays}
+                  onChange={(e) => setNotifyDays(e.target.value)}
+                >
+                  <option value="">{t('taskForm.notifyOff')}</option>
+                  {NOTIFY_DAYS_BEFORE.map((d) => (
+                    <option key={d} value={d}>
+                      {t('taskForm.notifyDaysBefore', { count: d })}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           )}
         </div>
         {missingStart && <p className={styles.error}>{t('taskForm.startsOnRequired')}</p>}

@@ -407,6 +407,14 @@
       "month_other": "Раз на {{count}} місяця"
     },
     "customIntervalInvalid": "Вкажіть ціле число від 1 до {{max}}.",
+    "notify": "Нагадати",
+    "notifyTime": "Час нагадування",
+    "notifyOff": "Не нагадувати",
+    "notifyDaysBefore_zero": "У день виконання",
+    "notifyDaysBefore_one": "За {{count}} день",
+    "notifyDaysBefore_few": "За {{count}} дні",
+    "notifyDaysBefore_many": "За {{count}} днів",
+    "notifyDaysBefore_other": "За {{count}} дня",
     "recurrenceEnd": "Повторювати до",
     "addToToday": "На сьогодні",
     "cancel": "Скасувати",
@@ -723,7 +731,8 @@
       "unassigned": "{{actor}}: з <b>{{task}}</b> знято виконавця"
     },
     "notify": {
-      "enable": "Увімкнути сповіщення",
+      "all": "Сповіщення",
+      "allHint": "Нагадування та активність на дошках, на всіх ваших пристроях.",
       "blocked": "Сповіщення заблоковано в налаштуваннях браузера",
       "mute": "Вимкнути звук сповіщень",
       "unmute": "Увімкнути звук сповіщень"
@@ -748,7 +757,6 @@
     "current": "Поточна",
     "switch": "Перемкнути",
     "manage": "Керувати",
-    "newSharedBoard": "+ Нова спільна дошка",
     "renamed": "Дошку перейменовано",
     "deleted": "Видалено «{{name}}»",
     "left": "Ви залишили «{{name}}»",

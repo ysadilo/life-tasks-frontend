@@ -1,0 +1,1 @@
+export { ReminderIcon } from './ReminderIcon';

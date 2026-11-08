@@ -6,6 +6,7 @@ import { SamoyedNudge } from '../../ui/Samoyed';
 import { Chip } from '../../ui/Chip';
 import { RichText } from '../../ui/RichText';
 import { MetaChip } from '../MetaChip';
+import { ReminderIcon } from '../ReminderIcon';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
 import { isBlankHtml } from '../../../lib/richText';
 import { useUpdateTask, useUpdateTaskStatus } from '../../../hooks/useTasks';
@@ -14,6 +15,7 @@ import { leaveThen } from '../taskLeavingStore';
 import { tryAppear } from '../../../lib/samoyed';
 import { daysOverdue, dueUrgency, isOverdue } from '../../../lib/taskDates';
 import { recurrenceLabel } from '../../../lib/recurrence';
+import { hasReminder, reminderLabel } from '../../../lib/reminder';
 import { formatMinutes } from '../../../lib/taskMeta';
 import type { Task } from '../../../models';
 import styles from './TaskDetails.module.css';
@@ -46,7 +48,7 @@ function Property({ label, children }: { label: string; children: ReactNode }) {
 
 /** Read-only task details shown in the side panel when a row is clicked; Edit switches to the form. */
 export function TaskDetails({ task, onEdit, onClose }: TaskDetailsProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const areas = useLifeAreaLookup();
   const areaName = task.areaId ? areas.get(task.areaId)?.name : undefined;
 
@@ -131,6 +133,13 @@ export function TaskDetails({ task, onEdit, onClose }: TaskDetailsProps) {
                   {t('taskForm.recurrenceEnd')} {formatDay(task.recurrenceEndDate)}
                 </span>
               )}
+            </Property>
+          )}
+          {task.dueDate && hasReminder(task) && (
+            <Property label={t('taskForm.notify')}>
+              <Chip>
+                <ReminderIcon /> {reminderLabel(t, task, i18n.language)}
+              </Chip>
             </Property>
           )}
           {task.feeling && (

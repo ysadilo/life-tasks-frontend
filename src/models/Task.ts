@@ -23,6 +23,11 @@ export interface Task {
   recurrenceInterval?: number | null;
   recurrenceUnit?: RecurrenceUnit | null;
   recurrenceEndDate?: string | null;
+  /** Reminder: days before the due date (0 = on the day); null = no reminder. */
+  notifyDaysBefore?: number | null;
+  /** "HH:MM" in `notifyTimeZone` (IANA). */
+  notifyTime?: string | null;
+  notifyTimeZone?: string | null;
   /** Occurrence days (ISO) that have been ticked off, for a recurring series. */
   completedDates?: string[];
   /** Unresolved missed occurrence day(s) (ISO), surfaced in Triage. In practice holds at most one. */

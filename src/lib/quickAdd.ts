@@ -19,7 +19,15 @@ export interface TaskDraft {
   /** `YYYY-MM-DD`. */
   recurrenceEndDate?: string | null;
   assigneeId?: string | null;
+  /** Reminder days before the due date; null = off. */
+  notifyDaysBefore?: number | null;
+  /** `HH:MM`, local. */
+  notifyTime?: string | null;
 }
+
+/** Reminder offsets offered in the form: on the due date, 1, 2 and 7 days before. */
+export const NOTIFY_DAYS_BEFORE = [0, 1, 2, 7] as const;
+export const DEFAULT_NOTIFY_TIME = '09:00';
 
 /** A one-off task due today (or earlier) belongs on Today — it can't go to the backlog. */
 export const mustBeToday = (draft: TaskDraft) =>
@@ -42,6 +50,14 @@ export function draftToInput(draft: TaskDraft, status: TaskStatus, shared: boole
     recurrenceUnit: custom ? (draft.recurrenceUnit ?? null) : null,
     recurrenceEndDate:
       draft.recurrence && draft.recurrenceEndDate ? new Date(draft.recurrenceEndDate).toISOString() : null,
+    // The BE fires reminders in the user's own time zone, so it travels with the time.
+    ...(draft.notifyDaysBefore != null
+      ? {
+          notifyDaysBefore: draft.notifyDaysBefore,
+          notifyTime: draft.notifyTime || DEFAULT_NOTIFY_TIME,
+          notifyTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        }
+      : { notifyDaysBefore: null, notifyTime: null, notifyTimeZone: null }),
     status,
     todayDate: status === 'today' ? localDayAsUTC() : null,
   };

@@ -26,6 +26,8 @@ export default defineConfig({
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
+      // Register the worker under `vite` too, or push can't subscribe in dev.
+      devOptions: { enabled: true, type: 'module' },
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
       },
