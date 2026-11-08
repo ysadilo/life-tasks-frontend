@@ -51,4 +51,6 @@ export interface NewBoardInput {
   name: string;
   shared: boolean;
   invites: string[];
+  /** Life area names to seed, in the creator's language. */
+  lifeAreas: string[];
 }
