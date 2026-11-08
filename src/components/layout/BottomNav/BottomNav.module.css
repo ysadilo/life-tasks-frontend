@@ -47,7 +47,11 @@
     font-weight: 600;
   }
 
+  /* Long labels (uk "Налаштування") truncate instead of pushing the nav past the screen edge. */
   .label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
 
@@ -66,6 +70,7 @@
 @media (max-width: 389px) {
   .nav {
     margin-inline: 8px;
+    gap: 0;
   }
 
   .item,
@@ -75,15 +80,17 @@
   }
 
   .item {
-    flex: 1 1 44px;
+    flex: 1 1 40px;
+    min-width: 40px;
     flex-direction: row;
     gap: 6px;
     font-size: 12px;
   }
 
+  /* Shrinks (label truncates) when the row is tight, e.g. a Flip 7. */
   .itemActive {
-    flex: none;
-    padding: 0 12px;
+    flex: 0 1 auto;
+    padding: 0 10px;
   }
 
   .item:not(.itemActive) .label {

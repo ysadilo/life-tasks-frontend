@@ -12,7 +12,7 @@
 
 .weekdayRow {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(110px, 1fr));
   gap: 6px;
   padding: 16px 0 6px;
 }
@@ -27,7 +27,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(110px, 1fr));
   gap: 6px;
 }
 

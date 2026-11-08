@@ -24,6 +24,7 @@
 
 @media (max-width: 768px) {
   .triageBanner {
+    flex-wrap: wrap;
     margin: 16px 16px 0;
     gap: 12px;
   }
@@ -55,7 +56,8 @@
 }
 
 .triageText {
-  flex: 1;
+  /* A real basis: a long action label ("Почати сортування") wraps below instead of squeezing the text. */
+  flex: 1 1 150px;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -73,6 +75,7 @@
 
 .triageBannerAction {
   flex: none;
+  margin-left: auto;
   padding: 10px 16px;
   background: var(--color-danger-text);
   border: none;

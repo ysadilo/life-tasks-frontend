@@ -81,12 +81,14 @@ export function LifeAreasManager() {
               <>
                 <span className={styles.name}>{area.name}</span>
                 <span className={styles.taskCount}>{t('lifeAreasModal.tasksCount', { count: area.taskCount })}</span>
-                <button type="button" className={styles.button} onClick={() => startRename(area.id, area.name)}>
-                  {t('lifeAreasModal.rename')}
-                </button>
-                <button type="button" className={styles.textButton} onClick={() => deleteArea.mutate(area.id)}>
-                  {t('lifeAreasModal.delete')}
-                </button>
+                <span className={styles.actions}>
+                  <button type="button" className={styles.button} onClick={() => startRename(area.id, area.name)}>
+                    {t('lifeAreasModal.rename')}
+                  </button>
+                  <button type="button" className={styles.textButton} onClick={() => deleteArea.mutate(area.id)}>
+                    {t('lifeAreasModal.delete')}
+                  </button>
+                </span>
               </>
             )}
           </div>

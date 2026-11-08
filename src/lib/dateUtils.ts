@@ -43,13 +43,12 @@ export function monthLabel(date: Date, locale: string): string {
   return new Intl.DateTimeFormat(locale, { month: 'long' }).format(date);
 }
 
+/** "2–8 листопада" / "November 2 – 8": Intl picks the grammatical month form (uk genitive) and word order. */
 export function formatWeekRangeTitle(weekStart: Date, locale: string): string {
-  const weekEnd = addDays(weekStart, 6);
-  const sameMonth = weekStart.getMonth() === weekEnd.getMonth();
-  const startLabel = `${weekStart.getDate()}`;
-  const endLabel = `${weekEnd.getDate()} ${monthLabel(weekEnd, locale)}`;
-  const startFull = sameMonth ? startLabel : `${startLabel} ${monthLabel(weekStart, locale)}`;
-  return `${startFull} – ${endLabel}`;
+  return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' }).formatRange(
+    weekStart,
+    addDays(weekStart, 6)
+  );
 }
 
 export function formatMonthTitle(date: Date, locale: string): string {
