@@ -1,6 +1,8 @@
 .shell {
   display: flex;
   height: 100dvh;
+  /* Nothing may widen the page: mobile Chrome would grow the layout viewport and every fixed sheet with it. */
+  overflow-x: clip;
   background: var(--color-sidebar-bg);
 }
 

@@ -129,3 +129,10 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+
+/* An action can quote a task title; let it wrap rather than run out of the card. */
+.nudgeActions > * {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.25;
+}

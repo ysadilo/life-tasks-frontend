@@ -2,7 +2,8 @@
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  /* Too narrow for seven readable columns (tablet + sidebar): scroll sideways instead of squeezing. */
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
   /* One row that fills the visible area, so each column has a bounded height
      to fit chips into (see DayColumn's measure loop). */
   grid-auto-rows: minmax(0, 1fr);

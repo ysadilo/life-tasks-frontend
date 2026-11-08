@@ -117,3 +117,9 @@
   font: 400 12px/1.5 var(--font-sans);
   color: var(--color-text-faint);
 }
+
+/* Rename + Delete move as one: when the row is too narrow they wrap together to a line of their own. */
+.actions {
+  display: flex;
+  margin-left: auto;
+}

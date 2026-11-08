@@ -194,7 +194,8 @@
   color: var(--color-text);
 }
 
-@media (max-width: 768px) {
+/* Tablets too: beside the app sidebar the section index would leave the cards too narrow. */
+@media (max-width: 1024px) {
   .pageHeading {
     display: none;
   }
@@ -213,8 +214,13 @@
   }
 
   .sections {
-    padding: 16px;
     overflow-y: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .sections {
+    padding: 16px;
   }
 }
 
@@ -314,8 +320,10 @@
 
 .account {
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: 16px 22px;
 }
 
@@ -416,8 +424,10 @@
 }
 
 .accountActions {
+  /* Stays one row; when it can't sit beside the name it drops below it. */
   display: flex;
   flex-wrap: wrap;
+  margin-left: auto;
   justify-content: flex-end;
   gap: 8px;
 }
