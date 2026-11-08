@@ -1,26 +1,26 @@
 .tile {
-  width: 32px;
-  height: 32px;
+  width: 45px;
+  height: 45px;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  font: 700 13px/1 var(--font-sans);
+  border-radius: 14px;
+  font: 700 18px/1 var(--font-sans);
   color: var(--color-text);
   object-fit: cover;
 }
 
 .avatar {
-  width: 22px;
-  height: 22px;
+  width: 33px;
+  height: 33px;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   border: 2px solid var(--color-surface);
-  font: 700 9px/1 var(--font-sans);
+  font: 700 14px/1 var(--font-sans);
   color: var(--color-text);
   object-fit: cover;
 }
@@ -30,7 +30,7 @@
 }
 
 .avatars .avatar + .avatar {
-  margin-left: -7px;
+  margin-left: -10px;
 }
 
 .switcher {
@@ -315,6 +315,9 @@
 }
 
 .assignee .avatar {
+  width: 22px;
+  height: 22px;
+  font-size: 9px;
   border: none;
 }
 
@@ -494,9 +497,9 @@
 }
 
 .splitRow .avatar {
-  width: 24px;
-  height: 24px;
-  font-size: 10px;
+  width: 36px;
+  height: 36px;
+  font-size: 15px;
 }
 
 .splitName {
@@ -640,6 +643,7 @@
     width: 30px;
     height: 30px;
     border-radius: 9px;
+    font-size: 13px;
   }
 
   .barName {
@@ -655,9 +659,9 @@
   }
 
   .bar .avatar {
-    width: 26px;
-    height: 26px;
-    font-size: 11px;
+    width: 39px;
+    height: 39px;
+    font-size: 17px;
     border-color: var(--color-bg);
   }
 
