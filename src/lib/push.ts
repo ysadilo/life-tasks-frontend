@@ -15,13 +15,16 @@ const toBytes = (base64Url: string) => {
   return Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
 };
 
-/** Subscribes this browser to push (reusing an existing subscription) and registers it with the backend. */
-export async function subscribeToPush(): Promise<void> {
+/**
+ * Subscribes this browser to push (reusing an existing subscription) and registers it with the backend,
+ * along with the UI language push text should be written in.
+ */
+export async function subscribeToPush(language: string): Promise<void> {
   const { publicKey } = await fetchPushConfig();
   if (!publicKey) return;
   const registration = await navigator.serviceWorker.ready;
   const subscription =
     (await registration.pushManager.getSubscription()) ??
     (await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: toBytes(publicKey) }));
-  await api.post('/notifications/subscriptions', subscription.toJSON());
+  await api.post('/notifications/subscriptions', { ...subscription.toJSON(), language });
 }
