@@ -227,13 +227,13 @@ export default function Triage() {
               </div>
             ) : (
               <div className={styles.actions}>
-                <button type="button" className={`${styles.action} ${styles.today}`} onClick={() => act('today')}>
-                  {t('triage.short.today')}
-                  <span className={styles.key}>→</span>
-                </button>
                 <button type="button" className={`${styles.action} ${styles.backlog}`} onClick={() => act('backlog')}>
                   {t('triage.short.backlog')}
                   <span className={styles.key}>←</span>
+                </button>
+                <button type="button" className={`${styles.action} ${styles.today}`} onClick={() => act('today')}>
+                  {t('triage.short.today')}
+                  <span className={styles.key}>→</span>
                 </button>
                 <button type="button" className={`${styles.action} ${styles.done}`} onClick={() => act('done')}>
                   {t('triage.short.done')}
