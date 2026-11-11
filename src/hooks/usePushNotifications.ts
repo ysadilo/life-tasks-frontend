@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { api } from '../lib/api';
 import { fetchPushConfig, pushSupported, subscribeToPush } from '../lib/push';
 
-/** Re-registers this browser with the backend on load once permission was granted (endpoints can rotate). */
+/**
+ * Re-registers this browser with the backend on load once permission was granted (endpoints can rotate),
+ * and again when the UI language changes so pushes follow it.
+ */
 export function useSyncPushSubscription() {
+  const { i18n } = useTranslation();
   useEffect(() => {
-    if (pushSupported && Notification.permission === 'granted') subscribeToPush().catch(() => undefined);
-  }, []);
+    if (pushSupported && Notification.permission === 'granted') subscribeToPush(i18n.language).catch(() => undefined);
+  }, [i18n.language]);
 }
 
 /**
@@ -16,6 +21,7 @@ export function useSyncPushSubscription() {
  * `available` is false where push can't work or the backend has no keys.
  */
 export function useNotificationsSwitch() {
+  const { i18n } = useTranslation();
   const queryClient = useQueryClient();
   const { data: config } = useQuery({ queryKey: ['push-config'], queryFn: fetchPushConfig, staleTime: Infinity });
   const [permission, setPermission] = useState<NotificationPermission>(
@@ -28,7 +34,7 @@ export function useNotificationsSwitch() {
         const result = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
         setPermission(result);
         if (result !== 'granted') return;
-        await subscribeToPush();
+        await subscribeToPush(i18n.language);
       }
       await api.put('/notifications/settings', { enabled: on });
     },
