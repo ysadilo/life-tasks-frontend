@@ -41,10 +41,14 @@
 .progress {
   display: flex;
   gap: 6px;
+  /* Many cards: the segments shrink before the title gets squeezed. */
+  flex: 0 1000 auto;
+  min-width: 0;
 }
 
 .segment {
-  width: 44px;
+  flex: 0 1 44px;
+  min-width: 4px;
   height: 6px;
   border-radius: var(--radius-pill);
   background: var(--color-border-subtle);
@@ -160,7 +164,22 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Phones, including landscape: progress on its own row, and the whole page scrolls so the card and buttons fit. */
+@media (max-width: 768px), (max-height: 500px) {
+  .page {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .page > * {
+    flex-shrink: 0;
+  }
+
+  .content {
+    flex: none;
+    overflow-y: visible;
+  }
+
   .header {
     flex-wrap: wrap;
     padding: 16px 20px 8px;
@@ -324,6 +343,17 @@
   margin: -8px 0 0;
   font: 400 15px/1.5 var(--font-sans);
   color: var(--color-text-secondary);
+  /* Long notes fade out after 5 lines so the action buttons stay in reach. */
+  --description-max: 7.5em;
+  max-height: var(--description-max);
+  overflow: hidden;
+  mask-image: linear-gradient(#000 calc(var(--description-max) - 1.5em), transparent var(--description-max));
+}
+
+@media (max-height: 500px) {
+  .description {
+    --description-max: 4.5em;
+  }
 }
 
 .metaRow {
