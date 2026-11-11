@@ -119,8 +119,8 @@
   color: var(--color-text-muted);
 }
 
-/* Mobile: the whole page scrolls (header, toolbar and groups together) so the tasks get the full screen. */
-@media (max-width: 768px) {
+/* Mobile and short landscape screens: the whole page scrolls so the tasks get the full screen; filters stay frozen on desktop only. */
+@media (max-width: 768px), (max-height: 500px) {
   .page {
     overflow-y: auto;
     overscroll-behavior: contain;
