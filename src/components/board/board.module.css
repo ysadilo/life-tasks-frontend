@@ -382,9 +382,21 @@
 
 .manageActions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
+  gap: 10px 14px;
   padding-left: 43px;
+}
+
+/* Buttons wrap to the next line as whole units rather than breaking their labels. */
+.manageActions > button {
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .manageActions {
+    padding-left: 0;
+  }
 }
 
 .manageActions .inviteForm {
