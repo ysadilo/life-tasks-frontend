@@ -12,7 +12,7 @@ interface ConnectAgentProps {
   enabled: boolean;
 }
 
-/** How to add the Life Tasks MCP server to an assistant; the sign-in itself is OAuth, so no secret is shown. */
+/** How to add the LifeTasks MCP server to an assistant; the sign-in itself is OAuth, so no secret is shown. */
 export function ConnectAgent({ serverUrl, enabled }: ConnectAgentProps) {
   const { t } = useTranslation();
   const [client, setClient] = useState<AgentClient>('claude');
