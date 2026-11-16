@@ -143,6 +143,8 @@
   --color-text-faint: #8c7f9b;
 
   --color-checkbox-border: #6b5f7a;
+  /* Off-state switch thumb: the surface color would vanish on the dark track. */
+  --color-switch-thumb-off: #9b8da9;
 
   --color-hover-bg: #2a2233;
   --color-pressed-bg: #332a40;
