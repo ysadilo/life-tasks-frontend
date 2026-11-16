@@ -1,6 +1,6 @@
 # life-tasks-frontend
 
-React + Vite + TypeScript PWA client for Life Tasks Manager. Talks to
+React + Vite + TypeScript PWA client for LifeTasks. Talks to
 [life-tasks-backend](../life-tasks-backend) — never to Postgres directly.
 
 ## Setup

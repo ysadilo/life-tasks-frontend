@@ -13,8 +13,8 @@ export default defineConfig({
       filename: 'sw.ts',
       includeAssets: ['favicon.ico', 'favicon.svg'],
       manifest: {
-        name: 'Life Tasks Manager',
-        short_name: 'Life Tasks',
+        name: 'LifeTasks',
+        short_name: 'LifeTasks',
         description: 'Backlog, Today board, week/month views, and recurring tasks.',
         theme_color: '#1c2521',
         background_color: '#eef1f0',

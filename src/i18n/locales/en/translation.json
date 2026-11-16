@@ -1,7 +1,7 @@
 {
   "app": {
-    "title": "Life Tasks Manager",
-    "name": "Life Tasks"
+    "title": "LifeTasks",
+    "name": "LifeTasks"
   },
   "nav": {
     "today": "Today",
@@ -769,13 +769,13 @@
     "title": "AI agents",
     "connect": {
       "title": "Connect",
-      "intro": "Life Tasks runs an MCP server, so AI assistants can read and manage your tasks for you.",
+      "intro": "LifeTasks runs an MCP server, so AI assistants can read and manage your tasks for you.",
       "serverLabel": "Your MCP server",
       "copy": "Copy",
       "copied": "Server URL copied",
       "copyFailed": "Couldn't copy the URL",
       "notConfigured": "This server has no MCP address configured yet.",
-      "oauthNote": "Agents sign in with your Life Tasks account (OAuth). No password or token is shared with the agent.",
+      "oauthNote": "Agents sign in with your LifeTasks account (OAuth). No password or token is shared with the agent.",
       "connectAnAgent": "Connect an agent",
       "configFile": "Using a config file instead? Show JSON",
       "client": {
@@ -788,22 +788,22 @@
         "claude": {
           "1": "Open Claude › Settings › Connectors",
           "2": "Choose Add custom connector and paste the server URL",
-          "3": "Sign in to Life Tasks and pick what the agent may do"
+          "3": "Sign in to LifeTasks and pick what the agent may do"
         },
         "chatgpt": {
           "1": "Open ChatGPT › Settings › Connectors",
           "2": "Add a custom connector and paste the server URL",
-          "3": "Sign in to Life Tasks and pick what the agent may do"
+          "3": "Sign in to LifeTasks and pick what the agent may do"
         },
         "cursor": {
           "1": "Open Cursor › Settings › MCP",
           "2": "Add a server using the JSON config below",
-          "3": "Sign in to Life Tasks and pick what the agent may do"
+          "3": "Sign in to LifeTasks and pick what the agent may do"
         },
         "other": {
           "1": "Add a remote MCP server (streamable HTTP)",
           "2": "Use the server URL above",
-          "3": "Sign in to Life Tasks and pick what the agent may do"
+          "3": "Sign in to LifeTasks and pick what the agent may do"
         }
       },
       "allowAgents": "Allow agents",
@@ -811,10 +811,10 @@
     },
     "connected": {
       "title": "Connected agents",
-      "empty": "No agents yet. Add Life Tasks to an assistant using the steps on the left.",
+      "empty": "No agents yet. Add LifeTasks to an assistant using the steps on the left.",
       "manage": "Manage",
       "revoke": "Revoke",
-      "revokeConfirm": "{{name}} will lose access to Life Tasks right away. Connect it again from the assistant to bring it back.",
+      "revokeConfirm": "{{name}} will lose access to LifeTasks right away. Connect it again from the assistant to bring it back.",
       "revoked": "Access revoked",
       "actions_one": "{{count}} action this week",
       "actions_other": "{{count}} actions this week",
@@ -920,7 +920,7 @@
     "connectPage": {
       "loading": "Checking the request…",
       "title": "Connect {{name}}",
-      "hint": "Choose what {{name}} may do in Life Tasks. You can change this any time in Settings › AI agents.",
+      "hint": "Choose what {{name}} may do in LifeTasks. You can change this any time in Settings › AI agents.",
       "allow": "Allow",
       "pickBoard": "Pick at least one board for the agent to work on.",
       "invalidTitle": "This approval link isn’t valid",
