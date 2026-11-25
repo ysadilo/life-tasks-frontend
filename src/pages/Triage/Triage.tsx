@@ -2,7 +2,7 @@ import { useEffect, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageState } from '../../components/layout';
-import { Button, Chip, RichText, SamoyedAvatar } from '../../components/ui';
+import { Chip, RichText, SamoyedAvatar } from '../../components/ui';
 import { MetaChip } from '../../components/task';
 import { MemberAvatar, memberLabel } from '../../components/board';
 import { useSwipe, type SwipeDirection } from '../../hooks/useSwipe';
@@ -37,6 +37,7 @@ const MISSED_ACTION_KEYS: Record<string, ResolveMissedAction> = {
 export default function Triage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const areas = useLifeAreaLookup();
   const {
     current,
     upcoming,
@@ -79,6 +80,10 @@ export default function Triage() {
         }
         return;
       }
+      if (e.key === 'Escape') {
+        navigate('/today');
+        return;
+      }
       const action = ACTION_KEYS[e.key];
       if (action) {
         e.preventDefault();
@@ -89,7 +94,7 @@ export default function Triage() {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [current, act, actMissed, undo]);
+  }, [current, act, actMissed, undo, navigate]);
 
   if (isLoading) return <PageState>{t('triage.loading')}</PageState>;
   if (error) return <PageState>{t('triage.error')}</PageState>;
@@ -105,187 +110,151 @@ export default function Triage() {
     .filter(Boolean)
     .join(', ');
 
+  const areaDot = (areaId?: string | null) => {
+    const area = areaId ? areas.get(areaId) : undefined;
+    return area ? lifeAreaColorVar(area.order) : 'transparent';
+  };
+
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.titleGroup}>
-          <h1 className={styles.heading}>{t('triage.title')}</h1>
-          {!done && <span className={styles.subtitle}>{t('triage.subtitle', { index, total })}</span>}
-        </div>
-        <div className={styles.progress} aria-hidden>
-          {Array.from({ length: total }, (_, i) => (
-            <span
-              key={i}
-              className={`${styles.segment} ${i < index - 1 || done ? styles.segmentDone : i === index - 1 ? styles.segmentCurrent : ''}`}
-            />
-          ))}
-        </div>
-        <div className={styles.headerActions}>
-          {canUndo && (
-            <Button variant="ghost" onClick={undo}>
-              {t('triage.undo')}
-            </Button>
-          )}
-          <button type="button" className={styles.finishLater} onClick={() => navigate('/today')}>
-            {t('triage.finishLater')}
-          </button>
-        </div>
-      </header>
-
+      <h1 className={styles.srOnly}>{t('triage.title')}</h1>
       <div className={styles.content}>
-        <aside className={styles.side}>
-          {history.length > 0 && (
-            <>
-              <span className={styles.sideLabel}>{t('triage.sorted')}</span>
-              {history.slice(-6).map((entry, i) => (
-                <div key={`${entry.task.id}-${i}`} className={styles.sideItem}>
-                  <span className={styles.sideTitle}>{entry.task.title}</span>
-                  <span className={`${styles.sideBadge} ${styles[entry.action]}`}>
-                    {entry.handedTo
-                      ? t('triage.handedTo', { name: memberLabel(entry.handedTo, t) })
-                      : t(`triage.short.${entry.action}`)}
-                  </span>
-                </div>
-              ))}
-            </>
-          )}
-        </aside>
-        {done || !current ? (
-          <div className={styles.complete}>
-            <div className={styles.completeIcon}>
-              {tryAppear('triageCleared') ? (
-                <SamoyedAvatar moment="triageCleared" size={96} />
-              ) : (
-                <svg
-                  width="26"
-                  height="26"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M5 13l4 4L19 7" />
-                </svg>
+        <div className={styles.stage}>
+          {!done && current && (
+            <div className={styles.progress}>
+              <span>{t('triage.progress', { index, total })}</span>
+              <span className={styles.progressTrack} aria-hidden>
+                <span className={styles.progressFill} style={{ width: `${(index / Math.max(total, 1)) * 100}%` }} />
+              </span>
+              <button type="button" className={styles.textButton} onClick={() => navigate('/today')}>
+                {t('triage.escToStop')}
+              </button>
+              {canUndo && (
+                <button type="button" className={styles.textButton} onClick={undo}>
+                  {t('triage.undo')}
+                </button>
               )}
             </div>
-            <div className={styles.completeCopy}>
+          )}
+
+          {done || !current ? (
+            <div className={styles.complete}>
+              {tryAppear('triageCleared') ? (
+                <span className={styles.completeDog}>
+                  <SamoyedAvatar moment="triageCleared" size={200} />
+                </span>
+              ) : (
+                <span className={styles.completeIcon}>
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
+                </span>
+              )}
               <span className={styles.completeTitle}>{t('triage.emptyTitle')}</span>
               <span className={styles.completeDescription}>
                 {t('triage.cardsSorted', { count: total })}
                 {summary && `: ${summary}.`}
               </span>
+              <button type="button" className={styles.completeButton} onClick={() => navigate('/today')}>
+                {t('triage.goToToday')}
+              </button>
             </div>
-            <Button variant="secondary" onClick={() => navigate('/today')}>
-              {t('triage.goToToday')}
-            </Button>
-          </div>
-        ) : (
-          <div className={styles.stack}>
-            <div
-              className={`${styles.cards} ${styles[`layers${Math.min(upcoming.length, 2)}` as 'layers1' | 'layers2'] ?? ''}`}
-              style={{ '--swipe-progress': swipe.progress } as CSSProperties}
-            >
-              {upcoming[0] && (
-                <div className={`${styles.card} ${styles.cardUnder}`} aria-hidden>
-                  <TaskCardBody item={upcoming[0]} />
+          ) : (
+            <>
+              <div className={styles.cards} style={{ '--swipe-progress': swipe.progress } as CSSProperties}>
+                {upcoming[0] && (
+                  <div className={`${styles.card} ${styles.cardUnder}`} aria-hidden>
+                    <TaskCardBody item={upcoming[0]} />
+                  </div>
+                )}
+                <div
+                  {...swipe.bind}
+                  style={swipe.style}
+                  className={`${styles.card} ${styles.cardTop} ${styles[`swipe_${SWIPE_ACTIONS[swipe.direction]}` as 'swipe_today']}`}
+                >
+                  <TaskCardBody item={current} />
+                </div>
+              </div>
+
+              <div className={styles.actions}>
+                {!isMissed && (
+                  <TriageButton arrow="←" label={t('triage.short.backlog')} onClick={() => act('backlog')} />
+                )}
+                <TriageButton
+                  arrow="↑"
+                  label={t('triage.short.done')}
+                  onClick={() => (isMissed ? actMissed('done') : act('done'))}
+                />
+                <TriageButton
+                  arrow="↓"
+                  label={isMissed ? t('triage.dismissMissed') : t('triage.short.drop')}
+                  tone="danger"
+                  onClick={() => (isMissed ? actMissed('dismiss') : act('drop'))}
+                />
+                <TriageButton
+                  arrow="→"
+                  label={t('triage.short.today')}
+                  tone="primary"
+                  onClick={() => (isMissed ? actMissed('addToday') : act('today'))}
+                />
+              </div>
+
+              {shared && !isMissed && handTargets.length > 0 && (
+                <div className={styles.handTo}>
+                  <span className={styles.sideLabel}>{t('triage.handTo')}</span>
+                  {handTargets.map((member) => (
+                    <button
+                      key={member.userId}
+                      type="button"
+                      className={styles.handButton}
+                      onClick={() => handTo(member)}
+                    >
+                      <MemberAvatar email={member.email} avatarKey={member.avatarKey} />
+                      {memberLabel(member, t)}
+                    </button>
+                  ))}
                 </div>
               )}
-              <div
-                {...swipe.bind}
-                style={swipe.style}
-                className={`${styles.card} ${styles.cardTop} ${styles[`swipe_${SWIPE_ACTIONS[swipe.direction]}` as 'swipe_today']}`}
-              >
-                <TaskCardBody item={current} />
-              </div>
-            </div>
 
-            {isMissed ? (
-              <div className={`${styles.actions} ${styles.actionsThree}`}>
-                <button type="button" className={`${styles.action} ${styles.done}`} onClick={() => actMissed('done')}>
-                  {t('triage.short.done')}
-                  <span className={styles.key}>↑</span>
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.action} ${styles.today}`}
-                  onClick={() => actMissed('addToday')}
-                >
-                  {t('triage.short.today')}
-                  <span className={styles.key}>→</span>
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.action} ${styles.drop}`}
-                  onClick={() => actMissed('dismiss')}
-                >
-                  {t('triage.dismissMissed')}
-                  <span className={styles.key}>↓</span>
-                </button>
-              </div>
-            ) : (
-              <div className={styles.actions}>
-                <button type="button" className={`${styles.action} ${styles.backlog}`} onClick={() => act('backlog')}>
-                  {t('triage.short.backlog')}
-                  <span className={styles.key}>←</span>
-                </button>
-                <button type="button" className={`${styles.action} ${styles.today}`} onClick={() => act('today')}>
-                  {t('triage.short.today')}
-                  <span className={styles.key}>→</span>
-                </button>
-                <button type="button" className={`${styles.action} ${styles.done}`} onClick={() => act('done')}>
-                  {t('triage.short.done')}
-                  <span className={styles.key}>↑</span>
-                </button>
-                <button type="button" className={`${styles.action} ${styles.drop}`} onClick={() => act('drop')}>
-                  {t('triage.short.drop')}
-                  <span className={styles.key}>↓</span>
-                </button>
-              </div>
-            )}
+              <span className={styles.hint}>
+                {t('triage.hint')}
+                {!isMissed && canUndo && (
+                  <>
+                    {' · '}
+                    <span className={styles.hintKey}>U</span> {t('triage.hintUndo')}
+                  </>
+                )}
+              </span>
+            </>
+          )}
+        </div>
 
-            {shared && !isMissed && handTargets.length > 0 && (
-              <div className={styles.handTo}>
-                <span className={styles.sideLabel}>{t('triage.handTo')}</span>
-                {handTargets.map((member) => (
-                  <button
-                    key={member.userId}
-                    type="button"
-                    className={styles.handButton}
-                    onClick={() => handTo(member)}
-                  >
-                    <MemberAvatar email={member.email} avatarKey={member.avatarKey} />
-                    {memberLabel(member, t)}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <span className={styles.hint}>
-              {t('triage.hint')}{' '}
-              {!isMissed && canUndo && (
-                <>
-                  <span className={styles.hintKey}>U</span> {t('triage.hintUndo')}
-                </>
-              )}
-            </span>
-          </div>
-        )}
         <aside className={styles.side}>
           {upcoming.length > 0 && (
-            <>
-              <span className={styles.sideLabel}>{t('triage.stillToSort')}</span>
-              {upcoming.slice(0, 6).map((item) => (
-                <div key={`${item.kind}-${item.task.id}`} className={`${styles.sideItem} ${styles.sideItemPending}`}>
+            <div className={styles.sideSection}>
+              <span className={styles.sideLabel}>
+                {t('triage.stillToSort')} · {upcoming.length}
+              </span>
+              {upcoming.slice(0, 8).map((item) => (
+                <div key={`${item.kind}-${item.task.id}`} className={styles.sideItem}>
+                  <span className={styles.sideDot} style={{ background: areaDot(item.task.areaId) }} />
                   <span className={styles.sideTitle}>{item.task.title}</span>
                 </div>
               ))}
-            </>
+            </div>
           )}
           {others.some(({ tasks }) => tasks.length > 0) && (
-            <>
+            <div className={styles.sideSection}>
               <span className={styles.sideLabel}>{t('triage.inOthers')}</span>
               {others
                 .filter(({ tasks }) => tasks.length > 0)
@@ -302,11 +271,47 @@ export default function Triage() {
                     )}
                   </div>
                 ))}
-            </>
+            </div>
+          )}
+          {history.length > 0 && (
+            <div className={styles.sideSection}>
+              <span className={styles.sideLabel}>
+                {t('triage.sorted')} · {history.length}
+              </span>
+              {history.slice(-8).map((entry, i) => (
+                <div key={`${entry.task.id}-${i}`} className={`${styles.sideItem} ${styles.sideItemSorted}`}>
+                  <span className={styles.sideTitle}>{entry.task.title}</span>
+                  <span className={styles.sideOutcome}>
+                    {entry.handedTo
+                      ? t('triage.handedTo', { name: memberLabel(entry.handedTo, t) })
+                      : t(`triage.short.${entry.action}`)}
+                  </span>
+                </div>
+              ))}
+            </div>
           )}
         </aside>
       </div>
     </div>
+  );
+}
+
+interface TriageButtonProps {
+  arrow: string;
+  label: string;
+  tone?: 'primary' | 'danger';
+  onClick: () => void;
+}
+
+/** A square arrow key with its label under it; the whole column is the button. */
+function TriageButton({ arrow, label, tone, onClick }: TriageButtonProps) {
+  return (
+    <button type="button" className={`${styles.action} ${tone ? styles[tone] : ''}`} onClick={onClick}>
+      <span className={styles.actionKey} aria-hidden>
+        {arrow}
+      </span>
+      <span className={styles.actionLabel}>{label}</span>
+    </button>
   );
 }
 
@@ -324,31 +329,22 @@ function TaskCardBody({ item }: { item: TriageQueueItem }) {
 
   return (
     <>
-      <div className={styles.badgeRow}>
-        {isMissed ? (
-          <Chip variant="danger" pill>
-            {t('triage.missedBadge', { date: missedDateLabel })}
-          </Chip>
-        ) : (
-          <Chip variant="danger" pill>
-            {task.priority ? `${task.priority} · ` : ''}
-            {t('triage.overdue', { count: overdue })}
-          </Chip>
-        )}
-        {area && (
-          <span className={styles.area}>
-            <span className={styles.areaDot} style={{ background: lifeAreaColorVar(area.order) }} />
-            {area.name}
-          </span>
-        )}
-      </div>
+      <span className={styles.cardLead}>
+        {isMissed ? t('triage.missedBadge', { date: missedDateLabel }) : t('triage.overdue', { count: overdue })}
+      </span>
 
       <div className={styles.title}>{task.title}</div>
       {task.description && <RichText html={task.description} className={styles.description} />}
 
       <div className={styles.metaRow}>
-        {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
-        {task.energy && <MetaChip axis="energy" value={task.energy} />}
+        {task.priority && <MetaChip plain axis="priority" value={task.priority} />}
+        {area && (
+          <Chip variant="plain" dot={lifeAreaColorVar(area.order)}>
+            {area.name}
+          </Chip>
+        )}
+        {task.estimatedMinutes != null && <MetaChip plain axis="effort" minutes={task.estimatedMinutes} />}
+        {task.energy && <MetaChip plain axis="energy" value={task.energy} />}
       </div>
     </>
   );

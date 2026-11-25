@@ -465,6 +465,8 @@
     "goToToday": "Go to Today"
   },
   "triage": {
+    "progress": "{{index}} of {{total}}",
+    "escToStop": "Esc to stop",
     "handTo": "Hand to",
     "handedTo": "→ {{name}}",
     "inOthers": "In others' triage",
@@ -482,8 +484,8 @@
     "itsDone": "It's actually done",
     "dropIt": "Drop it",
     "undo": "Undo",
-    "hint": "Arrow keys or click to sort.",
-    "hintUndo": "undoes the last call.",
+    "hint": "Use the arrow keys or click",
+    "hintUndo": "undoes the last call",
     "emptyTitle": "Nothing left to triage",
     "cardsSorted_one": "{{count}} card sorted",
     "cardsSorted_other": "{{count}} cards sorted",
@@ -502,7 +504,7 @@
     "short": {
       "today": "Today",
       "backlog": "Backlog",
-      "done": "Done",
+      "done": "Already done",
       "drop": "Drop"
     }
   },

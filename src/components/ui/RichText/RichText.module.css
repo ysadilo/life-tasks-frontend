@@ -16,7 +16,7 @@
 }
 
 .rendered a {
-  color: var(--color-accent-text, var(--color-text));
+  color: var(--color-text);
   text-decoration: underline;
 }
 

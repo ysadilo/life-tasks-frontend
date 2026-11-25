@@ -1,277 +1,99 @@
+/* v7 "Triage · desktop": a centred stage (progress, card, arrow keys) and a queue panel on the right. */
 .page {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  background:
-    radial-gradient(
-      600px 400px at 50% 40%,
-      color-mix(in srgb, var(--color-active) 30%, transparent) 0%,
-      transparent 70%
-    ),
-    var(--color-sidebar-bg);
+  background: var(--color-sidebar-bg);
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 22px 30px;
-}
-
-.titleGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-}
-
-.heading {
-  margin: 0;
-  font: 700 18px/1 var(--font-sans);
-  color: var(--color-text);
-}
-
-.subtitle {
-  font: 400 13px/1.3 var(--font-sans);
-  color: var(--color-text-secondary);
-}
-
-.progress {
-  display: flex;
-  gap: 6px;
-  /* Many cards: the segments shrink before the title gets squeezed. */
-  flex: 0 1000 auto;
-  min-width: 0;
-}
-
-.segment {
-  flex: 0 1 44px;
-  min-width: 4px;
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background: var(--color-border-subtle);
-}
-
-.segmentDone {
-  background: var(--color-success-solid);
-}
-
-.segmentCurrent {
-  background: var(--color-accent);
-}
-
-.headerActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.finishLater {
-  padding: 9px 14px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  font: 500 13px/1 var(--font-sans);
-  color: var(--color-text-secondary);
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
   white-space: nowrap;
-  cursor: pointer;
 }
 
 .content {
   flex: 1;
   min-height: 0;
-  padding: 0 30px 30px;
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 240px;
+  display: flex;
+}
+
+.stage {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  justify-content: center;
+  gap: 36px;
+  padding: 40px;
   overflow-y: auto;
   /* The card flies past the edge when swiped away. */
   overflow-x: hidden;
 }
 
-.content > .complete,
-.content > .stack {
-  justify-self: center;
-}
-
-.stack {
-  width: 100%;
-  max-width: 560px;
+.progress {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 30px;
-}
-
-.side {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-}
-
-.sideLabel {
-  font: 600 11px/1 var(--font-sans);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  gap: 14px;
+  font: 500 14px/1 var(--font-sans);
   color: var(--color-text-muted);
 }
 
-.sideItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 11px 12px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 12px;
-  font: 500 13px/1.2 var(--font-sans);
-  color: var(--color-text);
-}
-
-.sideItemPending {
-  background: transparent;
-  border-style: dashed;
-  border-color: var(--color-border);
-  color: var(--color-text-secondary);
-}
-
-.sideTitle {
-  min-width: 0;
+.progressTrack {
+  width: 160px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border);
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.sideBadge {
-  flex: none;
-  padding: 4px 8px;
-  border-radius: var(--radius-pill);
-  font: 600 11px/1 var(--font-sans);
+.progressFill {
+  display: block;
+  height: 100%;
+  background: var(--color-accent);
+  transition: width var(--dur-base) var(--ease-out);
 }
 
-@media (max-width: 1100px) {
-  .content {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .side {
-    display: none;
-  }
+.textButton {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
 }
 
-/* Phones, including landscape: progress on its own row, and the whole page scrolls so the card and buttons fit. */
-@media (max-width: 768px), (max-height: 500px) {
-  .page {
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-
-  .page > * {
-    flex-shrink: 0;
-  }
-
-  .content {
-    flex: none;
-    overflow-y: visible;
-  }
-
-  .header {
-    flex-wrap: wrap;
-    padding: 16px 20px 8px;
-    padding-top: calc(16px + env(safe-area-inset-top));
-  }
-
-  .progress {
-    order: 3;
-    width: 100%;
-  }
-
-  .segment {
-    flex: 1;
-    width: auto;
-    height: 5px;
-  }
-
-  .content {
-    padding: 16px 20px 24px;
-  }
-
-  .stack {
-    gap: 20px;
-  }
-}
-
-.complete {
-  width: 100%;
-  max-width: 480px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  padding: 56px 32px;
-  background: var(--color-success-solid);
-  border: 1px solid var(--color-success-solid-border);
-  border-radius: var(--radius-shell);
-  text-align: center;
-}
-
-.completeIcon {
-  width: 96px;
-  height: 96px;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-surface);
-  border-radius: 16px;
-  color: var(--color-success-text);
-}
-
-.completeCopy {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.completeTitle {
-  font: 700 26px/1.2 var(--font-sans);
+.textButton:hover {
   color: var(--color-text);
-  letter-spacing: -0.02em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.completeDescription {
-  font: 400 15px/1.5 var(--font-sans);
-  color: var(--color-text-secondary);
+/* The next card waits underneath and grows into place as the top one is dragged away. */
+/* Only the top card sizes the stack; the next one sits behind it at the same size. */
+.cards {
+  position: relative;
+  width: 540px;
+  max-width: 100%;
 }
 
 .card {
   position: relative;
   touch-action: none;
   user-select: none;
-  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 30px;
+  gap: 18px;
+  padding: 34px 40px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 24px;
-  box-shadow: 0 30px 60px -28px rgb(43 42 40 / 0.35);
-}
-
-/* The next card waits underneath and grows into place as the top one is dragged away. */
-.cards {
-  width: 100%;
-  display: grid;
-}
-
-.cards > .card {
-  grid-area: 1 / 1;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lift);
 }
 
 .cardTop {
@@ -279,68 +101,28 @@
 }
 
 .cardUnder {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
-  transform: translateY(calc(11px * (1 - var(--swipe-progress, 0)))) scale(calc(0.96 + 0.04 * var(--swipe-progress, 0)));
+  transform: scale(calc(0.96 + 0.04 * var(--swipe-progress, 0)));
   box-shadow: none;
 }
 
-/* Further cards still waiting show as extra edges below the next one. */
-.layers1 {
-  margin-bottom: 12px;
-}
-
-.layers2 {
-  margin-bottom: 23px;
-}
-
-.layers2 .cardUnder {
-  box-shadow:
-    0 11px 0 -2px var(--color-surface-muted),
-    0 12px 0 -2px var(--color-border);
-}
-
-@media (max-width: 768px) {
-  .card {
-    padding: 24px;
-  }
-}
-
-.badgeRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.area {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.cardLead {
   font: 500 13px/1 var(--font-sans);
-  color: var(--color-text-secondary);
-}
-
-.areaDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  flex: none;
+  color: var(--color-text-muted);
 }
 
 .title {
-  font: 700 34px/1.08 var(--font-sans);
+  font: 700 32px/1.15 var(--font-sans);
+  letter-spacing: -0.01em;
   color: var(--color-text);
-  letter-spacing: -0.03em;
-}
-
-@media (max-width: 768px) {
-  .title {
-    font-size: 28px;
-  }
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .description {
-  margin: -8px 0 0;
+  margin: -6px 0 0;
   font: 400 15px/1.5 var(--font-sans);
   color: var(--color-text-secondary);
   /* Long notes fade out after 5 lines so the action buttons stay in reach. */
@@ -350,87 +132,15 @@
   mask-image: linear-gradient(#000 calc(var(--description-max) - 1.5em), transparent var(--description-max));
 }
 
-@media (max-height: 500px) {
-  .description {
-    --description-max: 4.5em;
-  }
-}
-
 .metaRow {
   display: flex;
-  gap: 7px;
   flex-wrap: wrap;
-}
-
-.actions {
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-@media (max-width: 768px) {
-  .actions {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.actions.actionsThree {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.action {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 14px 0;
-  border-radius: 16px;
-  font: 600 15px/1 var(--font-sans);
-  cursor: pointer;
-  border: 1px solid transparent;
+  gap: 8px 16px;
 }
 
-.today {
-  background: var(--color-accent);
-  border-color: var(--color-accent-border);
-  color: var(--color-accent-text);
-}
-
-.backlog {
-  background: var(--color-neutral-chip-bg);
-  border-color: var(--color-border);
-  color: var(--color-neutral-chip-text);
-}
-
-.done {
-  background: var(--color-success-bg);
-  border-color: var(--color-success-border);
-  color: var(--color-success-text);
-}
-
-.drop {
-  background: var(--color-danger-bg);
-  border-color: var(--color-danger-border);
-  color: var(--color-danger-text);
-}
-
-.key {
-  font: 500 11px/1 var(--font-sans);
-  opacity: 0.75;
-}
-
-.hint {
-  text-align: center;
-  font: 400 13px/1 var(--font-sans);
-  color: var(--color-text-faint);
-}
-
-.hintKey {
-  font:
-    500 12px/1 ui-monospace,
-    monospace;
-  color: var(--color-text-muted);
+.metaRow:empty {
+  display: none;
 }
 
 /* Colour fills in over the card as the swipe approaches the commit distance. */
@@ -440,7 +150,7 @@
   inset: 0;
   border-radius: inherit;
   background: var(--swipe-fill, transparent);
-  opacity: calc(var(--swipe-progress, 0) * 0.7);
+  opacity: calc(var(--swipe-progress, 0) * 0.5);
   pointer-events: none;
 }
 
@@ -453,11 +163,96 @@
 }
 
 .swipe_done {
-  --swipe-fill: var(--color-success-solid);
+  --swipe-fill: var(--color-active);
 }
 
 .swipe_drop {
   --swipe-fill: var(--color-danger-solid);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action {
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.actionKey {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background: var(--color-surface);
+  font: 600 16px/1 var(--font-sans);
+  color: var(--color-text);
+  transition:
+    background-color var(--dur-fast),
+    border-color var(--dur-fast),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.action:hover .actionKey {
+  border-color: var(--color-border-strong);
+  background: var(--color-hover-bg);
+  transform: translateY(-1px);
+}
+
+.action:active .actionKey {
+  transform: translateY(0);
+}
+
+.action:focus-visible {
+  outline: none;
+}
+
+.action:focus-visible .actionKey {
+  box-shadow:
+    0 0 0 2px var(--color-surface),
+    0 0 0 4px var(--color-focus-ring);
+}
+
+.actionLabel {
+  font: 600 14px/1.2 var(--font-sans);
+  color: var(--color-text);
+  text-align: center;
+}
+
+.primary .actionKey,
+.primary:hover .actionKey {
+  border-color: var(--color-accent-border);
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
+.danger .actionLabel {
+  color: var(--color-danger-solid);
+}
+
+.hint {
+  text-align: center;
+  font: 400 13px/1.3 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.hintKey {
+  font:
+    500 12px/1 ui-monospace,
+    monospace;
+  color: var(--color-text-secondary);
 }
 
 .handTo {
@@ -482,11 +277,81 @@
 }
 
 .handButton:hover {
-  border-color: var(--color-accent-border);
+  border-color: var(--color-border-strong);
   color: var(--color-text);
 }
 
+/* Queue panel. */
+.side {
+  width: 300px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+  background: var(--color-bg);
+  border-left: 1px solid var(--color-border-subtle);
+  overflow-y: auto;
+}
+
+.side:empty {
+  display: none;
+}
+
+.sideSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sideLabel {
+  padding-bottom: 8px;
+  font: 600 13px/1 var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.handTo .sideLabel {
+  padding-bottom: 0;
+}
+
+.sideItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--color-row-divider);
+  font: 400 14px/1.3 var(--font-sans);
+  color: var(--color-text);
+}
+
+.sideItemSorted {
+  color: var(--color-text-muted);
+}
+
+.sideDot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.sideTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sideOutcome {
+  flex: none;
+  font-size: 13px;
+}
+
 .ownerSort {
+  flex: none;
   border: none;
   background: transparent;
   padding: 0;
@@ -494,4 +359,112 @@
   color: var(--color-text-secondary);
   text-decoration: underline;
   cursor: pointer;
+}
+
+/* Finished: the v7 "Nothing left to triage" state. */
+.complete {
+  width: 100%;
+  max-width: 480px;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px;
+  background: var(--color-border-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 22px;
+  text-align: center;
+}
+
+.completeDog {
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 24px 40px -22px rgba(30, 35, 38, 0.45);
+}
+
+.completeIcon {
+  width: 84px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 26px;
+  background: var(--color-active);
+  color: var(--color-active-text);
+}
+
+.completeTitle {
+  font: 700 24px/1.1 var(--font-sans);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.completeDescription {
+  max-width: 34ch;
+  font: 400 14px/1.55 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.completeButton {
+  padding: 11px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font: 600 14px/1 var(--font-sans);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.completeButton:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-hover-bg);
+}
+
+@media (max-width: 1100px) {
+  .side {
+    display: none;
+  }
+}
+
+/* Phones, including landscape: the whole page scrolls so the card and buttons fit. */
+@media (max-width: 768px), (max-height: 500px) {
+  .page {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .content {
+    flex: none;
+  }
+
+  .stage {
+    justify-content: flex-start;
+    gap: 24px;
+    padding: 20px;
+    padding-top: calc(20px + env(safe-area-inset-top));
+    overflow-y: visible;
+  }
+
+  .card {
+    padding: 24px;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  .action {
+    width: auto;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+@media (max-height: 500px) {
+  .description {
+    --description-max: 4.5em;
+  }
 }
