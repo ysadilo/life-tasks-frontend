@@ -513,6 +513,7 @@
   "triage": {
     "progress": "{{index}} з {{total}}",
     "escToStop": "Esc — зупинити",
+    "stop": "Зупинити",
     "handTo": "Передати",
     "handedTo": "→ {{name}}",
     "inOthers": "У сортуванні інших",

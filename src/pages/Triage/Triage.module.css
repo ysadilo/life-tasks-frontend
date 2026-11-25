@@ -69,6 +69,10 @@
   cursor: pointer;
 }
 
+.narrowOnly {
+  display: none;
+}
+
 .textButton:hover {
   color: var(--color-text);
   text-decoration: underline;
@@ -445,7 +449,19 @@
     gap: 24px;
     padding: 20px;
     padding-top: calc(20px + env(safe-area-inset-top));
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
     overflow-y: visible;
+  }
+
+  /* No Esc key on a phone: the same button just says Stop. */
+  .wideOnly {
+    display: none;
+  }
+
+  .narrowOnly {
+    display: inline;
+    font-weight: 600;
+    color: var(--color-text);
   }
 
   .card {

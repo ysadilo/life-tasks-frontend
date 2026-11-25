@@ -127,7 +127,8 @@ export default function Triage() {
                 <span className={styles.progressFill} style={{ width: `${(index / Math.max(total, 1)) * 100}%` }} />
               </span>
               <button type="button" className={styles.textButton} onClick={() => navigate('/today')}>
-                {t('triage.escToStop')}
+                <span className={styles.wideOnly}>{t('triage.escToStop')}</span>
+                <span className={styles.narrowOnly}>{t('triage.stop')}</span>
               </button>
               {canUndo && (
                 <button type="button" className={styles.textButton} onClick={undo}>

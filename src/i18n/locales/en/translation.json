@@ -467,6 +467,7 @@
   "triage": {
     "progress": "{{index}} of {{total}}",
     "escToStop": "Esc to stop",
+    "stop": "Stop",
     "handTo": "Hand to",
     "handedTo": "→ {{name}}",
     "inOthers": "In others' triage",
