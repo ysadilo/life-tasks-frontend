@@ -13,9 +13,10 @@
   min-height: 0;
   display: flex;
   margin: 10px 10px 10px 0;
-  background: var(--color-surface);
+  background: var(--color-bg);
   border: 1px solid var(--color-border-subtle);
-  border-radius: 16px;
+  border-radius: var(--radius-shell);
+  box-shadow: var(--shadow-shell);
   overflow: hidden;
 }
 

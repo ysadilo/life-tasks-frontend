@@ -42,3 +42,18 @@
   color: var(--color-info-text);
   border: 1px solid var(--color-info-border);
 }
+
+.plain {
+  padding: 0;
+  gap: 5px;
+  font: 400 13px/1 var(--font-sans);
+  color: var(--color-text-muted);
+  animation: none;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+}

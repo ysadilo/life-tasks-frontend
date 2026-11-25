@@ -42,8 +42,8 @@
   }
 
   .itemActive {
-    background: var(--color-bg);
-    color: var(--color-text);
+    background: var(--color-active);
+    color: var(--color-active-text);
     font-weight: 600;
   }
 
@@ -119,7 +119,7 @@
   }
 
   .itemActive {
-    background: var(--color-accent-count-bg);
+    background: var(--color-active);
   }
 
   .label {

@@ -5,7 +5,7 @@
   gap: 8px;
   font: 600 14px/1 var(--font-sans);
   padding: 12px 18px;
-  border-radius: var(--radius-input);
+  border-radius: var(--radius-button);
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
@@ -33,13 +33,12 @@
 }
 
 .primary:hover:not(:disabled, [aria-disabled='true']) {
-  filter: brightness(0.96);
-  border-color: var(--color-accent-hover-border);
-  box-shadow: 0 8px 16px -8px rgba(140, 110, 30, 0.55);
+  filter: brightness(1.15);
+  box-shadow: 0 8px 16px -10px rgba(30, 35, 38, 0.6);
 }
 
 .primary:active:not(:disabled, [aria-disabled='true']) {
-  filter: brightness(0.92);
+  filter: brightness(1.05);
   box-shadow: none;
 }
 

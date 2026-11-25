@@ -278,10 +278,10 @@
 
 /* Fixed swatches per theme: the live tokens only reflect the active theme. */
 .preview {
-  --swatch-bg: #fbfaf7;
-  --swatch-1: #f3e3b3;
-  --swatch-2: #d3deec;
-  --swatch-3: #cfddd2;
+  --swatch-bg: #f6f7f7;
+  --swatch-1: #e2e800;
+  --swatch-2: #d5d9dc;
+  --swatch-3: #2e3439;
   height: 70px;
   padding: 10px;
   display: flex;
@@ -292,10 +292,10 @@
 }
 
 .preview[data-theme='glamour'] {
-  --swatch-bg: #211b29;
-  --swatch-1: #2e2536;
-  --swatch-2: #232b3c;
-  --swatch-3: #24382e;
+  --swatch-bg: #22282b;
+  --swatch-1: #d2d81a;
+  --swatch-2: #363e43;
+  --swatch-3: #4a555c;
 }
 
 .preview > span {

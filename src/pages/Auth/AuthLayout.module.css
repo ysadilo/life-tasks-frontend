@@ -86,7 +86,7 @@
   flex-direction: column;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  box-shadow: 0 24px 50px -24px rgba(43, 42, 40, 0.35);
+  box-shadow: 0 24px 50px -24px rgba(30, 35, 38, 0.35);
 }
 
 .todayCard {

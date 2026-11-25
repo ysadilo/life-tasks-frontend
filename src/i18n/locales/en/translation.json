@@ -220,8 +220,8 @@
     "uk": "Українська"
   },
   "theme": {
-    "powder": "Powder",
-    "glamour": "Glamour"
+    "powder": "Light",
+    "glamour": "Dark"
   },
   "lifeAreasModal": {
     "title": "Life areas",

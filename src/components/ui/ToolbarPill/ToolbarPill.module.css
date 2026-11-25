@@ -1,8 +1,8 @@
 .pill {
   flex: none;
-  padding: 9px 14px;
+  padding: 9px 12px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-text-secondary);
   font: 500 13px/1 var(--font-sans);
@@ -29,8 +29,9 @@
 .active:hover {
   font-weight: 600;
   color: var(--color-text);
-  background: var(--color-accent-light-bg);
-  border-color: var(--color-accent-light-border);
+  background: var(--color-active);
+  border-color: var(--color-active-border);
+  color: var(--color-active-text);
 }
 
 .caret {

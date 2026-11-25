@@ -1,241 +1,265 @@
 :root {
-  --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Sofia Pro', 'Sofia Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   --radius-sm: 8px;
   --radius-pill: 999px;
-  --radius-input: 11px;
-  --radius-card: 12px;
-  --radius-shell: 20px;
-  --radius-checkbox: 7px;
-  --radius-nav-item: 10px;
+  --radius-input: 10px;
+  --radius-card: 16px;
+  --radius-shell: 14px;
+  --radius-checkbox: 50%;
+  --radius-nav-item: 8px;
+  --radius-button: 9px;
 }
 
 :root[data-theme='powder'] {
   color-scheme: light;
 
-  /* Per the "nine screens" mockup: screen and cards share one fill,
-     separated only by --color-border. */
-  --color-bg: #fbfaf7;
-  --color-sidebar-bg: #f4f1eb;
-  --color-surface: #fbfaf7;
-  --color-surface-muted: #f6f4ef;
-  --color-border: #ddd8cf;
-  --color-border-subtle: #e3dfd8;
+  /* v7 "slate" light theme: cool slate neutrals, slate for actions, acid (#E2E800) for active and done. */
+  --color-bg: #f6f7f7;
+  --color-sidebar-bg: #eceeef;
+  --color-surface: #ffffff;
+  --color-surface-muted: #eef0f1;
+  --color-border: #d5d9dc;
+  --color-border-subtle: #e1e4e6;
+  --color-row-divider: #e6e9ea;
 
-  --color-text: #2b2a28;
-  --color-text-secondary: #5f5a52;
-  --color-text-muted: #8e897f;
-  --color-text-faint: #a9a49b;
+  --color-text: #23292c;
+  --color-text-secondary: #353b3f;
+  --color-text-muted: #5e666b;
+  --color-text-faint: #737b80;
 
-  --color-checkbox-border: #b9b3a8;
+  --color-checkbox-border: #a6adb1;
 
   /* Interaction states: hover fill/border, pressed fill, focus halo. */
-  --color-hover-bg: #f4f1eb;
-  --color-pressed-bg: #eae6de;
-  --color-border-strong: #c9c2b6;
-  --color-focus-halo: #f3e3b3;
-  --color-focus-ring: #e8c766;
-  --color-accent-hover-border: #cfaa3f;
-  --shadow-lift: 0 10px 20px -12px rgba(43, 42, 40, 0.35);
-  --shadow-drag: 0 24px 40px -16px rgba(43, 42, 40, 0.4);
+  --color-hover-bg: #eef0f1;
+  --color-pressed-bg: #e6e9ea;
+  --color-border-strong: #c3c9cd;
+  --color-focus-halo: #f8f9c2;
+  --color-focus-ring: #2e3439;
+  --color-accent-hover-border: #23292c;
+  --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.06), 0 24px 40px -12px rgba(0, 0, 0, 0.16);
+  --shadow-drag: 0 12px 24px -8px rgba(0, 0, 0, 0.25);
 
-  --color-accent: #e8c766;
-  --color-accent-border: #d9b650;
-  --color-accent-text: #3a362e;
+  /* Primary actions are slate, never yellow. */
+  --color-accent: #2e3439;
+  --color-accent-border: #2e3439;
+  --color-accent-text: #ffffff;
 
-  --color-accent-count-bg: #e8c766;
-  --color-accent-count-text: #3a362e;
+  /* Acid: selected nav item, active pill, done checks. Always slate text on top. */
+  --color-active: #e2e800;
+  --color-active-border: #c9ce00;
+  --color-active-text: #2e3439;
 
-  --color-accent-light-bg: #f3e3b3;
-  --color-accent-light-border: #e3d3a2;
+  --color-accent-count-bg: transparent;
+  --color-accent-count-text: #2e3439;
+
+  --color-accent-light-bg: #f8f9c2;
+  --color-accent-light-border: #e2e800;
   /* Calendar's today column / cell. */
-  --color-today-bg: #fbf3da;
-  --color-today-border: #e3d3a2;
-  --color-accent-light-text: #6e6a63;
+  --color-today-bg: #f8f9c2;
+  --color-today-border: #e2e800;
+  --color-accent-light-text: #2e3439;
 
-  /* AI features (e.g. "From photo"): a soft lavender surface; the lavender→pink→gold rim is in the component. */
-  --color-ai-bg: #f4f2f9;
-  --color-ai-text: #3a3255;
-  --color-ai-shadow: rgba(140, 120, 190, 0.55);
-  --color-ai-tag-bg: #fbfaf7;
-  --color-ai-tag-border: #d9d4e6;
+  /* AI features (e.g. "From photo"): a soft violet surface; the rim is in the component. */
+  --color-ai-bg: #f3f0fb;
+  --color-ai-text: #3e2e7a;
+  --color-ai-shadow: rgba(126, 95, 207, 0.45);
+  --color-ai-tag-bg: #ffffff;
+  --color-ai-tag-border: #cbbdf0;
 
-  --color-success-bg: #cfddd2;
-  --color-success-border: #bdcdc1;
-  --color-success-text: #3f6650;
-  --color-success-solid: #afc8b5;
-  --color-success-solid-border: #9ebaa5;
+  /* Done is acid in v7. */
+  --color-success-bg: #f8f9c2;
+  --color-success-border: #e2e800;
+  --color-success-text: #2e3439;
+  --color-success-solid: #e2e800;
+  --color-success-solid-border: #c9ce00;
 
-  --color-danger-bg: #efd8d2;
-  --color-danger-border: #e0c6bf;
-  --color-danger-text: #8a5c50;
-  --color-danger-solid: #d99a8c;
+  --color-danger-bg: #fbe3de;
+  --color-danger-border: #f0b9ae;
+  --color-danger-text: #a52e19;
+  --color-danger-solid: #c8381f;
 
-  --color-info-bg: #d3deec;
-  --color-info-border: #c1cedf;
-  --color-info-text: #5a6b7a;
+  --color-info-bg: #e3e9f8;
+  --color-info-border: #c9d6f2;
+  --color-info-text: #2c4fa0;
 
-  --color-neutral-chip-bg: #f1eee7;
-  --color-neutral-chip-text: #6e6a63;
+  --color-neutral-chip-bg: #eceeef;
+  --color-neutral-chip-text: #5e666b;
 
-  /* Life area palette — 10 slots, auto-assigned by creation order. */
-  --color-area-0: #b6c9de;
-  --color-area-1: #afc8b5;
-  --color-area-2: #e1b4a8;
-  --color-area-3: #c4b8dc;
-  --color-area-4: #cfc7ba;
-  --color-area-5: #e0b8c4;
-  --color-area-6: #c3c9a0;
-  --color-area-7: #a9c8d1;
-  --color-area-8: #d9c68a;
-  --color-area-9: #b0b7bd;
+  /* Priority flags. */
+  --color-priority-high: #c8381f;
+  --color-priority-medium: #e07b1f;
+  --color-priority-low: #737b80;
+  --color-priority-none: #b2b8bc;
 
-  --shadow-shell: 0 4px 18px rgba(43, 42, 40, 0.07);
+  /* Life area palette — 10 slots, auto-assigned by creation order. Shown as dots, never pills. */
+  --color-area-0: #c9673a;
+  --color-area-1: #2e9a63;
+  --color-area-2: #3f6fd1;
+  --color-area-3: #d2558e;
+  --color-area-4: #7e5fcf;
+  --color-area-5: #d9a21b;
+  --color-area-6: #737b80;
+  --color-area-7: #1f8a99;
+  --color-area-8: #e07b1f;
+  --color-area-9: #8a949a;
 
-  /* Task meta chips — three independent ramps (see mockup "Colour scheme"). */
-  --chip-priority-p1-bg: #efd8d2;
-  --chip-priority-p1-border: #e0c6bf;
-  --chip-priority-p1-text: #8a5c50;
-  --chip-priority-p2-bg: #f2e6c2;
-  --chip-priority-p2-border: #e6d5a6;
-  --chip-priority-p2-text: #7c6a3a;
-  --chip-priority-p3-bg: #d3deec;
-  --chip-priority-p3-border: #c1cedf;
-  --chip-priority-p3-text: #5a6b7a;
-  --chip-priority-p4-bg: #eeebe3;
-  --chip-priority-p4-border: #ddd8cf;
-  --chip-priority-p4-text: #6e6a63;
+  --shadow-shell: 0 1px 2px rgba(0, 0, 0, 0.06), 0 12px 40px rgba(0, 0, 0, 0.06);
 
-  --chip-energy-low-bg: #cfddd2;
-  --chip-energy-low-border: #bdcdc1;
-  --chip-energy-low-text: #3f6650;
-  --chip-energy-med-bg: #f2e6c2;
-  --chip-energy-med-border: #e6d5a6;
-  --chip-energy-med-text: #7c6a3a;
-  --chip-energy-high-bg: #efd9e6;
-  --chip-energy-high-border: #e0c2d3;
-  --chip-energy-high-text: #8a5c74;
+  /* Task meta chips — three independent ramps, as soft tints of the v7 status colours. */
+  --chip-priority-p1-bg: #fbe3de;
+  --chip-priority-p1-border: #f0b9ae;
+  --chip-priority-p1-text: #a52e19;
+  --chip-priority-p2-bg: #fdebd9;
+  --chip-priority-p2-border: #fadcc0;
+  --chip-priority-p2-text: #8f4a0c;
+  --chip-priority-p3-bg: #eceeef;
+  --chip-priority-p3-border: #d5d9dc;
+  --chip-priority-p3-text: #4a545a;
+  --chip-priority-p4-bg: #f6f7f7;
+  --chip-priority-p4-border: #e1e4e6;
+  --chip-priority-p4-text: #5e666b;
 
-  --chip-effort-xs-bg: #e6e2f0;
-  --chip-effort-xs-border: #d5cee6;
-  --chip-effort-xs-text: #615a7a;
-  --chip-effort-sm-bg: #ddd6ee;
-  --chip-effort-sm-border: #c9bfe2;
-  --chip-effort-sm-text: #5c5378;
-  --chip-effort-md-bg: #d3caea;
-  --chip-effort-md-border: #bdb0dd;
-  --chip-effort-md-text: #544887;
+  --chip-energy-low-bg: #e1f2e9;
+  --chip-energy-low-border: #bfe2cf;
+  --chip-energy-low-text: #1d6b43;
+  --chip-energy-med-bg: #fdebd9;
+  --chip-energy-med-border: #fadcc0;
+  --chip-energy-med-text: #8f4a0c;
+  --chip-energy-high-bg: #fbe3de;
+  --chip-energy-high-border: #f0b9ae;
+  --chip-energy-high-text: #a52e19;
+
+  --chip-effort-xs-bg: #f1edfb;
+  --chip-effort-xs-border: #e1d9f6;
+  --chip-effort-xs-text: #4f3d94;
+  --chip-effort-sm-bg: #e7e1f8;
+  --chip-effort-sm-border: #cfc4f0;
+  --chip-effort-sm-text: #3e2e7a;
+  --chip-effort-md-bg: #ddd4f5;
+  --chip-effort-md-border: #cbbdf0;
+  --chip-effort-md-text: #3e2e7a;
 }
 
 :root[data-theme='glamour'] {
   color-scheme: dark;
 
-  --color-bg: #211b29;
-  --color-sidebar-bg: #1a1522;
-  --color-surface: #211b29;
-  --color-surface-muted: #1d1826;
-  --color-border: #3a3047;
-  --color-border-subtle: #332a40;
+  /* v7 dark slate. */
+  --color-bg: #22282b;
+  --color-sidebar-bg: #1c2124;
+  --color-surface: #2b3236;
+  --color-surface-muted: #30373b;
+  --color-border: #465055;
+  --color-border-subtle: #363e43;
+  --color-row-divider: #323a3e;
 
-  --color-text: #f4ecdd;
-  --color-text-secondary: #c9bbd6;
-  --color-text-muted: #9b8da9;
-  --color-text-faint: #8c7f9b;
+  --color-text: #eceeef;
+  --color-text-secondary: #d3d8db;
+  --color-text-muted: #a3abb0;
+  --color-text-faint: #8e979c;
 
-  --color-checkbox-border: #6b5f7a;
+  --color-checkbox-border: #6e777c;
   /* Off-state switch thumb: the surface color would vanish on the dark track. */
-  --color-switch-thumb-off: #9b8da9;
+  --color-switch-thumb-off: #a3abb0;
 
-  --color-hover-bg: #2a2233;
-  --color-pressed-bg: #332a40;
-  --color-border-strong: #6b5f7a;
-  --color-focus-halo: #4a3e1c;
-  --color-focus-ring: #c79f2c;
-  --color-accent-hover-border: #a88628;
-  --shadow-lift: 0 10px 20px -12px rgba(0, 0, 0, 0.6);
-  --shadow-drag: 0 24px 40px -16px rgba(0, 0, 0, 0.7);
+  --color-hover-bg: #30373b;
+  --color-pressed-bg: #3a4247;
+  --color-border-strong: #6e777c;
+  --color-focus-halo: #3d3f12;
+  --color-focus-ring: #d2d81a;
+  --color-accent-hover-border: #6e777c;
+  --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.3), 0 24px 40px -12px rgba(0, 0, 0, 0.55);
+  --shadow-drag: 0 12px 24px -8px rgba(0, 0, 0, 0.6);
 
-  --color-accent: linear-gradient(140deg, #ebd290, #c79f2c);
-  --color-accent-border: #8e7220;
-  --color-accent-text: #231c2b;
+  --color-accent: #4a555c;
+  --color-accent-border: #4a555c;
+  --color-accent-text: #f4f6f6;
 
-  --color-accent-count-bg: linear-gradient(140deg, #d8b863, #b98f35);
-  --color-accent-count-text: #4a3e1c;
+  --color-active: #d2d81a;
+  --color-active-border: #b8bd10;
+  --color-active-text: #22282b;
 
-  --color-accent-light-bg: #2e2536;
-  --color-accent-light-border: #3a3047;
-  --color-today-bg: #2e2536;
-  --color-today-border: #8e7220;
-  --color-accent-light-text: #d8b863;
+  --color-accent-count-bg: transparent;
+  --color-accent-count-text: #22282b;
 
-  --color-ai-bg: #2a2338;
-  --color-ai-text: #e6dcf5;
-  --color-ai-shadow: rgba(140, 120, 190, 0.35);
-  --color-ai-tag-bg: #211b29;
-  --color-ai-tag-border: #4a3e66;
+  --color-accent-light-bg: #3a3d1a;
+  --color-accent-light-border: #6b6f12;
+  --color-today-bg: #34371c;
+  --color-today-border: #6b6f12;
+  --color-accent-light-text: #e6ea7a;
 
-  --color-success-bg: #24382e;
-  --color-success-border: #33513f;
-  --color-success-text: #a9d0b4;
-  --color-success-solid: #6e9c7c;
-  --color-success-solid-border: #5c8a6a;
+  --color-ai-bg: #2f2c40;
+  --color-ai-text: #ddd4f5;
+  --color-ai-shadow: rgba(126, 95, 207, 0.35);
+  --color-ai-tag-bg: #2b3236;
+  --color-ai-tag-border: #4e4473;
 
-  --color-danger-bg: #3a2429;
-  --color-danger-border: #57373d;
-  --color-danger-text: #dfa3a0;
-  --color-danger-solid: #b87f79;
+  --color-success-bg: #3a3d1a;
+  --color-success-border: #6b6f12;
+  --color-success-text: #22282b;
+  --color-success-solid: #d2d81a;
+  --color-success-solid-border: #b8bd10;
 
-  --color-info-bg: #232b3c;
-  --color-info-border: #33405a;
-  --color-info-text: #a9bfd8;
+  --color-danger-bg: #43271f;
+  --color-danger-border: #6e3a2d;
+  --color-danger-text: #ffa592;
+  --color-danger-solid: #ff6a4d;
 
-  --color-neutral-chip-bg: #2a2233;
-  --color-neutral-chip-text: #b4a5c1;
+  --color-info-bg: #253049;
+  --color-info-border: #34466e;
+  --color-info-text: #aec3f0;
 
-  --color-area-0: #7c93b8;
-  --color-area-1: #6e9c7c;
-  --color-area-2: #b87f79;
-  --color-area-3: #8d7bb5;
-  --color-area-4: #7a6e88;
-  --color-area-5: #b8798d;
-  --color-area-6: #8f9468;
-  --color-area-7: #6f97a3;
-  --color-area-8: #a68f4c;
-  --color-area-9: #737b83;
+  --color-neutral-chip-bg: #30373b;
+  --color-neutral-chip-text: #a3abb0;
 
-  --shadow-shell: 0 4px 18px rgba(0, 0, 0, 0.55);
+  --color-priority-high: #ff6a4d;
+  --color-priority-medium: #e07b1f;
+  --color-priority-low: #8e979c;
+  --color-priority-none: #6e777c;
 
-  /* Task meta chips — three independent ramps (see mockup "Colour scheme"). */
-  --chip-priority-p1-bg: #5a2c29;
-  --chip-priority-p1-border: #7e4238;
-  --chip-priority-p1-text: #f0b6aa;
-  --chip-priority-p2-bg: #4e3a1b;
-  --chip-priority-p2-border: #7a5c27;
-  --chip-priority-p2-text: #ebc894;
-  --chip-priority-p3-bg: #243444;
-  --chip-priority-p3-border: #3b546b;
-  --chip-priority-p3-text: #b7cfe2;
-  --chip-priority-p4-bg: #2c2438;
-  --chip-priority-p4-border: #463a55;
-  --chip-priority-p4-text: #c9bbd6;
+  --color-area-0: #d9784b;
+  --color-area-1: #3fb077;
+  --color-area-2: #6690e6;
+  --color-area-3: #e06aa0;
+  --color-area-4: #9a7fe0;
+  --color-area-5: #e2b03a;
+  --color-area-6: #8e979c;
+  --color-area-7: #3aa9b8;
+  --color-area-8: #ec9140;
+  --color-area-9: #a3abb0;
 
-  --chip-energy-low-bg: #22392b;
-  --chip-energy-low-border: #3c6249;
-  --chip-energy-low-text: #a8d2b6;
-  --chip-energy-med-bg: #4a3c1a;
-  --chip-energy-med-border: #786126;
-  --chip-energy-med-text: #e3c98e;
-  --chip-energy-high-bg: #3e2338;
-  --chip-energy-high-border: #6a3c5c;
-  --chip-energy-high-text: #dda9cd;
+  --shadow-shell: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 40px rgba(0, 0, 0, 0.35);
 
-  --chip-effort-xs-bg: #282239;
-  --chip-effort-xs-border: #3e3557;
-  --chip-effort-xs-text: #bdb3d6;
-  --chip-effort-sm-bg: #2c2544;
-  --chip-effort-sm-border: #463c68;
-  --chip-effort-sm-text: #c3b8e0;
-  --chip-effort-md-bg: #332b52;
-  --chip-effort-md-border: #544887;
-  --chip-effort-md-text: #cbc0ea;
+  --chip-priority-p1-bg: #43271f;
+  --chip-priority-p1-border: #6e3a2d;
+  --chip-priority-p1-text: #ffa592;
+  --chip-priority-p2-bg: #45301b;
+  --chip-priority-p2-border: #6e4a24;
+  --chip-priority-p2-text: #f5bd85;
+  --chip-priority-p3-bg: #30373b;
+  --chip-priority-p3-border: #465055;
+  --chip-priority-p3-text: #d3d8db;
+  --chip-priority-p4-bg: #2b3236;
+  --chip-priority-p4-border: #3a4247;
+  --chip-priority-p4-text: #a3abb0;
+
+  --chip-energy-low-bg: #1f3a2c;
+  --chip-energy-low-border: #2f5a43;
+  --chip-energy-low-text: #9fd9b9;
+  --chip-energy-med-bg: #45301b;
+  --chip-energy-med-border: #6e4a24;
+  --chip-energy-med-text: #f5bd85;
+  --chip-energy-high-bg: #43271f;
+  --chip-energy-high-border: #6e3a2d;
+  --chip-energy-high-text: #ffa592;
+
+  --chip-effort-xs-bg: #2c2a3d;
+  --chip-effort-xs-border: #403a5c;
+  --chip-effort-xs-text: #cbbdf0;
+  --chip-effort-sm-bg: #312c49;
+  --chip-effort-sm-border: #4a4170;
+  --chip-effort-sm-text: #d6cbf4;
+  --chip-effort-md-bg: #373059;
+  --chip-effort-md-border: #574b86;
+  --chip-effort-md-text: #ddd4f5;
 }

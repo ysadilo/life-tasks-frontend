@@ -6,7 +6,7 @@
   background:
     radial-gradient(
       600px 400px at 50% 40%,
-      color-mix(in srgb, var(--color-accent) 35%, transparent) 0%,
+      color-mix(in srgb, var(--color-active) 30%, transparent) 0%,
       transparent 70%
     ),
     var(--color-sidebar-bg);

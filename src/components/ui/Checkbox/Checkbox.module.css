@@ -51,6 +51,10 @@
   border-color: var(--color-success-solid-border);
 }
 
+.select {
+  border-radius: 5px;
+}
+
 .select.checked,
 .select.checked:hover {
   background: var(--color-text);

@@ -37,6 +37,7 @@ export function Sidebar() {
       <BoardSwitcher />
 
       <Button variant="primary" className={styles.newTaskButton} onClick={() => taskForm.openNew()}>
+        <span aria-hidden>+</span>
         {t('sidebar.newTask')}
       </Button>
 
