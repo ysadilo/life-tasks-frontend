@@ -5,7 +5,7 @@ import { lifeAreaColorVar } from '../../../lib/lifeAreas';
 import { PRIORITIES } from '../../../lib/priority';
 import type { Priority } from '../../../models';
 import { PriorityFlag } from '../MetaChip';
-import { activeFilterCount, EMPTY_TASK_FILTERS, type TaskFilters } from '../TaskFilterPopover';
+import { activeFilterCount, EMPTY_TASK_FILTERS, type TaskFilters } from '../FilterPanel';
 import ramp from '../chipRamp.module.css';
 import styles from './AppliedFilters.module.css';
 

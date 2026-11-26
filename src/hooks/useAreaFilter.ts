@@ -3,7 +3,7 @@ import type { LifeAreaId } from '../models';
 
 const PARAM = 'area';
 
-/** Backlog's life-area filter, kept in the URL (`?area=…&area=…`) so the sidebar's area list can drive it. */
+/** The Today and Backlog life-area filter, kept in the URL (`?area=…&area=…`) so the sidebar's area list can drive it. */
 export function useAreaFilter() {
   const [params, setParams] = useSearchParams();
   const areaIds: LifeAreaId[] = params.getAll(PARAM);

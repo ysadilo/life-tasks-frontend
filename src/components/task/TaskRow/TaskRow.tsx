@@ -28,6 +28,8 @@ interface TaskRowProps {
   task: Task;
   done?: boolean;
   onToggle?: () => void;
+  /** Shows the checkbox disabled when there's no `onToggle` (e.g. someone else's task on a shared board), so titles stay aligned. */
+  toggleDisabled?: boolean;
   /** Makes the row clickable: opens the task's details. */
   onOpen?: () => void;
   /** Shown at the start of the row, before the checkbox (e.g. Backlog's date column). */
@@ -60,6 +62,7 @@ export function TaskRow({
   task,
   done = false,
   onToggle,
+  toggleDisabled = false,
   onOpen,
   leading,
   trailing,
@@ -110,10 +113,18 @@ export function TaskRow({
           <DragHandle
             label={t('task.reorder', { title: task.title })}
             dragging={dragHandleProps.dragging}
+            className={styles.handle}
             onPointerDown={dragHandleProps.onPointerDown}
           />
         )}
-        {onToggle && <Checkbox checked={false} onChange={onToggle} label={t('task.markDone', { title: task.title })} />}
+        {(onToggle || toggleDisabled) && (
+          <Checkbox
+            checked={false}
+            disabled={!onToggle}
+            onChange={onToggle}
+            label={t('task.markDone', { title: task.title })}
+          />
+        )}
       </div>
       <div className={styles.body}>
         <span className={done ? `${styles.title} ${styles.done}` : styles.title}>

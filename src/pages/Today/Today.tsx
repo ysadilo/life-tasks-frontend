@@ -11,8 +11,9 @@ import {
   SamoyedAvatar,
   SamoyedMoment,
   SamoyedNudge,
+  SearchField,
+  SectionLabel,
   SegmentedTabs,
-  ToolbarPill,
   usePhrase,
 } from '../../components/ui';
 import {
@@ -21,19 +22,19 @@ import {
   ReflectModal,
   type Reflection,
   taskForm,
-  quickAdd,
   AppliedFilters,
-  TaskFilterPopover,
-  EMPTY_TASK_FILTERS,
+  FilterRail,
+  FilterSheet,
+  FiltersButton,
   activeFilterCount,
   matchesFilters,
-  TaskSortPopover,
-  SORT_COMPARATORS,
-  type TaskFilters,
 } from '../../components/task';
 import { useTasksByStatus, useUpdateTaskStatus, useRecurringTasks, useToggleOccurrence } from '../../hooks/useTasks';
 import { useDeleteTaskWithUndo } from '../../hooks/useDeleteTaskWithUndo';
 import { usePreferences } from '../../hooks/usePreferences';
+import { useTaskFilters } from '../../hooks/useTaskFilters';
+import { useLifeAreas } from '../../hooks/useLifeAreas';
+import { useIsMobile } from '../../hooks/useIsMobile';
 import { useManualOrder } from '../../hooks/useManualOrder';
 import { useDragReorder } from '../../hooks/useDragReorder';
 import { hasOccurrenceOn, isOccurrenceDone, occurrenceISO } from '../../lib/recurrence';
@@ -43,7 +44,10 @@ import { inMyTriage } from '../../lib/triageScope';
 import { ASSIGNEE_VIEWS, canActOn, matchesAssigneeView, type AssigneeView } from '../../lib/assigneeView';
 import { getSamoyedMode, isHeavyDay, tryAppear, welcomeBack, type MomentId } from '../../lib/samoyed';
 import { PRIORITY_RANK } from '../../lib/priority';
+import { formatMinutes } from '../../lib/taskMeta';
+import { SORT_OPTIONS, sortTasks, toSortBy, type SortBy } from '../../lib/taskSort';
 import type { Task } from '../../models';
+import { TodayInsights } from './TodayInsights';
 import styles from './Today.module.css';
 
 export default function Today() {
@@ -58,14 +62,15 @@ export default function Today() {
   const toggleOccurrence = useToggleOccurrence();
   const manualOrder = useManualOrder();
 
-  const { shared, me } = useBoardMembers();
+  const { shared, me, members } = useBoardMembers();
   const [assigneeView, setAssigneeView] = useState<AssigneeView>('everyone');
-  const [hideDone, setHideDone] = useState(false);
+  const { data: areas } = useLifeAreas();
   const { preferences, update: updatePreferences } = usePreferences();
-  const sortBy = preferences.todaySortBy;
-  const [filters, setFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [sortOpen, setSortOpen] = useState(false);
+  const sortBy = toSortBy(preferences.todaySortBy);
+  const { filters, setFilters } = useTaskFilters();
+  const [search, setSearch] = useState('');
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const isMobile = useIsMobile();
   const [greetingOpen, setGreetingOpen] = useState(true);
   const samoyedMode = getSamoyedMode();
   // tryAppear/welcomeBack are idempotent within a page load, so StrictMode and remounts keep the same answer.
@@ -147,11 +152,8 @@ export default function Today() {
 
   const sortedOpenTasks = useMemo(() => {
     const tasks = [...(openTasks ?? []), ...recurringToday.filter((task) => !isOccurrenceDone(task, today))];
-    if (sortBy === 'manual') return manualOrder.applyOrder(tasks);
-    const comparator = SORT_COMPARATORS[sortBy];
-    if (comparator) tasks.sort(comparator);
-    return tasks;
-  }, [openTasks, recurringToday, today, sortBy, manualOrder.applyOrder]);
+    return sortBy === 'manual' ? manualOrder.applyOrder(tasks) : sortTasks(tasks, sortBy, areas);
+  }, [openTasks, recurringToday, today, sortBy, areas, manualOrder.applyOrder]);
 
   const doneToday = useMemo(() => {
     const oneOff = (doneTasks ?? []).filter((task) => task.completedAt && isSameDay(new Date(task.completedAt), today));
@@ -160,16 +162,20 @@ export default function Today() {
   }, [doneTasks, recurringToday, today]);
 
   // Mine / Everyone / Unassigned only exists on shared boards.
-  const inView = (task: Task) => !shared || matchesAssigneeView(task, assigneeView, me?.userId);
+  const query = search.trim().toLowerCase();
+  const shown = (task: Task) =>
+    task.title.toLowerCase().includes(query) &&
+    matchesFilters(task, filters) &&
+    (!shared || matchesAssigneeView(task, assigneeView, me?.userId));
   const filteredOpenTasks = useMemo(
-    () => sortedOpenTasks.filter((task) => matchesFilters(task, filters) && inView(task)),
+    () => sortedOpenTasks.filter(shown),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sortedOpenTasks, filters, shared, assigneeView, me?.userId]
+    [sortedOpenTasks, query, filters, shared, assigneeView, me?.userId]
   );
   const filteredDoneToday = useMemo(
-    () => doneToday.filter((task) => matchesFilters(task, filters) && inView(task)),
+    () => doneToday.filter(shown),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [doneToday, filters, shared, assigneeView, me?.userId]
+    [doneToday, query, filters, shared, assigneeView, me?.userId]
   );
   const filterCount = activeFilterCount(filters);
 
@@ -195,48 +201,61 @@ export default function Today() {
   if (isLoading) return <PageState>{t('today.loading')}</PageState>;
   if (error) return <PageState>{t('today.error')}</PageState>;
 
-  const totalCount = sortedOpenTasks.length + doneToday.length;
-  const dateLabel = new Date().toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' });
+  const dayTasks = [...sortedOpenTasks, ...doneToday];
+  const openMinutes = sortedOpenTasks.reduce((sum, task) => sum + (task.estimatedMinutes ?? 0), 0);
+  // Shared boards say how many people share the day; personal ones how long it is.
+  const summary = shared
+    ? t('today.summaryShared', { count: sortedOpenTasks.length, people: members.length })
+    : [
+        t('today.summary', { count: sortedOpenTasks.length }),
+        openMinutes > 0 && t('today.summaryTime', { time: formatMinutes(openMinutes) }),
+      ]
+        .filter(Boolean)
+        .join(' · ');
+  const narrowed = !!query || filterCount > 0;
+  const panelProps = {
+    tasks: dayTasks,
+    filters,
+    onChange: setFilters,
+    order: {
+      label: t('today.sort.by'),
+      value: sortBy,
+      options: SORT_OPTIONS.map((value) => ({ value, label: t(`today.sort.${value}`) })),
+      onChange: (todaySortBy: SortBy) => updatePreferences({ todaySortBy }),
+    },
+  };
 
   return (
     <div className={styles.layout}>
       <div className={styles.page}>
+        {/* v7: the date is the title on desktop; phones keep "Today" with the date above it. */}
         <PageHeader
-          title={t('today.title')}
-          subtitle={t('today.subtitle', { date: dateLabel, done: doneToday.length, total: totalCount })}
+          eyebrow={isMobile ? `${dateLabel(today, i18n.language, 'short')} · ${summary}` : undefined}
+          title={isMobile ? t('today.title') : dateLabel(today, i18n.language, 'long')}
+          subtitle={isMobile ? undefined : summary}
           actions={
             <>
-              <div className={styles.filterWrap}>
-                <ToolbarPill active={filterCount > 0} onClick={() => setFilterOpen((v) => !v)}>
-                  {filterCount > 0 ? `${t('today.filter')} · ${filterCount}` : t('today.filter')}
-                </ToolbarPill>
-                {filterOpen && (
-                  <TaskFilterPopover
-                    filters={filters}
-                    onChange={setFilters}
-                    matchCount={filteredOpenTasks.length + filteredDoneToday.length}
-                    onClose={() => setFilterOpen(false)}
-                  />
-                )}
-              </div>
-              <div className={styles.sortWrap}>
-                <ToolbarPill caret onClick={() => setSortOpen((v) => !v)}>
-                  {t('today.sort.label', { mode: t(`today.sort.${sortBy}`) })}
-                </ToolbarPill>
-                {sortOpen && (
-                  <TaskSortPopover
-                    sortBy={sortBy}
-                    onChange={(todaySortBy) => updatePreferences({ todaySortBy })}
-                    onClose={() => setSortOpen(false)}
-                  />
-                )}
-              </div>
-              <ToolbarPill onClick={() => setHideDone((v) => !v)}>
-                {hideDone ? t('today.showDone') : t('today.hideDone')}
-              </ToolbarPill>
+              <SearchField value={search} onChange={setSearch} label={t('today.searchPlaceholder')} />
+              <FiltersButton filters={filters} onClick={() => setSheetOpen(true)} />
             </>
           }
         />
+
+        {shared && (
+          <div className={styles.assigneeTabs}>
+            <SegmentedTabs
+              variant="plain"
+              value={assigneeView}
+              onChange={(view) => setAssigneeView(view as AssigneeView)}
+              options={ASSIGNEE_VIEWS.map((view) => ({
+                value: view,
+                label: `${t(`board.filter.${view}`)} · ${
+                  sortedOpenTasks.filter((task) => matchesAssigneeView(task, view, me?.userId)).length
+                }`,
+              }))}
+            />
+          </div>
+        )}
 
         {greeting && greetingOpen && (
           <div className={styles.greeting}>
@@ -275,20 +294,14 @@ export default function Today() {
         )}
 
         {!!triageCount && (
-          <div className={styles.triageBanner}>
-            <span className={styles.triageIcon} aria-hidden>
-              <span className={styles.triageIconBack} />
-              <span className={styles.triageIconFront} />
+          <div className={styles.triageStrip}>
+            <span className={styles.triageText}>
+              <b>{t('today.triageCount', { count: triageCount })}</b>{' '}
+              {isMobile ? t('today.triageWaitingShort') : t('today.triageWaiting')}
             </span>
-            <div className={styles.triageText}>
-              <span className={styles.triageTitle}>{t('today.triageBannerText', { count: triageCount })}</span>
-              <span className={styles.triageSubtitle}>
-                {t('today.triageBannerHint', { minutes: Math.max(1, Math.round(triageCount / 2)) })}
-              </span>
-            </div>
-            <button type="button" className={styles.triageBannerAction} onClick={() => navigate('/triage')}>
-              {t('today.startTriage')}
-            </button>
+            <Button variant="primary" onClick={() => navigate('/triage')}>
+              {t('today.triageAction')}
+            </Button>
           </div>
         )}
 
@@ -301,25 +314,18 @@ export default function Today() {
 
         <TodaySplit openTasks={sortedOpenTasks} />
 
-        {shared && (
-          <div className={styles.assigneeTabs}>
-            <SegmentedTabs
-              value={assigneeView}
-              onChange={(view) => setAssigneeView(view as AssigneeView)}
-              options={ASSIGNEE_VIEWS.map((view) => ({
-                value: view,
-                label: t(`board.filter.${view}`),
-              }))}
+        {narrowed && (
+          <div className={styles.summary}>
+            <AppliedFilters
+              filters={filters}
+              onChange={setFilters}
+              summary={t('filters.shown', {
+                shown: filteredOpenTasks.length + filteredDoneToday.length,
+                count: dayTasks.length,
+              })}
             />
           </div>
         )}
-
-        <AppliedFilters filters={filters} onChange={setFilters} />
-
-        <button type="button" className={styles.quickAddBar} onClick={quickAdd.open}>
-          <span className={styles.quickAddText}>{t('quickAdd.bar')}</span>
-          <kbd className={styles.quickAddKey}>⌘K</kbd>
-        </button>
 
         <div className={styles.list}>
           {displayedOpenTasks.length === 0 && filteredDoneToday.length === 0 && (
@@ -341,11 +347,13 @@ export default function Today() {
             </div>
           )}
 
+          {displayedOpenTasks.length > 0 && <SectionLabel>{t('today.upNext')}</SectionLabel>}
           {displayedOpenTasks.map((task) => (
             <TaskRow
               key={task.id}
               task={task}
               onToggle={canActOn(task, shared, me?.userId) ? () => toggle(task, true) : undefined}
+              toggleDisabled
               onOpen={() => taskForm.openView(task)}
               swipe={swipeFor(task)}
               rowRef={sortBy === 'manual' ? dragReorder.registerRow(task.id) : undefined}
@@ -357,12 +365,12 @@ export default function Today() {
             />
           ))}
 
-          {!hideDone && filteredDoneToday.length > 0 && (
+          {filteredDoneToday.length > 0 && (
             <>
-              <div className={styles.doneDivider}>
-                <span className={styles.doneDividerLabel}>{t('today.doneToday')}</span>
-                <span className={styles.doneDividerRule} />
-                <span className={styles.doneDividerCount}>{filteredDoneToday.length}</span>
+              <div className={styles.doneLabel}>
+                <SectionLabel>
+                  {t('today.doneToday')} · {filteredDoneToday.length}
+                </SectionLabel>
               </div>
               {filteredDoneToday.map((task) => (
                 <DoneTaskRow
@@ -377,9 +385,22 @@ export default function Today() {
           )}
         </div>
       </div>
-      <TodayRail openTasks={sortedOpenTasks} />
+      <FilterRail {...panelProps}>
+        {shared ? <TodayRail openTasks={sortedOpenTasks} /> : <TodayInsights dayTasks={dayTasks} today={today} />}
+      </FilterRail>
+
+      <FilterSheet
+        {...panelProps}
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        matchCount={filteredOpenTasks.length + filteredDoneToday.length}
+      />
     </div>
   );
+}
+
+function dateLabel(day: Date, locale: string, weekday: 'long' | 'short'): string {
+  return day.toLocaleDateString(locale, { weekday, day: 'numeric', month: 'long' });
 }
 
 /** A recurring series carries one check-in per day; show today's in the shape the modal reads. */

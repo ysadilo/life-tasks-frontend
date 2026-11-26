@@ -314,33 +314,34 @@
 }
 
 .assignee {
+  width: 26px;
+  height: 26px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 9px 2px 2px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-surface);
-  font: 500 12px/1 var(--font-sans);
-  color: var(--color-text-secondary);
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
   cursor: pointer;
 }
 
 .assignee .avatar {
-  width: 22px;
-  height: 22px;
-  font-size: 9px;
-  border: none;
+  width: 26px;
+  height: 26px;
+  font-size: 11px;
+  border: 2px solid var(--color-surface);
 }
 
+/* Nobody yet: a dashed circle. */
 .assigneeEmpty {
-  padding: 6px 9px;
-  border-style: dashed;
-  color: var(--color-text-muted);
+  border: 1.5px dashed var(--color-border-strong);
 }
 
-.assignee:hover {
-  border-color: var(--color-accent-border);
+.assignee:hover,
+.assignee:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-focus-halo);
 }
 
 .manager {
@@ -482,35 +483,13 @@
   padding-left: 0;
 }
 
-.rail {
-  width: 290px;
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 28px 20px;
-  border-left: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-muted);
-  overflow-y: auto;
-}
-
-@media (max-width: 1100px) {
-  .rail {
-    display: none;
-  }
-}
-
-.railCard {
+.railSection {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 16px;
 }
 
-.railCard .groupLabel {
+.railSection .groupLabel {
   padding: 0;
 }
 
@@ -530,6 +509,40 @@
   flex: 1;
   font: 500 13px/1 var(--font-sans);
   color: var(--color-text);
+}
+
+/* v7 rail: name and time over a bar of that person's share. */
+.splitItem {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.splitItem .splitRow {
+  gap: 8px;
+}
+
+.splitItem .avatar,
+.splitItem .avatarEmpty {
+  width: 22px;
+  height: 22px;
+  font-size: 9px;
+}
+
+.splitItem .splitName {
+  font-size: 14px;
+}
+
+.splitTrack {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-row-divider);
+}
+
+.splitFill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--color-accent);
 }
 
 .avatarEmpty {

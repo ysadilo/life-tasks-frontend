@@ -208,3 +208,17 @@
     margin-right: 12px;
   }
 }
+
+/* v7: the drag handle shows on row hover (or keyboard focus) where there is a mouse. */
+@media (hover: hover) {
+  .handle {
+    opacity: 0;
+    transition: opacity var(--dur-fast);
+  }
+
+  .row:hover .handle,
+  .dragging .handle,
+  .handle:focus-visible {
+    opacity: 1;
+  }
+}

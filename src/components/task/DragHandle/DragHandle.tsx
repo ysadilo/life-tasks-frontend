@@ -4,14 +4,15 @@ import styles from './DragHandle.module.css';
 interface DragHandleProps {
   label: string;
   dragging?: boolean;
+  className?: string;
   onPointerDown: (e: PointerEvent<HTMLButtonElement>) => void;
 }
 
-export function DragHandle({ label, dragging = false, onPointerDown }: DragHandleProps) {
+export function DragHandle({ label, dragging = false, className, onPointerDown }: DragHandleProps) {
   return (
     <button
       type="button"
-      className={dragging ? `${styles.handle} ${styles.dragging}` : styles.handle}
+      className={[styles.handle, dragging && styles.dragging, className].filter(Boolean).join(' ')}
       onPointerDown={onPointerDown}
       aria-label={label}
     >

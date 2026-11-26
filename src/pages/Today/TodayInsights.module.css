@@ -1,0 +1,127 @@
+/* v7 Today rail cards: Today's load, This week, Tomorrow. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.muted {
+  font: 400 13px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.note {
+  font: 400 13px/1.4 var(--font-sans);
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+
+.loadLine {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.loadValue {
+  font: 700 30px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.loadBar {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-border-subtle);
+}
+
+.loadFill {
+  max-width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--color-accent);
+}
+
+/* The usual load for this weekday. */
+.loadMarker {
+  position: absolute;
+  top: -5px;
+  width: 2px;
+  height: 18px;
+  background: var(--color-text);
+}
+
+.weekBars {
+  height: 84px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  align-items: end;
+}
+
+.weekDay {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.weekBar {
+  width: 100%;
+  border-radius: 4px;
+  background: var(--color-accent);
+}
+
+.weekBar[data-empty] {
+  height: 4px;
+  background: var(--color-border-subtle);
+}
+
+.weekDay[aria-current] .weekBar:not([data-empty]) {
+  background: var(--color-active);
+}
+
+.weekLabel {
+  font: 500 12px/1 var(--font-sans);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.weekDay[aria-current] .weekLabel {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.tomorrow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tomorrow > :first-child {
+  margin-bottom: 10px;
+}
+
+.tomorrowRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-row-divider);
+  font: 400 14px/1.3 var(--font-sans);
+  color: var(--color-text);
+}
+
+.tomorrowTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--color-border);
+}

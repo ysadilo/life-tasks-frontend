@@ -1,7 +1,6 @@
 export { Button } from './Button';
 export { Chip } from './Chip';
 export { PillButton } from './PillButton';
-export { ToolbarPill } from './ToolbarPill';
 export type { ChipVariant } from './Chip';
 export { Checkbox } from './Checkbox';
 export { FilePickButton } from './FilePickButton';
@@ -24,3 +23,5 @@ export { SamoyedAvatar, SamoyedMoment, SamoyedNudge, SamoyedPeek, peek, usePhras
 export { ConfirmDialog } from './ConfirmDialog';
 export { SettingsIcon } from './SettingsIcon';
 export { ProfileAvatar } from './ProfileAvatar';
+export { SectionLabel } from './SectionLabel';
+export { SearchField } from './SearchField';

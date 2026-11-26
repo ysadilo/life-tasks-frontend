@@ -1,28 +1,29 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../components/layout';
-import { Button, EmptyState, Modal, PillButton, SamoyedMoment } from '../../components/ui';
+import { Button, EmptyState, PillButton, SamoyedMoment, SearchField } from '../../components/ui';
 import {
   TaskRow,
   taskForm,
   leaveThen,
   AppliedFilters,
-  EMPTY_TASK_FILTERS,
+  FilterRail,
+  FilterSheet,
+  FiltersButton,
   activeFilterCount,
   matchesFilters,
-  type TaskFilters,
 } from '../../components/task';
 import { useDeleteTaskWithUndo } from '../../hooks/useDeleteTaskWithUndo';
 import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { usePreferences } from '../../hooks/usePreferences';
-import { useAreaFilter } from '../../hooks/useAreaFilter';
+import { useTaskFilters } from '../../hooks/useTaskFilters';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { tryAppear } from '../../lib/samoyed';
 import { groupTasks, type GroupBy } from '../../lib/taskGrouping';
 import { weekdayLabel } from '../../lib/dateUtils';
 import type { Task } from '../../models';
-import { BacklogFilters, ClearAll, PlannedPerWeek } from './BacklogFilters';
+import { PlannedPerWeek } from './PlannedPerWeek';
 import styles from './Backlog.module.css';
 
 /** v7 date column: day number over the short weekday; kept (invisible) for alignment on undated or repeated days. */
@@ -48,33 +49,13 @@ export default function Backlog() {
   const updateStatus = useUpdateTaskStatus();
   const deleteTask = useDeleteTaskWithUndo();
   const [search, setSearch] = useState('');
-  const searchRef = useRef<HTMLInputElement>(null);
-  // Priority and energy live here; life areas live in the URL so the sidebar can toggle them.
-  const [metaFilters, setMetaFilters] = useState<TaskFilters>(EMPTY_TASK_FILTERS);
-  const { areaIds, setAreaIds } = useAreaFilter();
-  const filters: TaskFilters = { ...metaFilters, areaIds };
-  const setFilters = (next: TaskFilters) => {
-    setMetaFilters({ ...next, areaIds: [] });
-    setAreaIds(next.areaIds);
-  };
+  const { filters, setFilters } = useTaskFilters();
   const [sheetOpen, setSheetOpen] = useState(false);
   const isMobile = useIsMobile();
   const { preferences, update: updatePreferences } = usePreferences();
   // Older saved groupings (priority, energy…) fall back to Date.
   const groupBy: GroupBy = preferences.backlogGroupBy === 'area' ? 'area' : 'date';
   const setGroupBy = (backlogGroupBy: GroupBy) => updatePreferences({ backlogGroupBy });
-
-  // "/" jumps to search, unless the user is already typing somewhere.
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
-      if ((e.target as HTMLElement).closest('input, textarea, select, [contenteditable="true"]')) return;
-      e.preventDefault();
-      searchRef.current?.focus();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
 
   if (isLoading) return <PageState>{t('backlog.loading')}</PageState>;
   if (error) return <PageState>{t('backlog.error')}</PageState>;
@@ -91,9 +72,17 @@ export default function Backlog() {
 
   const napping = allTasks.length === 0 && !search && !filterCount && tryAppear('emptyBacklog');
   const narrowed = !!search || filterCount > 0;
-  const filtersLabel = filterCount ? t('backlog.filtersActive', { count: filterCount }) : t('backlog.filters');
-
-  const panelProps = { tasks: allTasks, filters, onChange: setFilters, groupBy, onGroupBy: setGroupBy };
+  const panelProps = {
+    tasks: allTasks,
+    filters,
+    onChange: setFilters,
+    order: {
+      label: t('backlog.groupBy'),
+      value: groupBy,
+      options: (['date', 'area'] as const).map((value) => ({ value, label: t(`backlog.group.${value}`) })),
+      onChange: setGroupBy,
+    },
+  };
 
   return (
     <div className={styles.layout}>
@@ -103,35 +92,8 @@ export default function Backlog() {
           subtitle={t('backlog.subtitle', { count: allTasks.length })}
           actions={
             <>
-              <label className={styles.search}>
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
-                  <circle cx="7" cy="7" r="4.8" stroke="currentColor" strokeWidth="1.6" />
-                  <path d="m10.6 10.6 3.4 3.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                </svg>
-                <input
-                  ref={searchRef}
-                  type="search"
-                  className={styles.searchInput}
-                  aria-label={t('backlog.searchPlaceholder')}
-                  placeholder={t('backlog.searchPlaceholder')}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <kbd className={styles.searchKey}>/</kbd>
-              </label>
-              <button
-                type="button"
-                className={styles.filtersButton}
-                aria-label={filtersLabel}
-                aria-pressed={filterCount > 0}
-                onClick={() => setSheetOpen(true)}
-              >
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
-                  <path d="M2.5 4h11M4.5 8h7M6.5 12h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                </svg>
-                {t('backlog.filters')}
-                {filterCount > 0 && <span className={styles.filtersCount}>{filterCount}</span>}
-              </button>
+              <SearchField value={search} onChange={setSearch} label={t('backlog.searchPlaceholder')} />
+              <FiltersButton filters={filters} onClick={() => setSheetOpen(true)} />
             </>
           }
         />
@@ -141,7 +103,7 @@ export default function Backlog() {
             <AppliedFilters
               filters={filters}
               onChange={setFilters}
-              summary={t('backlog.shown', { shown: filteredTasks.length, count: allTasks.length })}
+              summary={t('filters.shown', { shown: filteredTasks.length, count: allTasks.length })}
             />
           </div>
         )}
@@ -221,22 +183,16 @@ export default function Backlog() {
         </div>
       </div>
 
-      <aside className={styles.rail}>
-        <div className={styles.railFilters}>
-          <BacklogFilters {...panelProps} inRail />
-        </div>
+      <FilterRail {...panelProps}>
         <PlannedPerWeek tasks={allTasks} />
-      </aside>
+      </FilterRail>
 
-      <Modal open={sheetOpen} onClose={() => setSheetOpen(false)} title={t('backlog.filters')}>
-        <BacklogFilters {...panelProps} />
-        <div className={styles.sheetFooter}>
-          <ClearAll onClear={() => setFilters(EMPTY_TASK_FILTERS)} />
-          <Button variant="primary" onClick={() => setSheetOpen(false)}>
-            {t('today.showTasks', { count: filteredTasks.length })}
-          </Button>
-        </div>
-      </Modal>
+      <FilterSheet
+        {...panelProps}
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        matchCount={filteredTasks.length}
+      />
     </div>
   );
 }

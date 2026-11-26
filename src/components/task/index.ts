@@ -7,10 +7,17 @@ export type { Reflection } from './ReflectModal';
 export { TaskFormPanel } from './TaskFormPanel';
 export { TaskPreviewPanel } from './TaskPreviewPanel';
 export { AppliedFilters } from './AppliedFilters';
-export { TaskFilterPopover, EMPTY_TASK_FILTERS, activeFilterCount, matchesFilters } from './TaskFilterPopover';
-export type { TaskFilters } from './TaskFilterPopover';
-export { TaskSortPopover, SORT_OPTIONS, SORT_COMPARATORS } from './TaskSortPopover';
-export type { SortBy } from './TaskSortPopover';
+export {
+  FilterPanel,
+  ClearAll,
+  FilterRail,
+  FilterSheet,
+  FiltersButton,
+  EMPTY_TASK_FILTERS,
+  activeFilterCount,
+  matchesFilters,
+} from './FilterPanel';
+export type { PanelOrder, TaskFilters } from './FilterPanel';
 export { leaveThen } from './taskLeavingStore';
 export { taskForm } from './taskFormStore';
 export { taskPreview } from './taskPreviewStore';

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import type { GroupBy } from '../lib/taskGrouping';
-import type { SortBy } from '../components/task';
+import type { SortBy } from '../lib/taskSort';
 
 /** Per-user view choices, stored on the server so they follow the user across devices. */
 export interface Preferences {
