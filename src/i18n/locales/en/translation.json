@@ -562,12 +562,14 @@
     "loading": "Loading the calendar…",
     "error": "Couldn't load the calendar. Is the API running?",
     "addPlaceholder": "+ Add",
-    "more": "+{{count}} more",
     "overdue": "Earlier",
-    "todaySuffix": " · today",
-    "daySummary_one": "{{count}} task · {{done}} done",
-    "daySummary_other": "{{count}} tasks · {{done}} done",
-    "addTask": "Add task"
+    "addTask": "Add task",
+    "anyTime": "Any time",
+    "emptyDay": "Nothing planned",
+    "routines_one": "{{count}} routine",
+    "routines_other": "{{count}} routines",
+    "monthCount_one": "{{count}} task this month",
+    "monthCount_other": "{{count}} tasks this month"
   },
   "samoyed": {
     "setting": "Samoyed",

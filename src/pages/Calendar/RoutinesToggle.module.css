@@ -1,0 +1,33 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 0;
+  border: none;
+  background: none;
+  font: 400 12px/1.3 var(--font-sans);
+  color: var(--color-text-muted);
+  text-align: left;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  color: var(--color-text);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.caret {
+  border-left: 3.5px solid transparent;
+  border-right: 3.5px solid transparent;
+  border-top: 4px solid currentColor;
+  transition: transform var(--dur-fast);
+}
+
+.toggle[aria-expanded='true'] .caret {
+  transform: rotate(180deg);
+}

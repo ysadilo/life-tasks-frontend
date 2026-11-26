@@ -1,118 +1,104 @@
+/* v7 week: seven plain columns split by hairlines; today's column is tinted. */
 .grid {
   flex: 1;
   min-height: 0;
   display: grid;
   /* Too narrow for seven readable columns (tablet + sidebar): scroll sideways instead of squeezing. */
   grid-template-columns: repeat(7, minmax(120px, 1fr));
-  /* One row that fills the visible area, so each column has a bounded height
-     to fit chips into (see DayColumn's measure loop). */
-  grid-auto-rows: minmax(0, 1fr);
-  gap: 8px;
-  padding: 20px 30px 26px;
+  margin: 22px 30px 0;
+  border-top: 1px solid var(--color-border-subtle);
   overflow: auto;
 }
 
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: repeat(7, 44vw);
-    gap: 8px;
-    padding: 16px;
-    overflow-x: auto;
+    margin: 12px 16px 0;
   }
 }
 
 .column {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
-  min-height: 0;
-  /* Every column carries the weekend card's box metrics (transparent here) so
-     day headers align across the row regardless of the weekend styling. */
-  padding: 10px;
-  border: 1px solid transparent;
-  border-radius: 16px;
+  padding: 14px 8px;
+  border-right: 1px solid var(--color-row-divider);
 }
 
-.weekend {
-  background: var(--color-surface-muted);
-  border-color: var(--color-border-subtle);
+.column:last-child {
+  border-right: none;
 }
 
 .today {
-  background: var(--color-today-bg);
-  border-color: var(--color-today-border);
+  background: var(--color-hover-bg);
 }
 
 .dayHeader {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 2px 2px 6px;
+  align-items: center;
+  gap: 8px;
 }
 
 .weekday {
-  font: 600 12px/1 var(--font-sans);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font: 500 13px/1 var(--font-sans);
   color: var(--color-text-muted);
 }
 
 .dateNumber {
-  font: 700 20px/1 var(--font-sans);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font: 600 15px/1 var(--font-sans);
   color: var(--color-text);
 }
 
+.today .dateNumber {
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
 .pastNumber {
-  color: var(--color-neutral-chip-text);
+  color: var(--color-text-faint);
 }
 
-.today .weekday {
-  color: var(--color-text-secondary);
+.routines {
+  border-bottom: 1px dashed var(--color-border);
 }
 
-.chips {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  overflow: hidden;
-}
-
-.more {
+.add {
   align-self: flex-start;
   padding: 4px 2px;
   border: none;
   background: none;
-  font: 600 11px/1 var(--font-sans);
-  color: var(--color-text-secondary);
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-faint);
   cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--dur-fast);
 }
 
-.more:hover {
+/* Quiet until the column is hovered or the button is focused; always visible on touch screens. */
+.column:hover .add,
+.add:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .add {
+    opacity: 1;
+  }
+}
+
+.add:hover {
   color: var(--color-text);
 }
 
-.addPlaceholder {
-  width: 100%;
-  margin-top: 2px;
-  border: 1px dashed var(--color-border);
-  border-radius: 10px;
-  background: none;
-  padding: 8px 0;
-  text-align: center;
-  font: 500 12px/1 var(--font-sans);
-  color: var(--color-neutral-chip-text);
-  cursor: pointer;
-}
-
-.addPlaceholder:hover {
-  border-color: var(--color-checkbox-border);
-  color: var(--color-text-secondary);
-}
-
-.addPlaceholder:focus-visible {
-  outline: 2px solid var(--color-accent-border);
+.add:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 1px;
+  border-radius: 4px;
 }
