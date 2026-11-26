@@ -1,102 +1,46 @@
+/* v7 "Backlog · grouped by week, filter panel": the list, with a filter rail beside it on desktop. */
+.layout {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  gap: 18px;
+}
+
 .page {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  flex: 1;
   min-height: 0;
 }
 
-.groups {
-  flex: 1;
-  padding: 22px 30px;
+.rail {
+  width: 260px;
+  flex: none;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 28px;
+  padding: 34px 30px 24px 0;
   overflow-y: auto;
 }
 
-@media (max-width: 768px) {
-  .groups {
-    padding: 16px;
-  }
-}
-
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.groupHeader {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  text-align: left;
-}
-
-.chevron {
-  width: 6px;
-  height: 6px;
-  flex: none;
-  border-right: 1.5px solid var(--color-text-muted);
-  border-bottom: 1.5px solid var(--color-text-muted);
-  transform: rotate(45deg);
-  transition: transform 0.15s;
-}
-
-.chevronCollapsed {
-  transform: rotate(-45deg);
-}
-
-.groupDot {
-  width: 11px;
-  height: 11px;
-  border-radius: 3px;
-  flex: none;
-}
-
-.groupLabel {
-  font: 600 15px/1 var(--font-sans);
-  color: var(--color-text);
-}
-
-.groupCount {
-  font: 400 13px/1 var(--font-sans);
-  color: var(--color-text-muted);
-}
-
-.filterWrap {
-  display: inline-flex;
-}
-
-.toolbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 18px 30px 0;
-}
-
-@media (max-width: 768px) {
-  .toolbar {
-    padding: 0 16px;
-    flex-wrap: wrap;
-  }
+.railFilters {
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .search {
-  flex: 1;
-  /* Room for the placeholder ("Пошук у беклозі"); below this the search takes its own row. */
-  min-width: 200px;
+  width: 240px;
+  height: 40px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: var(--color-surface-muted);
+  gap: 8px;
+  padding: 0 12px;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
+  border-radius: 10px;
   color: var(--color-text-muted);
 }
 
@@ -119,7 +63,149 @@
   color: var(--color-text-muted);
 }
 
-/* Mobile and short landscape screens: the whole page scrolls so the tasks get the full screen; filters stay frozen on desktop only. */
+.searchKey {
+  padding: 3px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+/* Phones only: opens the filter sheet in place of the rail. */
+.filtersButton {
+  display: none;
+  height: 44px;
+  padding: 0 12px 0 14px;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  font: 600 14px/1 var(--font-sans);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.filtersButton[aria-pressed='true'] {
+  border-color: var(--color-active);
+  background: var(--color-active);
+  color: var(--color-active-text);
+}
+
+.filtersCount {
+  font: 600 12px/1 var(--font-sans);
+}
+
+.summary {
+  padding-top: 8px;
+}
+
+.groups {
+  flex: 1;
+  padding: 22px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 4px 0 6px;
+  font: 600 13px/1 var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.groupDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.date {
+  width: 44px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  margin-right: 4px;
+}
+
+.dateDay {
+  font: 700 24px/1 var(--font-sans);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.dateWeekday {
+  font: 600 11px/1 var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* v7 rows carry no action; "To Today" shows on hover or keyboard focus. */
+@media (hover: hover) and (min-width: 769px) {
+  .toToday {
+    opacity: 0;
+    transition: opacity var(--dur-fast);
+  }
+
+  .group > *:hover .toToday,
+  .toToday:focus-within {
+    opacity: 1;
+  }
+}
+
+.sheetFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1100px) {
+  .rail {
+    display: none;
+  }
+
+  .filtersButton {
+    display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+  .search {
+    /* Shrinks so the Filters button stays beside it, down to 320px screens. */
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .searchKey {
+    display: none;
+  }
+
+  .groups {
+    padding: 16px;
+  }
+}
+
+/* Mobile and short landscape screens: the whole page scrolls so the tasks get the full screen. */
 @media (max-width: 768px), (max-height: 500px) {
   .page {
     overflow-y: auto;

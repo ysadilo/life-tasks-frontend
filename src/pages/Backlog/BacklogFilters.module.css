@@ -1,0 +1,166 @@
+/* v7 "Backlog · filter panel". */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headingLabel {
+  font: 600 13px/1 var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.clearAll {
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.clearAll:hover {
+  color: var(--color-text);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fieldLabel {
+  font: 600 13px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.segmented {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--color-row-divider);
+}
+
+.segment {
+  flex: 1;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.segment[aria-pressed='true'] {
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  height: 32px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--color-border-strong);
+}
+
+.chip[aria-pressed='true'] {
+  border-color: var(--color-active);
+  background: var(--color-active);
+  font-weight: 600;
+  color: var(--color-active-text);
+}
+
+.segment:focus-visible,
+.chip:focus-visible,
+.clearAll:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-focus-halo);
+}
+
+.count {
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.chip[aria-pressed='true'] .count {
+  color: inherit;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.hint {
+  font: 400 13px/1.45 var(--font-sans);
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+
+.planned {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.week {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.weekLine {
+  display: flex;
+  justify-content: space-between;
+  font: 500 14px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-row-divider);
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--color-text);
+}

@@ -1,58 +1,43 @@
-import { PRIORITIES } from './priority';
 import { lifeAreaColorVar } from './lifeAreas';
-import { ENERGIES } from './taskMeta';
-import { localISODate } from './dateUtils';
+import { addDays, localISODate, startOfWeek } from './dateUtils';
 import type { LifeArea, Task } from '../models';
 
-export type GroupBy = 'area' | 'date' | 'priority' | 'energy' | 'effort' | 'none';
-
-export const GROUP_OPTIONS: GroupBy[] = ['area', 'date', 'priority', 'energy', 'effort', 'none'];
+export type GroupBy = 'area' | 'date';
 
 export interface TaskGroup {
   key: string;
-  /** i18n key (with `labelValues`) for the heading, or the life area's own name; null = no heading. */
+  /** i18n key for the heading, or null when `areaName` names it. */
   labelKey: string | null;
-  labelValues?: Record<string, string>;
   areaName?: string;
   /** Swatch colour (life-area CSS var). */
   dot?: string;
-  /** `YYYY-MM-DD` for a date group; the page formats it in the user's locale. */
-  date?: string;
   tasks: Task[];
 }
 
-interface Bucket {
-  key: string;
-  labelKey: string | null;
-  labelValues?: Record<string, string>;
-  areaName?: string;
-  dot?: string;
-  date?: string;
-}
+type Bucket = Omit<TaskGroup, 'tasks'>;
 
 const NO_VALUE = 'none';
-const EARLIER = 'earlier';
-const EFFORT_BUCKETS = [
-  { key: 'quick', max: 15 },
-  { key: 'short', max: 60 },
-  { key: 'long', max: Infinity },
-];
 
-function effortBucket(task: Task): string {
-  if (task.estimatedMinutes == null) return NO_VALUE;
-  return EFFORT_BUCKETS.find((b) => task.estimatedMinutes! <= b.max)!.key;
+export type WeekBucket = 'earlier' | 'thisWeek' | 'nextWeek' | 'later';
+export const WEEK_BUCKETS: WeekBucket[] = ['earlier', 'thisWeek', 'nextWeek', 'later'];
+
+/** Which planning week a task's date falls in (Monday-based); past days are `earlier`, no date is null. */
+export function weekBucket(task: Task, today = new Date()): WeekBucket | null {
+  if (!task.dueDate) return null;
+  // Stored as UTC midnight, so the first 10 chars are the calendar day.
+  const day = task.dueDate.slice(0, 10);
+  if (day < localISODate(today)) return 'earlier';
+  const weekStart = startOfWeek(today);
+  if (day < localISODate(addDays(weekStart, 7))) return 'thisWeek';
+  if (day < localISODate(addDays(weekStart, 14))) return 'nextWeek';
+  return 'later';
 }
 
-/** Ordered buckets for a grouping, ending with the catch-all for tasks lacking the field. */
-function bucketsFor(by: Exclude<GroupBy, 'none'>, areas: LifeArea[], keys: Set<string>): Bucket[] {
+function bucketsFor(by: GroupBy, areas: LifeArea[]): Bucket[] {
   switch (by) {
     case 'date':
       return [
-        { key: EARLIER, labelKey: 'backlog.group.earlier' },
-        ...[...keys]
-          .filter((k) => k !== EARLIER && k !== NO_VALUE)
-          .sort()
-          .map((day) => ({ key: day, labelKey: null, date: day })),
+        ...WEEK_BUCKETS.map((key) => ({ key, labelKey: `backlog.group.${key}` })),
         { key: NO_VALUE, labelKey: 'backlog.group.noDate' },
       ];
     case 'area':
@@ -60,52 +45,27 @@ function bucketsFor(by: Exclude<GroupBy, 'none'>, areas: LifeArea[], keys: Set<s
         ...areas.map((a) => ({ key: a.id, labelKey: null, areaName: a.name, dot: lifeAreaColorVar(a.order) })),
         { key: NO_VALUE, labelKey: 'backlog.otherGroup' },
       ];
-    case 'priority':
-      return [
-        ...PRIORITIES.map((p) => ({ key: p, labelKey: 'backlog.group.priorityValue', labelValues: { value: p } })),
-        { key: NO_VALUE, labelKey: 'backlog.group.noPriority' },
-      ];
-    case 'energy':
-      return [
-        ...ENERGIES.map((e) => ({ key: e, labelKey: `backlog.group.energyValue.${e}` })),
-        { key: NO_VALUE, labelKey: 'backlog.group.noEnergy' },
-      ];
-    case 'effort':
-      return [
-        ...EFFORT_BUCKETS.map((b) => ({ key: b.key, labelKey: `backlog.group.effortValue.${b.key}` })),
-        { key: NO_VALUE, labelKey: 'backlog.group.noEffort' },
-      ];
   }
 }
 
-function keyOf(task: Task, by: Exclude<GroupBy, 'none'>): string {
+function keyOf(task: Task, by: GroupBy): string {
   switch (by) {
+    case 'date':
+      return weekBucket(task) ?? NO_VALUE;
     case 'area':
       return task.areaId ?? NO_VALUE;
-    case 'date': {
-      // Stored as UTC midnight, so the first 10 chars are the calendar day.
-      if (!task.dueDate) return NO_VALUE;
-      const day = task.dueDate.slice(0, 10);
-      return day < localISODate() ? EARLIER : day;
-    }
-    case 'priority':
-      return task.priority ?? NO_VALUE;
-    case 'energy':
-      return task.energy ?? NO_VALUE;
-    case 'effort':
-      return effortBucket(task);
   }
 }
 
-/** Splits tasks into ordered, non-empty groups; task order within a group is preserved. */
+/** Splits tasks into ordered, non-empty groups, each sorted by date (undated last, otherwise in given order). */
 export function groupTasks(tasks: Task[], by: GroupBy, areas: LifeArea[]): TaskGroup[] {
-  if (by === 'none') return tasks.length ? [{ key: 'all', labelKey: null, tasks }] : [];
+  const byDate = [...tasks].sort((a, b) => (a.dueDate ?? '~').localeCompare(b.dueDate ?? '~'));
   const byKey = new Map<string, Task[]>();
-  for (const task of tasks) {
+  for (const task of byDate) {
     const key = keyOf(task, by);
     byKey.set(key, [...(byKey.get(key) ?? []), task]);
   }
-  return bucketsFor(by, areas, new Set(byKey.keys()))
+  return bucketsFor(by, areas)
     .filter((bucket) => byKey.has(bucket.key))
     .map((bucket) => ({ ...bucket, tasks: byKey.get(bucket.key)! }));
 }
