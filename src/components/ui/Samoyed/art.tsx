@@ -201,7 +201,7 @@ const ARTS: Record<ArtId, Art> = {
     eyes: EYES.sleepy,
     mouth: MOUTHS.flat,
     prop: (
-      <g fill={INK} fontFamily="Sofia Sans, sans-serif" fontWeight={700}>
+      <g fill={INK} fontFamily="Mulish, sans-serif" fontWeight={700}>
         <text x="430" y="170" fontSize="44">
           z
         </text>
