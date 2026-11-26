@@ -85,6 +85,7 @@
 
   --color-neutral-chip-bg: #eceeef;
   --color-neutral-chip-text: #5e666b;
+  --color-avatar-bg: #d6dadd;
 
   /* Priority flags. */
   --color-priority-high: #c8381f;
@@ -196,7 +197,7 @@
 
   --color-success-bg: #3a3d1a;
   --color-success-border: #6b6f12;
-  --color-success-text: #22282b;
+  --color-success-text: #e6ea7a;
   --color-success-solid: #d2d81a;
   --color-success-solid-border: #b8bd10;
 
@@ -211,6 +212,7 @@
 
   --color-neutral-chip-bg: #30373b;
   --color-neutral-chip-text: #a3abb0;
+  --color-avatar-bg: #465055;
 
   --color-priority-high: #ff6a4d;
   --color-priority-medium: #e07b1f;
