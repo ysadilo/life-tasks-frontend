@@ -1,0 +1,35 @@
+.planned {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.week {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.weekLine {
+  display: flex;
+  justify-content: space-between;
+  font: 500 14px/1 var(--font-sans);
+  color: var(--color-text);
+}
+
+.count {
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-row-divider);
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--color-text);
+}

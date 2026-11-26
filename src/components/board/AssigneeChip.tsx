@@ -84,7 +84,7 @@ function AssignPopover({
   );
 }
 
-/** Assignee pill on a task row; opens the assign popover. Renders nothing on personal boards. */
+/** v7 assignee on a task row: the member's avatar, or a dashed circle when unassigned; opens the assign popover. Renders nothing on personal boards. */
 export function AssigneeChip({ task }: { task: Task }) {
   const { t } = useTranslation();
   const { shared, byId } = useBoardMembers();
@@ -102,6 +102,8 @@ export function AssigneeChip({ task }: { task: Task }) {
         className={[styles.assignee, assignee ? '' : styles.assigneeEmpty].filter(Boolean).join(' ')}
         aria-haspopup="menu"
         aria-expanded={open}
+        aria-label={assignee ? t('board.assignedTo', { name: memberLabel(assignee, t) }) : t('board.assignTo')}
+        title={assignee ? memberLabel(assignee, t) : t('board.assignTo')}
         // Keeps useOutsideClick from closing the popover just before this click toggles it.
         onMouseDown={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
@@ -110,14 +112,7 @@ export function AssigneeChip({ task }: { task: Task }) {
           setOpen((v) => !v);
         }}
       >
-        {assignee ? (
-          <>
-            <MemberAvatar email={assignee.email} avatarKey={assignee.avatarKey} />
-            {memberLabel(assignee, t)}
-          </>
-        ) : (
-          t('board.assign')
-        )}
+        {assignee && <MemberAvatar email={assignee.email} avatarKey={assignee.avatarKey} />}
       </button>
       {open && <AssignPopover task={task} anchorRef={buttonRef} onClose={() => setOpen(false)} />}
     </span>

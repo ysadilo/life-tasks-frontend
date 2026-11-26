@@ -26,8 +26,10 @@ export function Sidebar() {
   const { data: recurringTasks } = useRecurringTasks();
   const { data: lifeAreas } = useLifeAreas();
   const board = useActiveBoard();
-  // On Backlog the area list doubles as its life-area filter.
-  const onBacklog = !!useMatch('/backlog');
+  // On Today and Backlog the area list doubles as the page's life-area filter.
+  const onBacklog = useMatch('/backlog');
+  const onToday = useMatch('/today');
+  const filtersByArea = !!onBacklog || !!onToday;
   const areaFilter = useAreaFilter();
 
   const todayCount = (todayTasks?.length ?? 0) + openRecurringOn(recurringTasks, new Date()).length;
@@ -73,7 +75,7 @@ export function Sidebar() {
         </div>
         {lifeAreas?.map((area) => {
           const dot = <span className={styles.areaDot} style={{ background: lifeAreaColorVar(area.order) }} />;
-          return onBacklog ? (
+          return filtersByArea ? (
             <button
               key={area.id}
               type="button"

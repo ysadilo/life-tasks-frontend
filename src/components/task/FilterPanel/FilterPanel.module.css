@@ -1,4 +1,4 @@
-/* v7 "Backlog · filter panel". */
+/* v7 filter panel (Today and Backlog rails, and the phone sheet). */
 .panel {
   display: flex;
   flex-direction: column;
@@ -9,13 +9,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.headingLabel {
-  font: 600 13px/1 var(--font-sans);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
 }
 
 .clearAll {
@@ -63,6 +56,7 @@
   border-radius: 7px;
   background: transparent;
   font: 500 13px/1 var(--font-sans);
+  white-space: nowrap;
   color: var(--color-text-secondary);
   cursor: pointer;
 }
@@ -134,33 +128,60 @@
   text-wrap: pretty;
 }
 
-.planned {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.week {
-  display: flex;
-  flex-direction: column;
+/* Shown where the rail is hidden; opens the filter sheet instead. */
+.filtersButton {
+  display: none;
+  flex: none;
+  height: 44px;
+  padding: 0 12px 0 14px;
+  align-items: center;
   gap: 7px;
-}
-
-.weekLine {
-  display: flex;
-  justify-content: space-between;
-  font: 500 14px/1 var(--font-sans);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  font: 600 14px/1 var(--font-sans);
   color: var(--color-text);
+  cursor: pointer;
 }
 
-.bar {
-  height: 6px;
-  border-radius: 3px;
-  background: var(--color-row-divider);
+.filtersButton[aria-pressed='true'] {
+  border-color: var(--color-active);
+  background: var(--color-active);
+  color: var(--color-active-text);
 }
 
-.barFill {
-  height: 100%;
-  border-radius: 3px;
-  background: var(--color-text);
+.filtersCount {
+  font: 600 12px/1 var(--font-sans);
+}
+
+.rail {
+  width: 260px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 34px 30px 24px 0;
+  overflow-y: auto;
+}
+
+.railFilters {
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.sheetFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1100px) {
+  .rail {
+    display: none;
+  }
+
+  .filtersButton {
+    display: flex;
+  }
 }
