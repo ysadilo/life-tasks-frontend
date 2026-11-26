@@ -1,1 +1,1 @@
-export { MetaChip } from './MetaChip';
+export { MetaChip, PriorityFlag } from './MetaChip';

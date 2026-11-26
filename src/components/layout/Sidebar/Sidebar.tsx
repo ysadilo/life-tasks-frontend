@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button, ProfileAvatar, SettingsIcon } from '../../ui';
@@ -10,6 +10,7 @@ import { imageUrl } from '../../../lib/images';
 import { useActiveBoard } from '../../../hooks/useBoards';
 import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
+import { useAreaFilter } from '../../../hooks/useAreaFilter';
 import { openRecurringOn } from '../../../lib/recurrence';
 import styles from './Sidebar.module.css';
 
@@ -25,6 +26,9 @@ export function Sidebar() {
   const { data: recurringTasks } = useRecurringTasks();
   const { data: lifeAreas } = useLifeAreas();
   const board = useActiveBoard();
+  // On Backlog the area list doubles as its life-area filter.
+  const onBacklog = !!useMatch('/backlog');
+  const areaFilter = useAreaFilter();
 
   const todayCount = (todayTasks?.length ?? 0) + openRecurringOn(recurringTasks, new Date()).length;
 
@@ -67,12 +71,26 @@ export function Sidebar() {
             {t('sidebar.manage')}
           </button>
         </div>
-        {lifeAreas?.map((area) => (
-          <div key={area.id} className={styles.areaRow}>
-            <span className={styles.areaDot} style={{ background: lifeAreaColorVar(area.order) }} />
-            {area.name}
-          </div>
-        ))}
+        {lifeAreas?.map((area) => {
+          const dot = <span className={styles.areaDot} style={{ background: lifeAreaColorVar(area.order) }} />;
+          return onBacklog ? (
+            <button
+              key={area.id}
+              type="button"
+              className={`${styles.areaRow} ${styles.areaButton}`}
+              aria-pressed={areaFilter.areaIds.includes(area.id)}
+              onClick={() => areaFilter.toggle(area.id)}
+            >
+              {dot}
+              {area.name}
+            </button>
+          ) : (
+            <div key={area.id} className={styles.areaRow}>
+              {dot}
+              {area.name}
+            </div>
+          );
+        })}
       </div>
 
       <div className={styles.footer}>

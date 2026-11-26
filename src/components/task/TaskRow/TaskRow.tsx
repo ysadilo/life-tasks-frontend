@@ -30,11 +30,15 @@ interface TaskRowProps {
   onToggle?: () => void;
   /** Makes the row clickable: opens the task's details. */
   onOpen?: () => void;
+  /** Shown at the start of the row, before the checkbox (e.g. Backlog's date column). */
+  leading?: ReactNode;
   /** The row's secondary action (e.g. → Today), shown at the end of the row. */
   trailing?: ReactNode;
   /** Touch swipe actions: `left` = swipe left, `right` = swipe right. Skipped while drag-reordering. */
   swipe?: { left?: SwipeAction; right?: SwipeAction };
   showChips?: boolean;
+  /** Leave out the Earlier / Today / Tomorrow label when the row shows its date another way (Backlog's date column). */
+  hideDue?: boolean;
   /** Desktop: the chips share one centred line with the title (Backlog) instead of sitting under it. */
   inline?: boolean;
   rowRef?: (el: HTMLDivElement | null) => void;
@@ -57,9 +61,11 @@ export function TaskRow({
   done = false,
   onToggle,
   onOpen,
+  leading,
   trailing,
   swipe,
   showChips = true,
+  hideDue = false,
   inline = false,
   rowRef,
   dragHandleProps,
@@ -69,7 +75,7 @@ export function TaskRow({
   const areas = useLifeAreaLookup();
   // Highlight the row whose details are open in the side panel (mockup 03).
   const selected = useTaskFormState().task?.id === task.id;
-  const urgency = dueUrgency(task);
+  const urgency = hideDue ? null : dueUrgency(task);
   const area = task.areaId ? areas.get(task.areaId) : undefined;
   const reminder = !!task.dueDate && hasReminder(task);
   const hasChips =
@@ -99,6 +105,7 @@ export function TaskRow({
   const row = (
     <div ref={rowRef} className={rowClassName} onClick={swiped ? undefined : onClick}>
       <div className={styles.lead}>
+        {leading}
         {dragHandleProps && (
           <DragHandle
             label={t('task.reorder', { title: task.title })}

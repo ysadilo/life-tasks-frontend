@@ -140,6 +140,7 @@
 
 .action {
   grid-area: action;
+  align-self: center;
   margin-left: 14px;
 }
 

@@ -29,6 +29,26 @@
   color: var(--color-neutral-chip-text);
 }
 
+.summary {
+  margin-right: 4px;
+  font: 500 14px/1 var(--font-sans);
+  color: var(--color-text-secondary);
+}
+
+.acid {
+  padding: 6px 8px 6px 10px;
+  border-radius: 8px;
+  background: var(--color-active);
+  color: var(--color-active-text);
+  font: 600 13px/1 var(--font-sans);
+}
+
+/* Plain × on acid: the tinted circle turns dark-on-dark in the dark theme. */
+.acid .remove {
+  background: transparent;
+  font-size: 15px;
+}
+
 .dot {
   width: 8px;
   height: 8px;

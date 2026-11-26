@@ -1,6 +1,6 @@
 export { TaskRow } from './TaskRow';
 export { DoneTaskRow } from './DoneTaskRow';
-export { MetaChip } from './MetaChip';
+export { MetaChip, PriorityFlag } from './MetaChip';
 export { TaskChip } from './TaskChip';
 export { ReflectModal } from './ReflectModal';
 export type { Reflection } from './ReflectModal';
@@ -9,7 +9,6 @@ export { TaskPreviewPanel } from './TaskPreviewPanel';
 export { AppliedFilters } from './AppliedFilters';
 export { TaskFilterPopover, EMPTY_TASK_FILTERS, activeFilterCount, matchesFilters } from './TaskFilterPopover';
 export type { TaskFilters } from './TaskFilterPopover';
-export { TaskGroupPopover } from './TaskGroupPopover';
 export { TaskSortPopover, SORT_OPTIONS, SORT_COMPARATORS } from './TaskSortPopover';
 export type { SortBy } from './TaskSortPopover';
 export { leaveThen } from './taskLeavingStore';

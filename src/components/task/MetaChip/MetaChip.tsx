@@ -47,6 +47,11 @@ function ClockIcon() {
   );
 }
 
+/** The coloured priority flag on its own, e.g. inside a filter chip. */
+export function PriorityFlag({ priority }: { priority: Priority }) {
+  return <FlagIcon color={priorityFlagColor(priority)} />;
+}
+
 /** Small task-meta chip coloured by the priority / energy / effort ramp. */
 export function MetaChip(props: MetaChipProps) {
   const { t } = useTranslation();
