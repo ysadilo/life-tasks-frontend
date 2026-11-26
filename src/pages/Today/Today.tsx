@@ -292,7 +292,12 @@ export default function Today() {
           </div>
         )}
 
-        <ReflectModal task={reflecting && withTodaysCheckin(reflecting, today)} done onClose={() => setReflecting(null)} onSubmit={saveReflection} />
+        <ReflectModal
+          task={reflecting && withTodaysCheckin(reflecting, today)}
+          done
+          onClose={() => setReflecting(null)}
+          onSubmit={saveReflection}
+        />
 
         <TodaySplit openTasks={sortedOpenTasks} />
 

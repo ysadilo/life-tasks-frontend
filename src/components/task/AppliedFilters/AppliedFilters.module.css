@@ -44,7 +44,7 @@
   padding: 0;
   border: none;
   border-radius: 50%;
-  background: rgba(251, 250, 247, 0.7);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
   color: inherit;
   font: inherit;
   cursor: pointer;

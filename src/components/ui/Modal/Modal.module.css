@@ -13,7 +13,7 @@
 }
 
 .dialog::backdrop {
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(30, 35, 38, 0.3);
 }
 
 .dialog[open]::backdrop {

@@ -33,3 +33,20 @@ export function buildCalendarEntries(tasks: Task[], from: Date, to: Date): Calen
   }
   return entries;
 }
+
+/** Splits a day's entries into one-off tasks (open first, done last) and recurring "routines". */
+export function splitDayEntries(entries: CalendarEntry[]): { tasks: CalendarEntry[]; routines: CalendarEntry[] } {
+  const byDone = (a: CalendarEntry, b: CalendarEntry) => Number(a.done) - Number(b.done);
+  return {
+    tasks: entries.filter((entry) => !entry.task.recurrence).sort(byDone),
+    routines: entries.filter((entry) => entry.task.recurrence).sort(byDone),
+  };
+}
+
+/** The entry's time of day: its reminder time when the reminder fires on that day, else null ("any time"). */
+export function entryTime(entry: CalendarEntry, locale: string): string | null {
+  const { notifyDaysBefore, notifyTime } = entry.task;
+  if (notifyDaysBefore !== 0 || !notifyTime) return null;
+  const [h, m] = notifyTime.split(':').map(Number);
+  return new Date(2000, 0, 1, h, m).toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' });
+}

@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageHeader, PageState } from '../../../components/layout';
-import { Button, SegmentedTabs } from '../../../components/ui';
 import { useTasksInRange } from '../../../hooks/useTasks';
 import {
   addDays,
   buildMonthGrid,
   formatMonthTitle,
   formatWeekRangeTitle,
+  startOfDay,
   startOfWeek,
   toISODate,
 } from '../../../lib/dateUtils';
@@ -19,20 +19,17 @@ import styles from './CalendarPage.module.css';
 
 type ViewMode = 'week' | 'month';
 
+const VIEWS: ViewMode[] = ['week', 'month'];
+
+const sameMonth = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+
 export default function CalendarPage() {
   const { t, i18n } = useTranslation();
   const { view } = useParams<{ view: string }>();
   const mode: ViewMode = view === 'month' ? 'month' : 'week';
-  const navigate = useNavigate();
   const [anchor, setAnchor] = useState(() => new Date());
-
-  const viewOptions = useMemo(
-    () => [
-      { value: 'week', label: t('nav.week') },
-      { value: 'month', label: t('nav.month') },
-    ],
-    [t]
-  );
+  // Month view lists this day's tasks; it opens on today.
+  const [selected, setSelected] = useState(() => startOfDay(new Date()));
 
   const { from, to, fromDate, toDate, title } = useMemo(() => {
     if (mode === 'week') {
@@ -59,17 +56,28 @@ export default function CalendarPage() {
   const { data: tasks, isLoading, error } = useTasksInRange(from, to);
 
   const entries = useMemo(() => buildCalendarEntries(tasks ?? [], fromDate, toDate), [tasks, fromDate, toDate]);
+  const monthCount = entries.filter((entry) => !entry.task.recurrence && sameMonth(entry.date, anchor)).length;
 
-  function goPrev() {
-    setAnchor((current) =>
-      mode === 'week' ? addDays(current, -7) : new Date(current.getFullYear(), current.getMonth() - 1, 1)
-    );
+  /** Month view: land on today when the month has it, else on its 1st. */
+  function showMonth(month: Date) {
+    const today = startOfDay(new Date());
+    setAnchor(month);
+    setSelected(sameMonth(month, today) ? today : new Date(month.getFullYear(), month.getMonth(), 1));
   }
 
-  function goNext() {
-    setAnchor((current) =>
-      mode === 'week' ? addDays(current, 7) : new Date(current.getFullYear(), current.getMonth() + 1, 1)
-    );
+  function step(direction: 1 | -1) {
+    if (mode === 'week') setAnchor((current) => addDays(current, 7 * direction));
+    else showMonth(new Date(anchor.getFullYear(), anchor.getMonth() + direction, 1));
+  }
+
+  function goToday() {
+    setAnchor(new Date());
+    setSelected(startOfDay(new Date()));
+  }
+
+  function selectDay(day: Date) {
+    setSelected(day);
+    if (!sameMonth(day, anchor)) setAnchor(day);
   }
 
   if (isLoading) return <PageState>{t('calendar.loading')}</PageState>;
@@ -78,40 +86,50 @@ export default function CalendarPage() {
   return (
     <div className={styles.page}>
       <PageHeader
-        eyebrow={t('nav.calendar')}
         title={title}
+        subtitle={mode === 'month' ? t('calendar.monthCount', { count: monthCount }) : undefined}
         actions={
-          <>
-            <div className={styles.navControls}>
-              <Button variant="secondary" className={styles.todayButton} onClick={() => setAnchor(new Date())}>
-                {t('calendar.today')}
-              </Button>
-              <Button
-                variant="secondary"
-                className={styles.arrow}
-                onClick={goPrev}
+          <div className={styles.controls}>
+            <nav className={styles.views} aria-label={t('nav.calendar')}>
+              {VIEWS.map((value) => (
+                <NavLink
+                  key={value}
+                  to={`/calendar/${value}`}
+                  className={({ isActive }) => (isActive ? `${styles.view} ${styles.viewActive}` : styles.view)}
+                >
+                  {t(`nav.${value}`)}
+                </NavLink>
+              ))}
+            </nav>
+            <div className={styles.stepper}>
+              <button
+                type="button"
+                className={styles.stepButton}
+                onClick={() => step(-1)}
                 aria-label={t('calendar.previousPeriod')}
               >
                 ‹
-              </Button>
-              <Button
-                variant="secondary"
-                className={styles.arrow}
-                onClick={goNext}
+              </button>
+              <button type="button" className={styles.stepButton} onClick={goToday}>
+                {t('calendar.today')}
+              </button>
+              <button
+                type="button"
+                className={styles.stepButton}
+                onClick={() => step(1)}
                 aria-label={t('calendar.nextPeriod')}
               >
                 ›
-              </Button>
+              </button>
             </div>
-            <SegmentedTabs options={viewOptions} value={mode} onChange={(value) => navigate(`/calendar/${value}`)} />
-          </>
+          </div>
         }
       />
 
       {mode === 'week' ? (
         <WeekView anchor={anchor} entries={entries} />
       ) : (
-        <MonthView anchor={anchor} entries={entries} />
+        <MonthView anchor={anchor} entries={entries} selected={selected} onSelect={selectDay} />
       )}
     </div>
   );

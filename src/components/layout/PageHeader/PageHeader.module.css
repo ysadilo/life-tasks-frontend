@@ -15,14 +15,14 @@
 
 .title {
   margin: 0;
-  font: 700 34px/1.05 var(--font-sans);
+  font: 700 36px/1.05 var(--font-sans);
   color: var(--color-text);
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
-  font: 500 14px/1 var(--font-sans);
-  color: var(--color-text-secondary);
+  font: 400 14px/1.2 var(--font-sans);
+  color: var(--color-text-muted);
 }
 
 .actions {
@@ -41,7 +41,8 @@
   }
 
   .title {
-    font-size: 22px;
+    font-size: 32px;
+    line-height: 1;
   }
 
   .actions {

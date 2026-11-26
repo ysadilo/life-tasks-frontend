@@ -220,8 +220,8 @@
     "uk": "Українська"
   },
   "theme": {
-    "powder": "Powder",
-    "glamour": "Glamour"
+    "powder": "Light",
+    "glamour": "Dark"
   },
   "lifeAreasModal": {
     "title": "Life areas",
@@ -465,6 +465,9 @@
     "goToToday": "Go to Today"
   },
   "triage": {
+    "progress": "{{index}} of {{total}}",
+    "escToStop": "Esc to stop",
+    "stop": "Stop",
     "handTo": "Hand to",
     "handedTo": "→ {{name}}",
     "inOthers": "In others' triage",
@@ -482,8 +485,8 @@
     "itsDone": "It's actually done",
     "dropIt": "Drop it",
     "undo": "Undo",
-    "hint": "Arrow keys or click to sort.",
-    "hintUndo": "undoes the last call.",
+    "hint": "Use the arrow keys or click",
+    "hintUndo": "undoes the last call",
     "emptyTitle": "Nothing left to triage",
     "cardsSorted_one": "{{count}} card sorted",
     "cardsSorted_other": "{{count}} cards sorted",
@@ -502,7 +505,7 @@
     "short": {
       "today": "Today",
       "backlog": "Backlog",
-      "done": "Done",
+      "done": "Already done",
       "drop": "Drop"
     }
   },
@@ -559,12 +562,14 @@
     "loading": "Loading the calendar…",
     "error": "Couldn't load the calendar. Is the API running?",
     "addPlaceholder": "+ Add",
-    "more": "+{{count}} more",
     "overdue": "Earlier",
-    "todaySuffix": " · today",
-    "daySummary_one": "{{count}} task · {{done}} done",
-    "daySummary_other": "{{count}} tasks · {{done}} done",
-    "addTask": "Add task"
+    "addTask": "Add task",
+    "anyTime": "Any time",
+    "emptyDay": "Nothing planned",
+    "routines_one": "{{count}} routine",
+    "routines_other": "{{count}} routines",
+    "monthCount_one": "{{count}} task this month",
+    "monthCount_other": "{{count}} tasks this month"
   },
   "samoyed": {
     "setting": "Samoyed",

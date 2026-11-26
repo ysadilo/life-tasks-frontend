@@ -1,5 +1,5 @@
 .sidebar {
-  width: 236px;
+  width: 244px;
   flex: none;
   padding: 18px 12px 14px;
   display: flex;
@@ -16,8 +16,8 @@
 
 .newTaskButton {
   width: 100%;
-  padding: 11px 14px;
-  border-radius: 12px;
+  justify-content: flex-start;
+  padding: 12px 14px;
   font-size: 14px;
 }
 
@@ -51,19 +51,14 @@
 }
 
 .navItemActive {
-  background: var(--color-surface);
-  border-color: var(--color-border-subtle);
-  box-shadow: 0 1px 3px rgba(43, 42, 40, 0.06);
-  color: var(--color-text);
+  background: var(--color-active);
+  color: var(--color-active-text);
   font-weight: 600;
 }
 
 .count {
-  font: 600 12px/1 var(--font-sans);
-  color: var(--color-neutral-chip-text);
-  background: var(--color-neutral-chip-bg);
-  border-radius: var(--radius-pill);
-  padding: 4px 8px;
+  font: 500 12px/1 var(--font-sans);
+  color: var(--color-text-muted);
 }
 
 .navItemActive .count {
@@ -114,86 +109,77 @@
 }
 
 .areaDot {
-  width: 9px;
-  height: 9px;
-  border-radius: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   flex: none;
 }
 
+/* v7: a plain row under a hairline — avatar, name and email, and a quiet gear. The whole row opens Settings. */
 .footer {
   margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
 }
 
 .profile {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px;
   width: 100%;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-input);
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
   font: inherit;
   text-decoration: none;
-  transition: border-color var(--dur-base);
+  transition: background-color var(--dur-fast);
 }
 
 .profile:hover {
-  border-color: var(--color-accent-border);
+  background: var(--color-hover-bg);
+}
+
+.profile:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 1px;
 }
 
 .settingsIcon {
   flex: none;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-left: auto;
-  background: var(--color-surface-muted);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  transition:
-    border-color var(--dur-base),
-    color var(--dur-base);
+  border-radius: var(--radius-button);
+  color: var(--color-text-muted);
+  transition: color var(--dur-fast);
 }
 
 .profile:hover .settingsIcon {
-  border-color: var(--color-accent-border);
-  color: var(--color-text);
-}
-
-.avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--color-area-3);
-  object-fit: cover;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font: 600 12px/1 var(--font-sans);
   color: var(--color-text);
 }
 
 .profileText {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .profileName {
-  font: 600 13px/1 var(--font-sans);
+  font: 600 14px/1 var(--font-sans);
   color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .profileSubtitle {
-  font: 400 11px/1 var(--font-sans);
+  font: 400 12px/1 var(--font-sans);
   color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

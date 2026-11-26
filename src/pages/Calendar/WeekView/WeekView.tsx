@@ -1,11 +1,11 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TaskChip, taskForm } from '../../../components/task';
 import { useScrollTodayIntoView } from '../../../hooks/useScrollTodayIntoView';
 import { addDays, isSameDay, localISODate, startOfDay, startOfWeek, weekdayLabel } from '../../../lib/dateUtils';
-import type { CalendarEntry } from '../../../lib/calendarEntries';
+import { entryTime, splitDayEntries, type CalendarEntry } from '../../../lib/calendarEntries';
 import { openCalendarEntry } from '../openCalendarEntry';
-import { DayTasksModal } from '../DayTasksModal';
+import { RoutinesToggle } from '../RoutinesToggle';
 import styles from './WeekView.module.css';
 
 interface WeekViewProps {
@@ -13,19 +13,13 @@ interface WeekViewProps {
   entries: CalendarEntry[];
 }
 
-/** Never collapse a day to only a "+N more" — always show at least this many chips. */
-const MIN_VISIBLE_CHIPS = 1;
-
 export function WeekView({ anchor, entries }: WeekViewProps) {
   const start = startOfWeek(anchor);
   const days = Array.from({ length: 7 }, (_, i) => addDays(start, i));
   const today = new Date();
   const todayStart = startOfDay(today);
-  const [openDay, setOpenDay] = useState<Date | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   useScrollTodayIntoView(gridRef, start.toISOString());
-
-  const openDayEntries = openDay ? entries.filter((entry) => isSameDay(entry.date, openDay)) : [];
 
   return (
     <div className={styles.grid} ref={gridRef}>
@@ -35,12 +29,9 @@ export function WeekView({ anchor, entries }: WeekViewProps) {
           day={day}
           entries={entries.filter((entry) => isSameDay(entry.date, day))}
           isToday={isSameDay(day, today)}
-          isWeekend={day.getDay() === 0 || day.getDay() === 6}
           isPast={day < todayStart}
-          onMore={() => setOpenDay(day)}
         />
       ))}
-      <DayTasksModal day={openDay} entries={openDayEntries} onClose={() => setOpenDay(null)} />
     </div>
   );
 }
@@ -49,108 +40,47 @@ interface DayColumnProps {
   day: Date;
   entries: CalendarEntry[];
   isToday: boolean;
-  isWeekend: boolean;
   isPast: boolean;
-  onMore: () => void;
 }
 
-function DayColumn({ day, entries, isToday, isWeekend, isPast, onMore }: DayColumnProps) {
+function DayColumn({ day, entries, isToday, isPast }: DayColumnProps) {
   const { t, i18n } = useTranslation();
-  const chipsRef = useRef<HTMLDivElement>(null);
-  const [limit, setLimit] = useState(entries.length);
-  const [overflowing, setOverflowing] = useState(false);
+  const [showRoutines, setShowRoutines] = useState(false);
+  const { tasks, routines } = splitDayEntries(entries);
 
-  const entriesKey = entries.map((entry) => entry.key).join('|');
-
-  useLayoutEffect(() => {
-    const el = chipsRef.current;
-    if (!el) return;
-
-    const measure = () => {
-      const chipEls = Array.from(el.querySelectorAll<HTMLElement>('[data-slot="chip"]'));
-      const moreEl = el.querySelector<HTMLElement>('[data-slot="more"]');
-      const addEl = el.querySelector<HTMLElement>('[data-slot="add"]');
-      // Un-hide everything so offsetHeight reads are real.
-      for (const node of [...chipEls, moreEl, addEl]) if (node) node.hidden = false;
-
-      const gap = parseFloat(getComputedStyle(el).rowGap) || 0;
-      const avail = el.clientHeight;
-
-      const countThatFit = (reserve: number) => {
-        let used = 0;
-        let n = 0;
-        for (const chip of chipEls) {
-          const next = used + (n ? gap : 0) + chip.offsetHeight;
-          if (next + reserve <= avail) {
-            used = next;
-            n += 1;
-          } else break;
-        }
-        return n;
-      };
-
-      const rawFit = countThatFit(0);
-      const willOverflow = rawFit < chipEls.length;
-      const fit = willOverflow
-        ? Math.max(countThatFit(moreEl ? moreEl.offsetHeight + gap : 0), MIN_VISIBLE_CHIPS)
-        : rawFit;
-
-      // Apply imperatively too: setLimit may be a no-op (same value) and then
-      // React won't re-render to fix the `hidden` props.
-      chipEls.forEach((chip, i) => (chip.hidden = i >= fit));
-      if (moreEl) moreEl.hidden = !willOverflow;
-      if (addEl) addEl.hidden = willOverflow;
-
-      setLimit(fit);
-      setOverflowing(willOverflow);
-    };
-
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [entriesKey]);
-
-  const overflow = entries.length - limit;
+  const chip = (entry: CalendarEntry) => (
+    <TaskChip
+      key={entry.key}
+      task={entry.task}
+      done={entry.done}
+      time={entryTime(entry, i18n.language)}
+      onClick={() => openCalendarEntry(entry)}
+    />
+  );
 
   return (
-    <div
-      data-today={isToday || undefined}
-      className={[styles.column, isWeekend ? styles.weekend : '', isToday ? styles.today : '']
-        .filter(Boolean)
-        .join(' ')}
-    >
+    <div data-today={isToday || undefined} className={isToday ? `${styles.column} ${styles.today}` : styles.column}>
       <div className={styles.dayHeader}>
         <span className={styles.weekday}>{weekdayLabel(day, i18n.language)}</span>
-        <span className={`${styles.dateNumber} ${isPast ? styles.pastNumber : ''}`}>{day.getDate()}</span>
+        <span className={[styles.dateNumber, isPast ? styles.pastNumber : ''].filter(Boolean).join(' ')}>
+          {day.getDate()}
+        </span>
       </div>
-      <div className={styles.chips} ref={chipsRef}>
-        {entries.map((entry, i) => (
-          <div key={entry.key} data-slot="chip" hidden={i >= limit}>
-            <TaskChip task={entry.task} done={entry.done} onClick={() => openCalendarEntry(entry)} />
-          </div>
-        ))}
-        <button
-          type="button"
-          className={styles.more}
-          onClick={onMore}
-          data-slot="more"
-          hidden={!overflowing || overflow <= 0}
-        >
-          {t('calendar.more', { count: Math.max(overflow, 1) })}
+      {routines.length > 0 && (
+        <RoutinesToggle
+          className={styles.routines}
+          count={routines.length}
+          open={showRoutines}
+          onToggle={() => setShowRoutines((open) => !open)}
+        />
+      )}
+      {showRoutines && routines.map(chip)}
+      {tasks.map(chip)}
+      {!isPast && (
+        <button type="button" className={styles.add} onClick={() => taskForm.openNew(localISODate(day))}>
+          {t('calendar.addPlaceholder')}
         </button>
-        {!isPast && (
-          <button
-            type="button"
-            className={styles.addPlaceholder}
-            onClick={() => taskForm.openNew(localISODate(day))}
-            data-slot="add"
-            hidden={overflowing}
-          >
-            {t('calendar.addPlaceholder')}
-          </button>
-        )}
-      </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useMatch } from 'react-router-dom';
 import { Sidebar } from '../Sidebar';
 import { BottomNav } from '../BottomNav';
 import { QuickAddModal, TaskFormPanel, TaskPreviewPanel } from '../../task';
@@ -14,10 +14,12 @@ export function AppShell() {
   useSyncPushSubscription();
   useHandedTaskPeek();
   useOpenTaskFromUrl();
+  // Triage is a focus mode (v7): no sidebar, board bar or tab bar, just the queue.
+  const focus = useMatch('/triage') !== null;
   return (
-    <div className={styles.shell}>
-      <Sidebar />
-      <BoardBar />
+    <div className={focus ? `${styles.shell} ${styles.focus}` : styles.shell}>
+      {!focus && <Sidebar />}
+      {!focus && <BoardBar />}
       <div className={styles.canvas}>
         <main className={styles.main}>
           <Outlet />
@@ -25,7 +27,7 @@ export function AppShell() {
         <TaskFormPanel />
         <TaskPreviewPanel />
       </div>
-      <BottomNav />
+      {!focus && <BottomNav />}
       <QuickAddModal />
       <LifeAreasModal />
       <NewBoardModal />

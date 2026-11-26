@@ -16,8 +16,8 @@ export default defineConfig({
         name: 'LifeTasks',
         short_name: 'LifeTasks',
         description: 'Backlog, Today board, week/month views, and recurring tasks.',
-        theme_color: '#1c2521',
-        background_color: '#eef1f0',
+        theme_color: '#f6f7f7',
+        background_color: '#f6f7f7',
         display: 'standalone',
         start_url: '/',
         icons: [

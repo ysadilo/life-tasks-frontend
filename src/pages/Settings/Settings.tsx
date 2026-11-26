@@ -8,7 +8,7 @@ import { FeedbackButton } from '../../components/feedback';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { useOutsideClick } from '../../hooks/useOutsideClick';
 import { useBoards, useClearAvatar, useMyAvatarKey, useSetAvatar } from '../../hooks/useBoards';
-import { FilePickButton, SegmentedTabs, toast } from '../../components/ui';
+import { FilePickButton, ProfileAvatar, SegmentedTabs, toast } from '../../components/ui';
 import { imageUrl } from '../../lib/images';
 import { getSamoyedMode, SAMOYED_MODES, setSamoyedMode, type SamoyedMode } from '../../lib/samoyed';
 import { MAX_LIFE_AREAS } from '../../lib/lifeAreas';
@@ -119,11 +119,7 @@ export default function Settings() {
               aria-expanded={avatarMenuOpen}
               onClick={() => setAvatarMenuOpen((v) => !v)}
             >
-              {avatarKey || user?.picture ? (
-                <img className={styles.avatar} src={avatarKey ? imageUrl(avatarKey) : user?.picture} alt="" />
-              ) : (
-                <div className={styles.avatar} />
-              )}
+              <ProfileAvatar src={avatarKey ? imageUrl(avatarKey) : user?.picture} name={displayName} />
             </button>
             {avatarMenuOpen && (
               <div className={styles.avatarMenu} role="menu">

@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Button, SettingsIcon } from '../../ui';
+import { Button, ProfileAvatar, SettingsIcon } from '../../ui';
 import { taskForm } from '../../task';
 import { lifeAreasModal } from '../../lifeAreas';
 import { BoardSwitcher, MembersSection } from '../../board';
@@ -37,6 +37,7 @@ export function Sidebar() {
       <BoardSwitcher />
 
       <Button variant="primary" className={styles.newTaskButton} onClick={() => taskForm.openNew()}>
+        <span aria-hidden>+</span>
         {t('sidebar.newTask')}
       </Button>
 
@@ -75,18 +76,14 @@ export function Sidebar() {
       </div>
 
       <div className={styles.footer}>
-        <NavLink to="/settings" className={styles.profile}>
-          {avatarSrc ? (
-            <img className={styles.avatar} src={avatarSrc} alt="" referrerPolicy="no-referrer" />
-          ) : (
-            <div className={styles.avatar}>{displayName[0]?.toUpperCase()}</div>
-          )}
+        <NavLink to="/settings" className={styles.profile} title={t('settings.profileHint')}>
+          <ProfileAvatar src={avatarSrc} name={displayName} />
           <div className={styles.profileText}>
             <span className={styles.profileName}>{displayName}</span>
-            <span className={styles.profileSubtitle}>{t('settings.profileHint')}</span>
+            {user?.email && <span className={styles.profileSubtitle}>{user.email}</span>}
           </div>
-          <span className={styles.settingsIcon} aria-label={t('nav.settings')}>
-            <SettingsIcon />
+          <span className={styles.settingsIcon} aria-hidden="true">
+            <SettingsIcon size={17} />
           </span>
         </NavLink>
       </div>

@@ -226,8 +226,8 @@
     "uk": "Українська"
   },
   "theme": {
-    "powder": "Пудра",
-    "glamour": "Гламур"
+    "powder": "Світла",
+    "glamour": "Темна"
   },
   "lifeAreasModal": {
     "title": "Сфери життя",
@@ -511,6 +511,9 @@
     "goToToday": "Перейти до «Сьогодні»"
   },
   "triage": {
+    "progress": "{{index}} з {{total}}",
+    "escToStop": "Esc — зупинити",
+    "stop": "Зупинити",
     "handTo": "Передати",
     "handedTo": "→ {{name}}",
     "inOthers": "У сортуванні інших",
@@ -532,8 +535,8 @@
     "itsDone": "Насправді вже зроблено",
     "dropIt": "Відкинути",
     "undo": "Скасувати",
-    "hint": "Стрілки або клік для сортування.",
-    "hintUndo": "скасовує останнє рішення.",
+    "hint": "Стрілки на клавіатурі або клік",
+    "hintUndo": "скасовує останнє рішення",
     "emptyTitle": "Сортувати більше нічого",
     "cardsSorted_one": "Розсортовано {{count}} картку",
     "cardsSorted_few": "Розсортовано {{count}} картки",
@@ -554,7 +557,7 @@
     "short": {
       "today": "Сьогодні",
       "backlog": "Беклог",
-      "done": "Готово",
+      "done": "Вже зроблено",
       "drop": "Відкинути"
     }
   },
@@ -621,14 +624,18 @@
     "loading": "Завантажуємо календар…",
     "error": "Не вдалося завантажити календар. API працює?",
     "addPlaceholder": "+ Додати",
-    "more": "+ще {{count}}",
     "overdue": "Раніше",
-    "todaySuffix": " · сьогодні",
-    "daySummary_one": "{{count}} завдання · виконано {{done}}",
-    "daySummary_few": "{{count}} завдання · виконано {{done}}",
-    "daySummary_many": "{{count}} завдань · виконано {{done}}",
-    "daySummary_other": "{{count}} завдання · виконано {{done}}",
-    "addTask": "Додати завдання"
+    "addTask": "Додати завдання",
+    "anyTime": "Будь-коли",
+    "emptyDay": "Нічого не заплановано",
+    "routines_one": "{{count}} повторюване",
+    "routines_few": "{{count}} повторювані",
+    "routines_many": "{{count}} повторюваних",
+    "routines_other": "{{count}} повторюваного",
+    "monthCount_one": "{{count}} завдання цього місяця",
+    "monthCount_few": "{{count}} завдання цього місяця",
+    "monthCount_many": "{{count}} завдань цього місяця",
+    "monthCount_other": "{{count}} завдання цього місяця"
   },
   "samoyed": {
     "setting": "Самоїд",

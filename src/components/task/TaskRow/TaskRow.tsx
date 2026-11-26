@@ -12,6 +12,7 @@ import { htmlToText } from '../../../lib/richText';
 import { recurrenceLabel } from '../../../lib/recurrence';
 import { hasReminder, reminderLabel } from '../../../lib/reminder';
 import { useLifeAreaLookup } from '../../../hooks/useLifeAreas';
+import { lifeAreaColorVar } from '../../../lib/lifeAreas';
 import { useTaskFormState } from '../taskFormStore';
 import { openOnRowClick } from '../openOnRowClick';
 import type { Task } from '../../../models';
@@ -69,7 +70,7 @@ export function TaskRow({
   // Highlight the row whose details are open in the side panel (mockup 03).
   const selected = useTaskFormState().task?.id === task.id;
   const urgency = dueUrgency(task);
-  const areaName = task.areaId ? areas.get(task.areaId)?.name : undefined;
+  const area = task.areaId ? areas.get(task.areaId) : undefined;
   const reminder = !!task.dueDate && hasReminder(task);
   const hasChips =
     showChips &&
@@ -77,7 +78,7 @@ export function TaskRow({
       task.priority ||
       task.energy ||
       task.estimatedMinutes != null ||
-      areaName ||
+      area ||
       task.recurrence ||
       reminder ||
       task.createdVia);
@@ -121,14 +122,18 @@ export function TaskRow({
       </div>
       {hasChips && (
         <div className={styles.chips}>
-          {urgency && <Chip>{t(dueLabelKey(urgency))}</Chip>}
-          {task.priority && <MetaChip axis="priority" value={task.priority} />}
-          {task.energy && <MetaChip axis="energy" value={task.energy} />}
-          {task.estimatedMinutes != null && <MetaChip axis="effort" minutes={task.estimatedMinutes} />}
-          {areaName && <Chip>{areaName}</Chip>}
-          {task.recurrence && <Chip>↻ {recurrenceLabel(t, task)}</Chip>}
+          {urgency && <Chip variant="plain">{t(dueLabelKey(urgency))}</Chip>}
+          {task.priority && <MetaChip plain axis="priority" value={task.priority} />}
+          {area && (
+            <Chip variant="plain" dot={lifeAreaColorVar(area.order)}>
+              {area.name}
+            </Chip>
+          )}
+          {task.estimatedMinutes != null && <MetaChip plain axis="effort" minutes={task.estimatedMinutes} />}
+          {task.energy && <MetaChip plain axis="energy" value={task.energy} />}
+          {task.recurrence && <Chip variant="plain">↻ {recurrenceLabel(t, task)}</Chip>}
           {reminder && (
-            <Chip>
+            <Chip variant="plain">
               <ReminderIcon title={`${t('taskForm.notify')}: ${reminderLabel(t, task, i18n.language)}`} />
             </Chip>
           )}

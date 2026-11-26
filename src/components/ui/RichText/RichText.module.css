@@ -16,7 +16,7 @@
 }
 
 .rendered a {
-  color: var(--color-accent-text, var(--color-text));
+  color: var(--color-text);
   text-decoration: underline;
 }
 
@@ -169,8 +169,9 @@
 }
 
 :is(.surface, .rendered) ul[data-checklist] > li[data-checked]::before {
+  /* Slate tick on the acid fill, as on done checks (data URIs can't read CSS variables). */
   background: var(--color-success-solid)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 8.5 2.5 2.5L12 5.5'/%3E%3C/svg%3E")
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%232E3439' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 8.5 2.5 2.5L12 5.5'/%3E%3C/svg%3E")
     center / 100% no-repeat;
   border-color: var(--color-success-solid-border);
 }

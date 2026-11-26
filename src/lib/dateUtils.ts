@@ -51,8 +51,10 @@ export function formatWeekRangeTitle(weekStart: Date, locale: string): string {
   );
 }
 
+/** "Листопад 2026": capitalised, as Ukrainian month names are lowercase mid-sentence. */
 export function formatMonthTitle(date: Date, locale: string): string {
-  return `${monthLabel(date, locale)} ${date.getFullYear()}`;
+  const month = monthLabel(date, locale);
+  return `${month.charAt(0).toLocaleUpperCase(locale)}${month.slice(1)} ${date.getFullYear()}`;
 }
 
 export interface MonthCell {
