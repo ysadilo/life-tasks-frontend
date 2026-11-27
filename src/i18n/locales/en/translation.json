@@ -246,26 +246,32 @@
   "auth": {
     "loading": "Signing you in…",
     "signOut": "Sign out",
-    "headline": "Your life, in a board you can actually finish.",
-    "blurb": "Backlog for someday. Today for now. Triage for everything yesterday left behind.",
-    "preview": {
-      "taxes": "Pay Q3 taxes",
-      "dentist": "Call dentist",
-      "gym": "Gym — legs",
-      "fromYesterday": "From yesterday",
-      "bike": "Fix the bike brake"
+    "greeting": {
+      "morning": "Good morning.",
+      "afternoon": "Good afternoon.",
+      "evening": "Good evening.",
+      "night": "Good night."
     },
+    "tagline": {
+      "morning": "Sign in and see what today holds.",
+      "afternoon": "Sign in and pick up where you left off.",
+      "evening": "Sign in to wrap up the day.",
+      "night": "Sign in and plan tomorrow."
+    },
+    "email": "Email",
+    "or": "or",
+    "google": "Continue with Google",
+    "footer": "Triage in the morning, a short list all day.",
     "login": {
-      "title": "Welcome back",
-      "subtitle": "Continue with Google, email, or a passkey.",
-      "cta": "Continue",
-      "alt": "New here? Create an account"
+      "cta": "Sign in",
+      "switchPrompt": "New here?",
+      "switchLink": "Create an account"
     },
     "signup": {
-      "title": "Create your account",
-      "subtitle": "Set up your board in a few seconds with Auth0.",
-      "cta": "Sign up",
-      "alt": "Already have an account? Sign in"
+      "subtitle": "Create your account and set up your board in a few seconds.",
+      "cta": "Create account",
+      "switchPrompt": "Already have an account?",
+      "switchLink": "Sign in"
     }
   },
   "task": {

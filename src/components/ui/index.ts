@@ -25,3 +25,4 @@ export { SettingsIcon } from './SettingsIcon';
 export { ProfileAvatar } from './ProfileAvatar';
 export { SectionLabel } from './SectionLabel';
 export { SearchField } from './SearchField';
+export { Logo } from './Logo';
