@@ -1,43 +1,221 @@
-.panel {
+.page {
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Everything above the horizon line; the line is this box's bottom border. */
+.hero {
+  position: relative;
+  height: 372px;
+  flex: none;
+  border-bottom: 1.5px solid var(--color-text);
+  overflow: hidden;
+}
+
+.sky {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  max-width: 360px;
+  height: 100%;
+}
+
+.sun,
+.moon {
+  fill: var(--color-active);
+}
+
+.sun {
+  stroke: var(--color-text);
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.stars {
+  fill: var(--color-text);
+  opacity: 0.7;
+  animation: stars 2.4s ease-in 1.1s both;
+}
+
+@keyframes stars {
+  from {
+    opacity: 0;
+  }
+}
+
+.top {
+  position: absolute;
+  top: 32px;
+  left: 48px;
+  right: 48px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.logo {
+  flex: none;
+  color: var(--color-text);
+}
+
+.switch {
+  font: 400 14px/1.3 var(--font-sans);
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+.switch a {
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.greeting {
+  position: absolute;
+  top: 118px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  animation: greet 1.8s ease-out 0.6s both;
+}
+
+@keyframes greet {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 }
 
 .title {
   margin: 0;
-  font: 700 30px/1 var(--font-sans);
-  letter-spacing: -0.03em;
-  color: var(--color-text);
+  font: 300 clamp(40px, 9vw, 60px) / 1 var(--font-sans);
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   margin: 0;
-  font: 400 14px/1.5 var(--font-sans);
-  color: var(--color-text-secondary);
+  font: 400 16px/1.4 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.form {
+  width: min(420px, 100% - 40px);
+  margin: 30px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.input {
+  height: 40px;
+  padding: 0 0 6px;
+  border: 0;
+  border-bottom: 1.5px solid var(--color-text);
+  border-radius: 0;
+  background: transparent;
+  font: 400 17px/1 var(--font-sans);
+  color: var(--color-text);
+  outline: none;
+}
+
+.input:focus-visible {
+  border-bottom-width: 2px;
+  padding-bottom: 5px;
 }
 
 .cta {
-  margin-top: 4px;
-  padding: 14px 28px;
+  align-self: flex-start;
+  height: 48px;
+  margin-top: 6px;
+  padding: 0 34px;
   border-radius: var(--radius-pill);
   font-size: 15px;
 }
 
-.alt {
-  align-self: flex-start;
-  padding: 0;
-  background: none;
-  border: none;
-  font: 500 14px/1 var(--font-sans);
-  color: var(--color-text-secondary);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+.or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 400 13px/1 var(--font-sans);
+  color: var(--color-text-faint);
+}
+
+.or::before,
+.or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.google {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font: 600 14px/1 var(--font-sans);
+  color: var(--color-text);
   cursor: pointer;
 }
 
-.alt:hover {
-  color: var(--color-text);
+.google:hover:not(:disabled) {
+  background: var(--color-hover-bg);
+}
+
+.google:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.footer {
+  margin: auto 0 0;
+  padding: 40px 48px 34px;
+  font: 400 13px/1.4 var(--font-sans);
+  color: var(--color-text-faint);
+}
+
+@media (max-width: 640px) {
+  .top {
+    left: 20px;
+    right: 20px;
+  }
+
+  .footer {
+    padding: 32px 20px 24px;
+  }
+}
+
+/* The design inverts the primary button on the dark horizon. */
+:global(:root[data-theme='glamour']) .cta {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+/* The global reduced-motion rule keeps animation delays, which would hide these until the delay ends. */
+@media (prefers-reduced-motion: reduce) {
+  .greeting,
+  .stars {
+    animation: none;
+  }
 }
