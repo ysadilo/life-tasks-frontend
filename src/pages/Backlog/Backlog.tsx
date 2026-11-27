@@ -18,6 +18,8 @@ import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { usePreferences } from '../../hooks/usePreferences';
 import { useTaskFilters } from '../../hooks/useTaskFilters';
+import { useIsMobile } from '../../hooks/useIsMobile';
+import { useBoardMembers } from '../../hooks/useBoards';
 import { tryAppear } from '../../lib/samoyed';
 import { groupTasks, type GroupBy } from '../../lib/taskGrouping';
 import { weekdayLabel } from '../../lib/dateUtils';
@@ -50,6 +52,8 @@ export default function Backlog() {
   const [search, setSearch] = useState('');
   const { filters, setFilters } = useTaskFilters();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const isMobile = useIsMobile();
+  const { shared } = useBoardMembers();
   const { preferences, update: updatePreferences } = usePreferences();
   // Older saved groupings (priority, energy…) fall back to Date.
   const groupBy: GroupBy = preferences.backlogGroupBy === 'area' ? 'area' : 'date';
@@ -70,6 +74,15 @@ export default function Backlog() {
 
   const napping = allTasks.length === 0 && !search && !filterCount && tryAppear('emptyBacklog');
   const narrowed = !!search || filterCount > 0;
+  const subtitle = t('backlog.subtitle', { count: allTasks.length });
+  const filterSummary = (
+    <AppliedFilters
+      filters={filters}
+      onChange={setFilters}
+      inline={isMobile}
+      summary={t('filters.shown', { shown: filteredTasks.length, count: allTasks.length })}
+    />
+  );
   const panelProps = {
     tasks: allTasks,
     filters,
@@ -85,10 +98,12 @@ export default function Backlog() {
   return (
     <div className={styles.layout}>
       <div className={styles.page}>
+        {/* v7 phones: the count (or the applied filters) sits above the title; shared boards leave that line to the board pill. */}
         <PageHeader
           title={t('backlog.title')}
-          subtitle={t('backlog.subtitle', { count: allTasks.length })}
-          actions={
+          eyebrow={isMobile ? (filterCount > 0 ? filterSummary : shared ? undefined : subtitle) : undefined}
+          subtitle={isMobile ? undefined : subtitle}
+          tools={
             <>
               <SearchField value={search} onChange={setSearch} label={t('backlog.searchPlaceholder')} />
               <FiltersButton filters={filters} onClick={() => setSheetOpen(true)} />
@@ -96,15 +111,7 @@ export default function Backlog() {
           }
         />
 
-        {narrowed && (
-          <div className={styles.summary}>
-            <AppliedFilters
-              filters={filters}
-              onChange={setFilters}
-              summary={t('filters.shown', { shown: filteredTasks.length, count: allTasks.length })}
-            />
-          </div>
-        )}
+        {narrowed && !isMobile && <div className={styles.summary}>{filterSummary}</div>}
 
         <div className={styles.groups}>
           {napping && <SamoyedMoment moment="emptyBacklog" />}

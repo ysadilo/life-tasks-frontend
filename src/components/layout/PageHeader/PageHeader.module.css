@@ -1,5 +1,8 @@
 .header {
-  padding: 28px 30px 0;
+  /* Read by the compact search, which opens over the whole header with the same padding. */
+  --page-header-padding: 28px 30px 0;
+  position: relative;
+  padding: var(--page-header-padding);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -25,24 +28,92 @@
   color: var(--color-text-muted);
 }
 
-.actions {
+/* A row of its own above the title row (board pill, eyebrow). */
+.fullRow {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* 6px to the title on phones, where the header row gap is 10px. */
+.eyebrow {
+  margin-bottom: -4px;
+}
+
+.actions,
+.tools {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
+/* Compact: the icons never wrap under the title; the title shrinks (and wraps its own text) instead. */
+.header[data-compact] .titleGroup {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.header[data-compact] .tools {
+  flex: none;
+}
+
 @media (max-width: 768px) {
   .header {
-    padding: 12px 20px 10px;
-    padding-top: calc(12px + env(safe-area-inset-top));
+    --page-header-padding: calc(12px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) 4px
+      calc(20px + env(safe-area-inset-left));
+    align-items: center;
     gap: 10px;
-    padding-left: calc(20px + env(safe-area-inset-left));
-    padding-right: calc(20px + env(safe-area-inset-right));
+  }
+
+  .titleGroup {
+    flex: 1;
+    min-width: 0;
   }
 
   .title {
     font-size: 32px;
     line-height: 1;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  /* v7: search, filters and the avatar share the title row. */
+  .tools {
+    flex: none;
+    gap: 2px;
+  }
+
+  .profile {
+    position: relative;
+    display: block;
+    flex: none;
+    margin-left: 4px;
+    border-radius: 50%;
+    text-decoration: none;
+  }
+
+  .avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .gear {
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-border-subtle);
+    color: var(--color-text-muted);
   }
 
   .actions {

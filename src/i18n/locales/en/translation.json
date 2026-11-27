@@ -11,7 +11,12 @@
     "week": "Week",
     "month": "Month",
     "menu": "Menu",
-    "settings": "Settings"
+    "settings": "Settings",
+    "account": "Account and settings"
+  },
+  "search": {
+    "cancel": "Cancel",
+    "clear": "Clear search"
   },
   "dashboard": {
     "title": "Dashboard",

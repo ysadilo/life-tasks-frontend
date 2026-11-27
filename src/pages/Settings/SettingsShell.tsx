@@ -61,7 +61,7 @@ export function SettingsShell({ page, sections, title, subtitle, children }: Set
             ‹ {t('settings.title')}
           </Link>
         )}
-        <PageHeader title={title} subtitle={subtitle} />
+        <PageHeader title={title} subtitle={subtitle} profile={false} />
         {page === 'general' && (
           <Link to="/settings/agents" className={styles.mobileLink}>
             <span>

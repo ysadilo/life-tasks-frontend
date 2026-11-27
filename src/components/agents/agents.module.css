@@ -302,7 +302,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  color: var(--color-text);
+  color: var(--color-on-area);
   font: 700 13px/1 var(--font-sans);
 }
 
@@ -409,7 +409,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 7px;
-  color: var(--color-text);
+  color: var(--color-on-area);
   font: 700 11px/1 var(--font-sans);
 }
 

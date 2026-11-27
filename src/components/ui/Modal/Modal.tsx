@@ -7,10 +7,14 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   closeLabel?: string;
+  /** Replaces the × in the header, e.g. a "Clear all" link; Escape and the backdrop still close. */
+  headerAction?: ReactNode;
+  /** Extra class on the dialog, e.g. to turn it into a phone bottom sheet. */
+  className?: string;
   children: ReactNode;
 }
 
-export function Modal({ open, onClose, title, closeLabel = 'Close', children }: ModalProps) {
+export function Modal({ open, onClose, title, closeLabel = 'Close', headerAction, className, children }: ModalProps) {
   const ref = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -33,7 +37,7 @@ export function Modal({ open, onClose, title, closeLabel = 'Close', children }: 
   return createPortal(
     <dialog
       ref={ref}
-      className={styles.dialog}
+      className={[styles.dialog, className].filter(Boolean).join(' ')}
       onClose={stopAnd}
       onCancel={stopAnd}
       onClick={(e) => {
@@ -44,9 +48,11 @@ export function Modal({ open, onClose, title, closeLabel = 'Close', children }: 
         <div className={styles.inner}>
           <div className={styles.header}>
             <h3 className={styles.title}>{title}</h3>
-            <button type="button" className={styles.close} onClick={stopAnd} aria-label={closeLabel}>
-              ×
-            </button>
+            {headerAction ?? (
+              <button type="button" className={styles.close} onClick={stopAnd} aria-label={closeLabel}>
+                ×
+              </button>
+            )}
           </div>
           {children}
         </div>

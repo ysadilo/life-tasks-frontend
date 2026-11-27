@@ -6,11 +6,10 @@ import { taskForm } from '../../task';
 import { lifeAreasModal } from '../../lifeAreas';
 import { BoardSwitcher, MembersSection } from '../../board';
 import { lifeAreaColorVar } from '../../../lib/lifeAreas';
-import { imageUrl } from '../../../lib/images';
-import { useActiveBoard } from '../../../hooks/useBoards';
 import { useTasksByStatus, useRecurringTasks } from '../../../hooks/useTasks';
 import { useLifeAreas } from '../../../hooks/useLifeAreas';
 import { useAreaFilter } from '../../../hooks/useAreaFilter';
+import { useMyProfile } from '../../../hooks/useMyProfile';
 import { openRecurringOn } from '../../../lib/recurrence';
 import styles from './Sidebar.module.css';
 
@@ -25,7 +24,6 @@ export function Sidebar() {
   const { data: backlogTasks } = useTasksByStatus('backlog');
   const { data: recurringTasks } = useRecurringTasks();
   const { data: lifeAreas } = useLifeAreas();
-  const board = useActiveBoard();
   // On Today and Backlog the area list doubles as the page's life-area filter.
   const onBacklog = useMatch('/backlog');
   const onToday = useMatch('/today');
@@ -34,9 +32,7 @@ export function Sidebar() {
 
   const todayCount = (todayTasks?.length ?? 0) + openRecurringOn(recurringTasks, new Date()).length;
 
-  const displayName = user?.given_name ?? user?.nickname ?? user?.name ?? user?.email ?? t('user.defaultName');
-  const avatarKey = board?.members.find((m) => m.email === user?.email)?.avatarKey;
-  const avatarSrc = avatarKey ? imageUrl(avatarKey) : user?.picture;
+  const { displayName, avatarSrc } = useMyProfile();
 
   return (
     <aside className={styles.sidebar}>
