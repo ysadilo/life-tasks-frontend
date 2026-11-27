@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import type { TimeOfDay } from '../../lib/timeOfDay';
 import styles from './AuthLandingPage.module.css';
 
@@ -25,7 +26,23 @@ const STARS = [
 /** Decorative sky above the horizon: the body rides in once (~3 s) for the local time of day, then rests. */
 export function HorizonSky({ when }: { when: TimeOfDay }) {
   const { path, end, r } = SCENES[when];
-  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const trackRef = useRef<SVGPathElement>(null);
+  const bodyRef = useRef<SVGGElement>(null);
+
+  // Web Animations rather than SMIL: SMIL's clock belongs to the page, so a sky that React mounts
+  // mid-load could start late, skip ahead or never move. This plays from the moment it mounts.
+  useEffect(() => {
+    const track = trackRef.current;
+    const body = bodyRef.current;
+    if (!track || !body || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const length = track.getTotalLength();
+    const frames = Array.from({ length: 41 }, (_, i) => {
+      const { x, y } = track.getPointAtLength((length * i) / 40);
+      return { transform: `translate(${x}px, ${y}px)` };
+    });
+    const ride = body.animate(frames, { duration: 3000, easing: 'cubic-bezier(.25, .6, .3, 1)', fill: 'backwards' });
+    return () => ride.cancel();
+  }, [path]);
 
   return (
     <svg className={styles.sky} viewBox="0 0 1280 372" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
@@ -42,10 +59,8 @@ export function HorizonSky({ when }: { when: TimeOfDay }) {
           </mask>
         </>
       )}
-      <g transform={still ? `translate(${end})` : undefined}>
-        {!still && (
-          <animateMotion dur="3s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".25 .6 .3 1" path={path} />
-        )}
+      <path ref={trackRef} d={path} fill="none" />
+      <g ref={bodyRef} transform={`translate(${end})`}>
         {when === 'night' ? (
           <circle className={styles.moon} r={r} mask="url(#lt-moon)" />
         ) : (
