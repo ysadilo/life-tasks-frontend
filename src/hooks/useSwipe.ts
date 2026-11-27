@@ -95,9 +95,7 @@ export function useSwipe(
     transform: horizontalOnly
       ? `translateX(${offset.x}px)`
       : `translate(${offset.x}px, ${offset.y}px) rotate(${offset.x / 20}deg)`,
-    // A row fades as it's dragged toward the commit distance and out entirely as it flies off.
-    ...(horizontalOnly && { opacity: mode === 'fly' ? 0.6 : 1 - 0.4 * progress }),
-    transition: mode === 'drag' ? 'none' : `transform ${FLY_MS}ms var(--ease-out), opacity ${FLY_MS}ms var(--ease-out)`,
+    transition: mode === 'drag' ? 'none' : `transform ${FLY_MS}ms var(--ease-out)`,
   };
 
   return { bind, style, direction, progress, flying: mode === 'fly' };
