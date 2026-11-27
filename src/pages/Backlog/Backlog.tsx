@@ -18,7 +18,6 @@ import { useTasksByStatus, useUpdateTaskStatus } from '../../hooks/useTasks';
 import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { usePreferences } from '../../hooks/usePreferences';
 import { useTaskFilters } from '../../hooks/useTaskFilters';
-import { useIsMobile } from '../../hooks/useIsMobile';
 import { tryAppear } from '../../lib/samoyed';
 import { groupTasks, type GroupBy } from '../../lib/taskGrouping';
 import { weekdayLabel } from '../../lib/dateUtils';
@@ -51,7 +50,6 @@ export default function Backlog() {
   const [search, setSearch] = useState('');
   const { filters, setFilters } = useTaskFilters();
   const [sheetOpen, setSheetOpen] = useState(false);
-  const isMobile = useIsMobile();
   const { preferences, update: updatePreferences } = usePreferences();
   // Older saved groupings (priority, energy…) fall back to Date.
   const groupBy: GroupBy = preferences.backlogGroupBy === 'area' ? 'area' : 'date';
@@ -161,20 +159,17 @@ export default function Backlog() {
                           onAction: () => updateStatus.mutateAsync({ id: task.id, status: 'today' }),
                         },
                   }}
-                  // Phones move a task to Today by swiping right; the button would squeeze the title.
                   trailing={
-                    !isMobile && (
-                      <span className={styles.toToday}>
-                        <PillButton
-                          aria-label={t('task.addToToday')}
-                          onClick={() =>
-                            leaveThen(task.id, () => updateStatus.mutateAsync({ id: task.id, status: 'today' }))
-                          }
-                        >
-                          {t('task.toToday')}
-                        </PillButton>
-                      </span>
-                    )
+                    <span className={styles.toToday}>
+                      <PillButton
+                        aria-label={t('task.addToToday')}
+                        onClick={() =>
+                          leaveThen(task.id, () => updateStatus.mutateAsync({ id: task.id, status: 'today' }))
+                        }
+                      >
+                        {t('task.toToday')}
+                      </PillButton>
+                    </span>
                   }
                 />
               ))}

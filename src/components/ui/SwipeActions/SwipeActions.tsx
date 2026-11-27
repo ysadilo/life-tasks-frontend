@@ -24,6 +24,31 @@ interface SwipeActionsProps {
 
 const TAP_SLOP_PX = 8;
 
+/** Trash for delete; an arrow pointing the way the row is being swiped for a move. */
+function SwipeIcon({ tone, direction }: { tone: 'danger' | 'neutral'; direction: string }) {
+  return (
+    <svg className={styles.icon} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+      {tone === 'danger' ? (
+        <path
+          d="M2.5 4h11M6.5 4V2.5h3V4M4 4l.7 9.5h6.6L12 4M6.75 7v4M9.25 7v4"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ) : (
+        <path
+          d={direction === 'left' ? 'M13 8H3m4-4L3 8l4 4' : 'M3 8h10m-4-4 4 4-4 4'}
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+    </svg>
+  );
+}
+
 /** Touch-only: drag the row sideways past the threshold to trigger an action; mouse users keep their buttons. */
 export function SwipeActions({ left, right, onClick, children }: SwipeActionsProps) {
   const downX = useRef(0);
@@ -53,6 +78,7 @@ export function SwipeActions({ left, right, onClick, children }: SwipeActionsPro
             style={{ '--swipe-progress': swipe.progress } as CSSProperties}
             aria-hidden
           >
+            {active.tone !== 'blocked' && <SwipeIcon tone={active.tone} direction={swipe.direction} />}
             {active.label}
           </div>
         )}
