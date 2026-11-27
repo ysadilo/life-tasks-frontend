@@ -9,7 +9,7 @@ import { useLifeAreas } from '../../hooks/useLifeAreas';
 import { useOutsideClick } from '../../hooks/useOutsideClick';
 import { useBoards, useClearAvatar, useMyAvatarKey, useSetAvatar } from '../../hooks/useBoards';
 import { FilePickButton, ProfileAvatar, SegmentedTabs, toast } from '../../components/ui';
-import { imageUrl } from '../../lib/images';
+import { useMyProfile } from '../../hooks/useMyProfile';
 import { getSamoyedMode, SAMOYED_MODES, setSamoyedMode, type SamoyedMode } from '../../lib/samoyed';
 import { MAX_LIFE_AREAS } from '../../lib/lifeAreas';
 import { useTheme, type ThemeName } from '../../theme/ThemeProvider';
@@ -33,7 +33,7 @@ export default function Settings() {
   const closeAvatarMenu = useCallback(() => setAvatarMenuOpen(false), []);
   useOutsideClick(avatarMenuRef, closeAvatarMenu);
 
-  const displayName = user?.given_name ?? user?.nickname ?? user?.name ?? user?.email ?? t('user.defaultName');
+  const { displayName, avatarSrc } = useMyProfile();
 
   const sections: SettingsSection[] = [
     {
@@ -119,7 +119,7 @@ export default function Settings() {
               aria-expanded={avatarMenuOpen}
               onClick={() => setAvatarMenuOpen((v) => !v)}
             >
-              <ProfileAvatar src={avatarKey ? imageUrl(avatarKey) : user?.picture} name={displayName} />
+              <ProfileAvatar src={avatarSrc} name={displayName} />
             </button>
             {avatarMenuOpen && (
               <div className={styles.avatarMenu} role="menu">

@@ -166,10 +166,12 @@ export function FiltersButton({ filters, onClick }: { filters: TaskFilters; onCl
       aria-pressed={n > 0}
       onClick={onClick}
     >
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
-        <path d="M2.5 4h11M4.5 8h7M6.5 12h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden>
+        <path d="M3 6h8M15 6h2M3 14h2M9 14h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="13" cy="6" r="2" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="7" cy="14" r="2" stroke="currentColor" strokeWidth="1.5" />
       </svg>
-      {t('filters.title')}
+      <span className={styles.filtersLabel}>{t('filters.title')}</span>
       {n > 0 && <span className={styles.filtersCount}>{n}</span>}
     </button>
   );
@@ -194,18 +196,21 @@ interface FilterSheetProps<T extends string> extends FilterPanelProps<T> {
   matchCount: number;
 }
 
-/** Where the rail is hidden: the same panel in a sheet, with Clear all and "Show N tasks". */
+/** Where the rail is hidden: the same panel in a sheet (a bottom sheet on phones), with Clear all and "Show N tasks". */
 export function FilterSheet<T extends string>({ open, onClose, matchCount, ...panel }: FilterSheetProps<T>) {
   const { t } = useTranslation();
   return (
-    <Modal open={open} onClose={onClose} title={t('filters.title')}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={t('filters.title')}
+      className={styles.sheet}
+      headerAction={<ClearAll onClear={() => panel.onChange(EMPTY_TASK_FILTERS)} />}
+    >
       <FilterPanel {...panel} />
-      <div className={styles.sheetFooter}>
-        <ClearAll onClear={() => panel.onChange(EMPTY_TASK_FILTERS)} />
-        <Button variant="primary" onClick={onClose}>
-          {t('filters.showTasks', { count: matchCount })}
-        </Button>
-      </div>
+      <Button variant="primary" className={styles.showTasks} onClick={onClose}>
+        {t('filters.showTasks', { count: matchCount })}
+      </Button>
     </Modal>
   );
 }

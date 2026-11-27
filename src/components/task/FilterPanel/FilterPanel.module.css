@@ -169,11 +169,44 @@
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.sheetFooter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+/* v7: one full-width "Show N tasks"; Clear all sits in the sheet header. */
+.showTasks {
+  width: 100%;
+  height: 48px;
+}
+
+/* v7 dark: the sheet's one action is acid, not slate. */
+:global(:root[data-theme='glamour']) .showTasks {
+  border-color: var(--color-active-border);
+  background: var(--color-active);
+  color: var(--color-active-text);
+}
+
+/* v7 phones: the filters slide up as a bottom sheet with a grab handle. */
+@media (max-width: 768px) {
+  dialog.sheet {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92dvh;
+    margin: auto 0 0;
+    border-bottom: 0;
+    border-radius: 24px 24px 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  dialog.sheet[open] {
+    animation: var(--kf-sheet-up) var(--dur-base) var(--ease-out);
+  }
+
+  dialog.sheet > div::before {
+    content: '';
+    align-self: center;
+    width: 36px;
+    height: 4px;
+    margin: -12px 0 -4px;
+    border-radius: 2px;
+    background: var(--color-border);
+  }
 }
 
 @media (max-width: 1100px) {
@@ -184,4 +217,44 @@
   .filtersButton {
     display: flex;
   }
+}
+
+/* Compact header (phones, or too narrow beside the title): a round icon, acid with a dark count badge while filters are on. */
+[data-compact] .filtersButton {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
+[data-compact] .filtersButton[aria-pressed='true'] {
+  background: var(--color-active);
+}
+
+[data-compact] .filtersButton svg {
+  width: 21px;
+  height: 21px;
+}
+
+[data-compact] .filtersLabel {
+  display: none;
+}
+
+[data-compact] .filtersCount {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 9px;
+  background: var(--color-active-text);
+  color: var(--color-active);
+  font: 700 11px/17px var(--font-sans);
+  text-align: center;
 }

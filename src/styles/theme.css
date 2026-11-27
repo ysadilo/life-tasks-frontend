@@ -86,6 +86,8 @@
   --color-neutral-chip-bg: #eceeef;
   --color-neutral-chip-text: #5e666b;
   --color-avatar-bg: #d6dadd;
+  /* Initials on a life-area colour (board tiles, member avatars): dark ink in both themes. */
+  --color-on-area: #23292c;
 
   /* Priority flags. */
   --color-priority-high: #c8381f;
@@ -213,6 +215,7 @@
   --color-neutral-chip-bg: #30373b;
   --color-neutral-chip-text: #a3abb0;
   --color-avatar-bg: #465055;
+  --color-on-area: #22282b;
 
   --color-priority-high: #ff6a4d;
   --color-priority-medium: #e07b1f;

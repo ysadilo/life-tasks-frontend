@@ -2,52 +2,47 @@
   display: none;
 }
 
+/* v7 tab bar: flat, full width, a hairline on top; the dark + sits in the middle. */
 @media (max-width: 768px) {
   .nav {
     display: flex;
     align-items: center;
-    gap: 2px;
+    justify-content: space-between;
     flex: none;
-    /* Floats 10px above the home indicator. */
-    margin: 0 12px calc(10px + env(safe-area-inset-bottom));
-    padding: 6px;
-    background: color-mix(in srgb, var(--color-surface) 55%, transparent);
-    -webkit-backdrop-filter: blur(18px) saturate(1.6);
-    backdrop-filter: blur(18px) saturate(1.6);
-    border: 1px solid color-mix(in srgb, white 70%, transparent);
-    border-radius: 22px;
-    box-shadow:
-      0 14px 30px -14px rgb(43 42 40 / 0.3),
-      inset 0 1px 0 rgb(255 255 255 / 0.8);
+    /* 26px under the tabs (v7), or the home-indicator inset where that is larger. */
+    padding: 8px calc(10px + env(safe-area-inset-right)) max(26px, env(safe-area-inset-bottom))
+      calc(10px + env(safe-area-inset-left));
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-bg);
   }
 
-  .item,
-  .add {
-    min-width: 44px;
-    height: 52px;
+  .item {
+    min-width: 64px;
+    padding: 7px 10px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    border-radius: 15px;
+    gap: 4px;
+    border-radius: 16px;
     text-decoration: none;
+    color: var(--color-text-muted);
+    font: 500 11px/1 var(--font-sans);
   }
 
-  .item {
-    flex: 1;
-    color: var(--color-text-secondary);
-    font: 500 10px/1 var(--font-sans);
-    letter-spacing: -0.01em;
+  /* The design's 24×22 icon box. */
+  .item > svg {
+    margin: 1px 2px;
   }
 
   .itemActive {
     background: var(--color-active);
     color: var(--color-active-text);
-    font-weight: 600;
+    font-weight: 700;
   }
 
-  /* Long labels (uk "Налаштування") truncate instead of pushing the nav past the screen edge. */
+  /* Long labels (uk "Календар") truncate instead of pushing the bar past the screen edge. */
   .label {
     max-width: 100%;
     overflow: hidden;
@@ -56,41 +51,32 @@
   }
 
   .add {
-    flex: none;
     width: 52px;
-    margin: 0 2px;
+    height: 52px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid var(--color-accent-border);
+    border-radius: 50%;
     background: var(--color-accent);
     color: var(--color-accent-text);
     cursor: pointer;
   }
 }
 
-/* Under 390px: icons only; the active tab expands into a pill with its label. */
+/* Narrow phones (v7 "Narrow 360 · pill tabs"): icons only; the active tab is a pill with its label. */
 @media (max-width: 389px) {
   .nav {
-    margin-inline: 8px;
-    gap: 0;
-  }
-
-  .item,
-  .add {
-    height: 44px;
-    border-radius: 14px;
+    padding-inline: 8px;
   }
 
   .item {
-    flex: 1 1 40px;
-    min-width: 40px;
+    min-width: 44px;
+    height: 44px;
     flex-direction: row;
     gap: 6px;
     font-size: 12px;
-  }
-
-  /* Shrinks (label truncates) when the row is tight, e.g. a Flip 7. */
-  .itemActive {
-    flex: 0 1 auto;
-    padding: 0 10px;
   }
 
   .item:not(.itemActive) .label {
@@ -99,27 +85,21 @@
 
   .add {
     width: 44px;
+    height: 44px;
   }
 }
 
-/* Under 320px (cover screens): six 44px icons, no labels, butter tint on the active tab. */
+/* Under 320px (cover screens): five 44px icons, no labels. */
 @media (max-width: 319px) {
   .nav {
-    margin-inline: 6px;
-    padding: 5px;
-    justify-content: space-between;
-    gap: 0;
+    padding-inline: 6px;
   }
 
-  .item,
-  .itemActive {
-    flex: none;
+  .item {
     width: 44px;
+    min-width: 0;
     padding: 0;
-  }
-
-  .itemActive {
-    background: var(--color-active);
+    justify-content: center;
   }
 
   .label {

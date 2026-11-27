@@ -213,6 +213,19 @@ export default function Today() {
         .filter(Boolean)
         .join(' · ');
   const narrowed = !!query || filterCount > 0;
+  const filterSummary = (
+    <AppliedFilters
+      filters={filters}
+      onChange={setFilters}
+      inline={isMobile}
+      summary={t('filters.shown', {
+        shown: filteredOpenTasks.length + filteredDoneToday.length,
+        count: dayTasks.length,
+      })}
+    />
+  );
+  // Phones (v7): the applied filters, else the date; shared boards leave that line to the board pill above the title.
+  const mobileEyebrow = filterCount > 0 ? filterSummary : shared ? undefined : dateLabel(today, i18n.language, 'short');
   const panelProps = {
     tasks: dayTasks,
     filters,
@@ -228,12 +241,12 @@ export default function Today() {
   return (
     <div className={styles.layout}>
       <div className={styles.page}>
-        {/* v7: the date is the title on desktop; phones keep "Today" with the date above it. */}
+        {/* v7: the date is the title on desktop; phones keep "Today" with the date (or the applied filters) above it, so the day summary is desktop-only. */}
         <PageHeader
-          eyebrow={isMobile ? `${dateLabel(today, i18n.language, 'short')} · ${summary}` : undefined}
+          eyebrow={isMobile ? mobileEyebrow : undefined}
           title={isMobile ? t('today.title') : dateLabel(today, i18n.language, 'long')}
           subtitle={isMobile ? undefined : summary}
-          actions={
+          tools={
             <>
               <SearchField value={search} onChange={setSearch} label={t('today.searchPlaceholder')} />
               <FiltersButton filters={filters} onClick={() => setSheetOpen(true)} />
@@ -256,6 +269,9 @@ export default function Today() {
             />
           </div>
         )}
+
+        {/* Phones only (v7): right under the assignee tabs. */}
+        <TodaySplit openTasks={sortedOpenTasks} />
 
         {greeting && greetingOpen && (
           <div className={styles.greeting}>
@@ -312,20 +328,7 @@ export default function Today() {
           onSubmit={saveReflection}
         />
 
-        <TodaySplit openTasks={sortedOpenTasks} />
-
-        {narrowed && (
-          <div className={styles.summary}>
-            <AppliedFilters
-              filters={filters}
-              onChange={setFilters}
-              summary={t('filters.shown', {
-                shown: filteredOpenTasks.length + filteredDoneToday.length,
-                count: dayTasks.length,
-              })}
-            />
-          </div>
-        )}
+        {narrowed && !isMobile && <div className={styles.summary}>{filterSummary}</div>}
 
         <div className={styles.list}>
           {displayedOpenTasks.length === 0 && filteredDoneToday.length === 0 && (

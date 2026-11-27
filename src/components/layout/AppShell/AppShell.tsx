@@ -3,7 +3,7 @@ import { Sidebar } from '../Sidebar';
 import { BottomNav } from '../BottomNav';
 import { QuickAddModal, TaskFormPanel, TaskPreviewPanel } from '../../task';
 import { LifeAreasModal } from '../../lifeAreas';
-import { BoardBar, InviteModal, NewBoardModal } from '../../board';
+import { InviteModal, NewBoardModal } from '../../board';
 import { SamoyedPeek, Toaster } from '../../ui';
 import { useHandedTaskPeek } from '../../../hooks/useHandedTaskPeek';
 import { useOpenTaskFromUrl } from '../../../hooks/useOpenTaskFromUrl';
@@ -14,12 +14,11 @@ export function AppShell() {
   useSyncPushSubscription();
   useHandedTaskPeek();
   useOpenTaskFromUrl();
-  // Triage is a focus mode (v7): no sidebar, board bar or tab bar, just the queue.
+  // Triage is a focus mode (v7): no sidebar or tab bar, just the queue.
   const focus = useMatch('/triage') !== null;
   return (
     <div className={focus ? `${styles.shell} ${styles.focus}` : styles.shell}>
       {!focus && <Sidebar />}
-      {!focus && <BoardBar />}
       <div className={styles.canvas}>
         <main className={styles.main}>
           <Outlet />

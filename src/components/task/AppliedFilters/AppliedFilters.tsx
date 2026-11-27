@@ -14,12 +14,14 @@ interface AppliedFiltersProps {
   onChange: (filters: TaskFilters) => void;
   /** v7 Backlog look: this text (e.g. "4 of 11 tasks") leads the row, chips are acid with a priority flag, no Clear link. */
   summary?: string;
+  /** Sits inside a page header's eyebrow (v7 phones): no padding, smaller type. */
+  inline?: boolean;
 }
 
 const without = <T,>(values: T[], value: T) => values.filter((v) => v !== value);
 
 /** "Showing" row of removable chips, one per applied filter value, plus a Clear link. */
-export function AppliedFilters({ filters, onChange, summary }: AppliedFiltersProps) {
+export function AppliedFilters({ filters, onChange, summary, inline = false }: AppliedFiltersProps) {
   const { t } = useTranslation();
   const { data: areas } = useLifeAreas();
 
@@ -57,7 +59,7 @@ export function AppliedFilters({ filters, onChange, summary }: AppliedFiltersPro
   ];
 
   return (
-    <div className={styles.row}>
+    <div className={inline ? `${styles.row} ${styles.inline}` : styles.row}>
       <span className={summary ? styles.summary : styles.label}>{summary ?? t('filters.showing')}</span>
       {chips.map(({ key, label, priority, rampKey, dot, onRemove }) => (
         <span

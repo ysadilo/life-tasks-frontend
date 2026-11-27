@@ -1,3 +1,19 @@
+/* Wide: just the field, with the "/" hint. */
+.root {
+  display: flex;
+  min-width: 0;
+}
+
+.overlay {
+  display: contents;
+}
+
+.iconButton,
+.clear,
+.cancel {
+  display: none;
+}
+
 .search {
   width: 240px;
   height: 40px;
@@ -31,6 +47,10 @@
   color: var(--color-text-muted);
 }
 
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+
 .key {
   padding: 3px 6px;
   border: 1px solid var(--color-border);
@@ -39,17 +59,90 @@
   color: var(--color-text-muted);
 }
 
-@media (max-width: 768px) {
-  .search {
-    /* Shrinks so a Filters button stays beside it, down to 320px screens. */
-    flex: 1 1 0;
-    min-width: 0;
-    width: auto;
-    height: 44px;
-    border-radius: 12px;
-  }
+/* Compact header (phones, or too narrow for the field beside the title): a bare magnifier. */
+[data-compact] .iconButton {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
 
-  .key {
-    display: none;
+[data-compact] .overlay {
+  display: none;
+}
+
+[data-compact] .open .iconButton {
+  display: none;
+}
+
+/* Open: covers the page header (title included) with the field and Cancel, inside the header's own padding. */
+[data-compact] .open .overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: var(--page-header-padding, 0 20px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-bg);
+  /* Paints over the title's descenders, which overflow its line-height: 1 box. */
+  box-shadow: 0 8px 0 var(--color-bg);
+  animation: var(--kf-fade-in) var(--dur-fast) var(--ease-out);
+}
+
+[data-compact] .search {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  height: 44px;
+  padding: 0 6px 0 12px;
+  border: 1.5px solid var(--color-text);
+  border-radius: 12px;
+}
+
+[data-compact] .search:focus-within {
+  border-color: var(--color-text);
+  box-shadow: none;
+}
+
+[data-compact] .key {
+  display: none;
+}
+
+[data-compact] .clear {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+[data-compact] .cancel {
+  display: block;
+  flex: none;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  font: 600 15px/1 var(--font-sans);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+/* 16px keeps iOS from zooming into the field. */
+@media (max-width: 768px) {
+  .input {
+    font-size: 16px;
   }
 }

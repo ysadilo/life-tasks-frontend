@@ -9,5 +9,5 @@ export { memberLabel } from './memberLabel';
 export { BoardsManager } from './BoardsManager';
 export { BoardTile, MemberAvatar } from './BoardTile';
 export { TodayRail } from './TodayRail';
-export { BoardBar } from './BoardBar';
+export { ActivityBell, BoardPill } from './BoardPill';
 export { TodaySplit } from './TodaySplit';
