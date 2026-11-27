@@ -211,3 +211,11 @@
   border-color: var(--color-text);
   color: var(--color-bg);
 }
+
+/* The global reduced-motion rule keeps animation delays, which would hide these until the delay ends. */
+@media (prefers-reduced-motion: reduce) {
+  .greeting,
+  .stars {
+    animation: none;
+  }
+}
